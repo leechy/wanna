@@ -1,50 +1,32 @@
-# Welcome to your Expo app 👋
+# Wanna Wanna
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+the best small grocery list app
 
-## Get started
+## The ultimate sharing experience
 
-1. Install dependencies
+Notifications can't be too much...
 
-   ```bash
-   npm install
-   ```
+- Leyla adds more wine to the Party list
+- Finish Christmas party list today!
+- George put Milk in the cart...
 
-2. Start the app
+> ...the best time to add a few more items in the shopping list is when your partner is already at the store.
 
-   ```bash
-    npx expo start
-   ```
+Share lists by link
 
-In the output, you'll find options to open the app in a
+- you decide to send an email or WhatsApp message
+- in-app sharing with people you already contacted
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+No accounts needed
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- just type your name, so the other knows who you are
 
-## Get a fresh project
+## Built in public
 
-When you're ready, run:
+This project is built in public. You can follow the progress on [GitHub](https://github.com/leechy/wanna). The app is built with [Expo](https://expo.dev/), a platform for universal React applications. The app is written in TypeScript and uses [React Navigation](https://reactnavigation.org/) for navigation. Backend is powered by [Supabase](https://supabase.io/), an open-source Firebase alternative.
 
-```bash
-npm run reset-project
-```
+You can find the public keys to use the database in the .env file. But if you want to use the code, you should create your own Supabase project and replace the keys.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## License
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
