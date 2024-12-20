@@ -16,18 +16,9 @@ export default function SignInScreen() {
 
   const signInAnonymously = async () => {
     const { data, error } = await supabase.auth.signInAnonymously();
-    console.log(
-      'signInAnonymously typeof data',
-      typeof data.user?.id,
-      data.user?.id
-    );
-    console.log(
-      'signInAnonymously data',
-      name,
-      typeof data.user?.id === 'string',
-      data
-    );
     if (error) {
+      // TODO: handle errors here
+      // show some error message to the user
       console.error('signInAnonymously error', error);
     }
     if (typeof data.user?.id === 'string') {
