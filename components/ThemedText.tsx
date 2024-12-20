@@ -44,9 +44,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   title: {
-    fontSize: 32,
+    fontFamily: 'GreatVibes',
+    fontSize: 60,
+    lineHeight: 72,
     fontWeight: 'bold',
-    lineHeight: 32,
+    color: '#3A1FC1',
+    transform: [{ rotate: '-1deg' }],
   },
   subtitle: {
     fontSize: 20,
