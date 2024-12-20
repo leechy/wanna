@@ -44,4 +44,6 @@ export function initSupabase() {
     console.log('onAuthStateChange', session?.user?.id);
     setSession(session);
   });
+
+  return supabase;
 }
