@@ -28,6 +28,8 @@ export function ThemedText({
         type === 'link' ? styles.link : undefined,
         style,
       ]}
+      numberOfLines={type === 'title' ? 1 : 0}
+      adjustsFontSizeToFit={type === 'title'}
       {...rest}
     />
   );
@@ -39,20 +41,21 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   defaultSemiBold: {
+    fontFamily: 'Nunito',
     fontSize: 16,
     lineHeight: 24,
     fontWeight: '600',
   },
   title: {
-    fontFamily: 'GreatVibes',
+    fontFamily: 'GreatVibes-Regular',
     fontSize: 60,
-    lineHeight: 72,
-    fontWeight: 'bold',
+    lineHeight: 76,
     color: '#3A1FC1',
     transform: [{ rotate: '-1deg' }],
   },
   subtitle: {
-    fontSize: 20,
+    fontFamily: 'Nunito',
+    fontSize: 18,
     fontWeight: 'bold',
   },
   link: {
