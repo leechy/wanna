@@ -36,26 +36,28 @@ export function ThemedButton({
 
   return (
     <View style={[styles.container, style]}>
-      <Pressable
-        android_ripple={{
-          color: fullButtonText,
-        }}
-        style={({ pressed }) => [
-          Platform.select({
-            ios: {
-              opacity: pressed ? 0.6 : 1,
-            },
-          }),
-        ]}
-        onPress={onPress}
+      <LinearGradient
+        // Button Linear Gradient
+        colors={fullButtonBackground as [string, string, ...string[]]}
+        locations={[0, 0.23, 1]}
+        start={[0.3, -0.3]}
+        end={[0.302, 1]}
+        style={styles.background}
       >
-        <LinearGradient
-          // Button Linear Gradient
-          colors={fullButtonBackground as [string, string, ...string[]]}
-          locations={[0, 0.23, 1]}
-          start={[0.3, -0.3]}
-          end={[0.302, 1]}
-          style={styles.button}
+        <Pressable
+          android_ripple={{
+            color: '#3a1fc133',
+          }}
+          style={({ pressed }) => [
+            styles.button,
+            Platform.select({
+              ios: {
+                opacity: pressed ? 0.4 : 1,
+                backgroundColor: pressed ? '#ffffff' : 'transparent',
+              },
+            }),
+          ]}
+          onPress={onPress}
         >
           <Text
             style={[
@@ -67,8 +69,8 @@ export function ThemedButton({
           >
             {title}
           </Text>
-        </LinearGradient>
-      </Pressable>
+        </Pressable>
+      </LinearGradient>
     </View>
   );
 }
@@ -81,6 +83,9 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     boxShadow: '0px 0px 4px 1px rgba(0, 0, 0, 0.25)',
   },
+  background: {
+    borderRadius: 8,
+  },
   button: {
     minHeight: 52,
     width: '100%',
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     borderRadius: 8,
+    backgroundColor: 'transparent',
   },
   text: {
     fontFamily: 'Nunito',
