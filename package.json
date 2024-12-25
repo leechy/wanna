@@ -13,9 +13,13 @@
     "extract-supabase-types": "source .env.local && npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > ./state/database.types.ts"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
+    ]
   },
   "dependencies": {
+    "@expo-google-fonts/montserrat": "^0.2.3",
     "@expo-google-fonts/nunito": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@legendapp/state": "^3.0.0-beta.19",
@@ -27,9 +31,14 @@
     "expo-app-loading": "^2.1.1",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
+    "expo-crypto": "~14.0.1",
+    "expo-device": "~7.0.1",
     "expo-font": "~13.0.2",
     "expo-haptics": "~14.0.0",
+    "expo-linear-gradient": "~14.0.1",
     "expo-linking": "~7.0.3",
+    "expo-navigation-bar": "~4.0.6",
+    "expo-notifications": "~0.29.11",
     "expo-router": "~4.0.14",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",
@@ -39,14 +48,15 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.5",
+    "react-native-collapsible": "^1.6.2",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.1.0",
+    "react-native-svg": "15.8.0",
+    "react-native-svg-transformer": "^1.5.0",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5",
-    "expo-crypto": "~14.0.1",
-    "expo-linear-gradient": "~14.0.1"
+    "react-native-webview": "13.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
