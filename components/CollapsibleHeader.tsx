@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     fontFamily: 'Montserrat',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     opacity: 0.5,
   },
 });

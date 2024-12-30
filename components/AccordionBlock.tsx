@@ -1,0 +1,86 @@
+// hooks
+import { useEffect } from 'react';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+
+// components
+import { View } from 'react-native';
+import { CollapsibleHeader } from './CollapsibleHeader';
+import { ThemedText } from './ThemedText';
+import { ItemsList } from './ItemsList';
+
+// types
+import { ListItem } from '@/types/listItem';
+
+export interface AccordionBlockProps {
+  title: string;
+  color?: string;
+  newItemLabel?: string;
+  items: ListItem[];
+  onToggle?: () => void;
+  isOpen?: boolean;
+  emptyText?: string;
+}
+
+export function AccordionBlock(block: AccordionBlockProps) {
+  const backgroundColor = useThemeColor({}, 'background');
+
+  const flex = useSharedValue(block.isOpen ? 1 : 0);
+
+  useEffect(() => {
+    flex.value = block.isOpen ? 1 : 0;
+  }, [block.isOpen]);
+
+  const flexStyle = useAnimatedStyle(() => ({
+    flex: withTiming(flex.value, {
+      duration: 200,
+      easing: Easing.inOut(Easing.sin),
+    }),
+  }));
+
+  return (
+    <>
+      <View style={{ paddingHorizontal: 12, backgroundColor }}>
+        <CollapsibleHeader
+          title={block.title}
+          items={block.items?.length}
+          color={block.color}
+          isOpen={block.isOpen ? true : false}
+          onToggle={() => block.onToggle?.()}
+          clickable={!block.isOpen}
+        />
+      </View>
+      <Animated.View
+        style={[
+          {
+            // flex: currentBlock === index ? 1 : 0,
+            flexBasis: 0,
+            // opacity: currentBlock === index ? 1 : 0,
+            backgroundColor,
+          },
+          flexStyle,
+        ]}
+      >
+        {block.items.length > 0 ? (
+          <ItemsList newItemLabel={block.newItemLabel} items={block.items} />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 16,
+            }}
+          >
+            <ThemedText>{block.emptyText || 'No items here'}</ThemedText>
+          </View>
+        )}
+      </Animated.View>
+    </>
+  );
+}

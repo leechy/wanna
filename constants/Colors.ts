@@ -19,6 +19,7 @@ export const Colors = {
     barelyVisible: '#cccccc',
     disabled: '#bbbbbb',
     inactive: '#999999',
+    touchable: '#666666',
 
     listBackground: '#ffffff',
     listSeparator: '#d6d6d6',
@@ -42,6 +43,7 @@ export const Colors = {
     barelyVisible: '#333333',
     disabled: '#454545',
     inactive: '#666666',
+    touchable: '#999999',
 
     listBackground: '#000000',
     listSeparator: '#333333',
