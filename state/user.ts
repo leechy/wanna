@@ -3,9 +3,12 @@ import { observable, ObservableObject } from '@legendapp/state';
 // types
 import { Session } from '@supabase/supabase-js';
 import { UserState } from '@/types/user';
-import { generateId } from './state';
+import { generateId, persistOptions } from './state';
 import { syncedSupabase } from '@legendapp/state/sync-plugins/supabase';
 import { supabase } from '@/app/_layout';
+import { syncObservable } from '@legendapp/state/sync';
+import { observablePersistAsyncStorage } from '@legendapp/state/persist-plugins/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * User and session data
@@ -15,7 +18,22 @@ import { supabase } from '@/app/_layout';
 export const user$: ObservableObject<UserState> = observable({
   id: null,
   session: null as Session | null,
+  expoPushToken: '',
+  devicePushToken: '',
+  notificationStatus: 'undetermined',
 });
+
+// Persist user data observable in AsyncStorage
+syncObservable(
+  user$,
+  persistOptions({
+    persist: {
+      plugin: observablePersistAsyncStorage({
+        AsyncStorage,
+      }),
+    },
+  })
+);
 
 /**
  * User profile data
@@ -25,7 +43,7 @@ export const user$: ObservableObject<UserState> = observable({
  *
  * @type {ObservableObject}
  */
-const profiles$ = observable(
+export const profiles$ = observable(
   syncedSupabase({
     supabase,
     collection: 'user_profiles',
