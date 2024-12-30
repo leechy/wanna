@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   defaultSemiBold: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Montserrat',
     fontSize: 16,
     lineHeight: 24,
     fontWeight: '600',
@@ -51,10 +51,11 @@ const styles = StyleSheet.create({
     fontSize: 60,
     lineHeight: 76,
     color: '#3A1FC1',
+    transformOrigin: 'top middle',
     transform: [{ rotate: '-1deg' }],
   },
   subtitle: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Montserrat',
     fontSize: 18,
     fontWeight: 'bold',
   },

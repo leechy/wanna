@@ -8,6 +8,14 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "backgroundColor": "#f2f2f2",
+    "primaryColor": "#3a1fc1",
+    "androidNavigationBar": {
+      "backgroundColor": "#f2f2f2",
+      "barStyle": "light-content"
+    },
+    "githubUrl": "https://github.com/leechy/wanna",
+    "platforms": ["ios", "android", "web"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.wanna-wanna.app",
@@ -15,9 +23,7 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": [
-              "CA92.1"
-            ]
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
           }
         ]
       }
@@ -47,9 +53,7 @@
       [
         "expo-font",
         {
-          "fonts": [
-            "./assets/fonts/GreatVibes-Regular.ttf"
-          ]
+          "fonts": ["./assets/fonts/GreatVibes-Regular.ttf"]
         }
       ]
     ],

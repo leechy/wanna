@@ -8,12 +8,20 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#333333',
+    background: '#f2f2f2',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+
+    primary: '#3a1fc1',
+    barelyVisible: '#cccccc',
+    disabled: '#bbbbbb',
+    inactive: '#999999',
+
+    listBackground: '#ffffff',
+    listSeparator: '#d6d6d6',
 
     inputText: '#000000',
     inputPlaceholder: '#999999',
@@ -23,12 +31,20 @@ export const Colors = {
     fullButtonBackground: '#FFD700',
   },
   dark: {
-    text: '#ECEDEE',
+    text: '#cccccc',
     background: '#151718',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+
+    primary: '#ffd700',
+    barelyVisible: '#333333',
+    disabled: '#454545',
+    inactive: '#666666',
+
+    listBackground: '#000000',
+    listSeparator: '#333333',
 
     inputText: '#ffffff',
     inputPlaceholder: '#999999',
@@ -40,6 +56,6 @@ export const Colors = {
 };
 
 export const fullButtonBackgrounds = {
-  light: ['#FFD700', '#FFE800', '#FFD700'],
-  dark: ['#3A1FC1', '#3A1FC1'],
+  light: ['#ffd700', '#ffe800', '#ffd700'],
+  dark: ['#3a1fc1', '#2b00ff', '#3a1fc1'],
 };

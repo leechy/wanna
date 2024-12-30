@@ -13,6 +13,7 @@ interface CollapsibleHeaderProps {
   items?: number;
   color?: string;
   isOpen: boolean;
+  clickable?: boolean;
   onToggle: () => void;
 }
 
@@ -21,11 +22,11 @@ export function CollapsibleHeader({
   items,
   color,
   isOpen,
+  clickable = true,
   onToggle,
 }: CollapsibleHeaderProps) {
   const theme = useColorScheme() ?? 'light';
-  const titleColor =
-    color ?? (theme === 'light' ? Colors.light.text : Colors.dark.text);
+  const chevronColor = theme === 'light' ? Colors.light.text : Colors.dark.text; // color ??
 
   return (
     <View style={styles.container}>
@@ -33,11 +34,12 @@ export function CollapsibleHeader({
         style={styles.heading}
         onPress={onToggle}
         activeOpacity={0.4}
+        disabled={!clickable}
       >
         <Feather
           name="chevron-right"
           size={24}
-          color={theme === 'light' ? Colors.light.text : Colors.dark.text}
+          color={chevronColor}
           style={[
             styles.chevron,
             { transform: [{ rotate: isOpen ? '90deg' : '0deg' }] },
@@ -70,14 +72,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   title: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Montserrat',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     lineHeight: 24,
   },
   number: {
     marginLeft: 8,
-    fontFamily: 'Nunito',
+    paddingTop: 2,
+    fontFamily: 'Montserrat',
     fontSize: 16,
     fontWeight: 'bold',
     opacity: 0.5,

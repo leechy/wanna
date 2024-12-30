@@ -1,5 +1,5 @@
 // hooks
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'react-native-reanimated';
 
 // styles
@@ -27,6 +27,11 @@ import { user$ } from '@/state/user';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import {
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from '@expo-google-fonts/montserrat';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -76,6 +81,9 @@ export default function RootLayout() {
     'GreatVibes-Regular': require('../assets/fonts/GreatVibes-Regular.ttf'),
     Nunito_500Medium,
     Nunito_800ExtraBold,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
   });
 
   const user = useSelector(user$);
