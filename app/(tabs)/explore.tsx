@@ -1,13 +1,7 @@
-import { useState } from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { StyleSheet, SafeAreaView } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import {
-  AccordionBlock,
-  AccordionBlockProps,
-} from '@/components/AccordionBlock';
+import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 
 export default function TabTwoScreen() {
@@ -15,7 +9,7 @@ export default function TabTwoScreen() {
 
   const blocks: AccordionBlockProps[] = [
     {
-      title: 'Left to buy',
+      title: 'Yet to buy',
       newItemLabel: 'New item',
       items: [
         {
@@ -151,7 +145,7 @@ export default function TabTwoScreen() {
     {
       title: 'Past purchases',
       items: [],
-      emptyText: 'No past purchases yet',
+      emptyText: 'No purchases yet',
     },
   ];
 

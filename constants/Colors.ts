@@ -20,6 +20,7 @@ export const Colors = {
     disabled: '#bbbbbb',
     inactive: '#999999',
     touchable: '#666666',
+    danger: '#e73d01',
 
     listBackground: '#ffffff',
     listSeparator: '#d6d6d6',
@@ -44,6 +45,7 @@ export const Colors = {
     disabled: '#454545',
     inactive: '#666666',
     touchable: '#999999',
+    danger: '#e73d01',
 
     listBackground: '#000000',
     listSeparator: '#333333',

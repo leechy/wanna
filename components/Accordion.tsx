@@ -10,10 +10,11 @@ import { AccordionBlock, AccordionBlockProps } from './AccordionBlock';
 interface AccordionProps {
   blocks: AccordionBlockProps[];
   title?: string;
+  openBlock?: number;
 }
 
-export function Accordion({ title, blocks }: AccordionProps) {
-  const [currentBlock, setCurrentBlock] = useState(0);
+export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
+  const [currentBlock, setCurrentBlock] = useState(openBlock);
 
   return (
     <View style={styles.container}>

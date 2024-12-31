@@ -15,14 +15,19 @@ import { LinearGradient } from 'expo-linear-gradient';
 // icons
 import SquareIcon from '../assets/symbols/square.svg';
 import PlusIcon from '../assets/symbols/square-plus.svg';
+import PlayIcon from '../assets/symbols/square-play.svg';
+import PlayFillIcon from '../assets/symbols/square-play-fill.svg';
 import CartIcon from '../assets/symbols/cart-arr-down.svg';
 import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
 import SubmenuIOS from '../assets/symbols/submenu-ios.svg';
 import SubmenuAndroid from '../assets/symbols/submenu-android.svg';
 import ChevronRightIcon from '../assets/symbols/chevron-right.svg';
+import CalendarIcon from '../assets/symbols/square-calendar.svg';
+import ListIcon from '../assets/symbols/square-list.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
+import { humanDate } from '@/utils/dates';
 
 interface ItemsListProps {
   newItemLabel?: string;
@@ -38,6 +43,7 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
   const inactiveColor = useThemeColor({}, 'inactive');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const touchableColor = useThemeColor({}, 'touchable');
+  const dangerColor = useThemeColor({}, 'danger');
 
   const onNewItem = () => {
     console.log('onNewItem');
@@ -54,6 +60,9 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
             borderBottomWidth: 0,
           }
         : { borderBottomColor };
+
+    const overdue = item.deadline && item.deadline < Date.now();
+
     return (
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
         <LinearGradient
@@ -83,10 +92,55 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
                 styles.label,
                 { color: item.type === 'new' ? inactiveColor : textColor },
               ]}
+              adjustsFontSizeToFit={true}
+              numberOfLines={2}
             >
               {(item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
               {item.label}
             </Text>
+            {(item.deadline || item.list) && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginStart: -2,
+                }}
+              >
+                {item.deadline && (
+                  <>
+                    <CalendarIcon
+                      width={14}
+                      height={14}
+                      color={overdue ? dangerColor : inactiveColor}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: 'Montserrat',
+                        fontSize: 11,
+                        color: overdue ? dangerColor : inactiveColor,
+                      }}
+                    >
+                      {humanDate(item.deadline)}
+                    </Text>
+                  </>
+                )}
+
+                {item.list && (
+                  <>
+                    <ListIcon width={14} height={14} color={inactiveColor} />
+                    <Text
+                      style={{
+                        fontFamily: 'Montserrat',
+                        fontSize: 11,
+                        color: inactiveColor,
+                      }}
+                    >
+                      {item.list}
+                    </Text>
+                  </>
+                )}
+              </View>
+            )}
           </View>
           {item.type === 'new' ? (
             <SubmenuIcon width={28} height={28} color={disabledColor} />
@@ -96,6 +150,15 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
                 <CartWithItemIcon width={28} height={28} color={primaryColor} />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
+              )}
+              <SubmenuIcon width={28} height={28} color={disabledColor} />
+            </>
+          ) : item.type === 'task' ? (
+            <>
+              {item.inProgress ? (
+                <PlayFillIcon width={28} height={28} color={primaryColor} />
+              ) : (
+                <PlayIcon width={28} height={28} color={touchableColor} />
               )}
               <SubmenuIcon width={28} height={28} color={disabledColor} />
             </>
@@ -116,11 +179,15 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
       <FlatList
         keyExtractor={(item) => item.id}
         data={[
-          {
-            id: 'new',
-            label: newItemLabel || 'New item',
-            type: 'new',
-          },
+          ...((newItemLabel
+            ? [
+                {
+                  id: 'new',
+                  label: newItemLabel,
+                  type: 'new',
+                },
+              ]
+            : []) as ListItem[]),
           ...(items || []),
         ]}
         renderItem={renderItem}
@@ -148,7 +215,7 @@ const styles = StyleSheet.create({
   gradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 48,
+    minHeight: 52,
   },
   labelContainer: {
     flex: 1,
@@ -157,9 +224,10 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   label: {
+    paddingTop: 3,
     fontFamily: 'Montserrat',
     fontSize: 16,
-    lineHeight: 19,
+    lineHeight: 16,
   },
   button: {
     padding: 5,
