@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 
-export default function TabTwoScreen() {
+export default function ProjectsScreen() {
   const primaryColor = useThemeColor({}, 'primary');
 
   const blocks: AccordionBlockProps[] = [
@@ -151,7 +151,7 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <Accordion title="Home groceries" blocks={blocks} />
+      <Accordion title="Projects" blocks={blocks} openBlock={0} />
     </SafeAreaView>
   );
 }

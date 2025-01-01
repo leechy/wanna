@@ -1,43 +1,68 @@
+// hooks
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+
+import WishesIcon from '@/assets/symbols/wishes-icon.svg';
+import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
+import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const tabBarActiveTintColor = useThemeColor({}, 'primary');
+  const tabBarBackgroundColor: string = useThemeColor({}, 'tabBarBackground');
+  const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+        tabBarStyle: [
+          {
+            height: 92,
+            paddingTop: 9,
+            backgroundColor: tabBarBackgroundColor,
+            borderTopColor: barelyVisibleColor,
+            borderTopWidth: 1,
+            opacity: 1,
           },
-          default: {},
-        }),
-      }}>
+        ],
+        tabBarLabelStyle: {
+          paddingTop: 6,
+          fontSize: 10,
+          fontFamily: 'Montserrat',
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Wishes',
+          tabBarIcon: ({ color }) => (
+            <WishesIcon width={36} height={36} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="shopping"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Shopping',
+          tabBarIcon: ({ color }) => (
+            <ShoppingIcon width={36} height={36} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="projects"
+        options={{
+          title: 'Projects',
+          tabBarIcon: ({ color }) => (
+            <ProjectsIcon width={36} height={36} color={color} />
+          ),
         }}
       />
     </Tabs>

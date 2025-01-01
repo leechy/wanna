@@ -38,7 +38,6 @@ export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 48, // height of the toolbar!
   },
   titleContainer: {
     paddingHorizontal: 16,
