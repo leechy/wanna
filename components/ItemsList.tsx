@@ -80,11 +80,11 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
             onPress={onNewItem}
             activeOpacity={0.4}
           >
-            <SquareIcon
-              width={28}
-              height={28}
-              color={item.type === 'new' ? inactiveColor : touchableColor}
-            />
+            {item.type === 'new' ? (
+              <PlusIcon width={28} height={28} color={inactiveColor} />
+            ) : (
+              <SquareIcon width={28} height={28} color={touchableColor} />
+            )}
           </TouchableOpacity>
           <View style={styles.labelContainer}>
             <Text

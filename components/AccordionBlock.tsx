@@ -50,7 +50,7 @@ export function AccordionBlock(block: AccordionBlockProps) {
           title={block.title}
           items={block.items?.length}
           color={block.color}
-          isOpen={block.isOpen ? true : false}
+          isOpen={block.isOpen!}
           onToggle={() => block.onToggle?.()}
           clickable={!block.isOpen}
         />

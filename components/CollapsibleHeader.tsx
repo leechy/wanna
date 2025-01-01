@@ -1,12 +1,12 @@
-import {
-  Text,
-  StyleSheet,
-  View,
-  useColorScheme,
-  TouchableOpacity,
-} from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
-import { Colors } from '@/constants/Colors';
+// hooks
+import { useThemeColor } from '@/hooks/useThemeColor';
+
+// components
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+
+// icons
+import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
+import ChevronDownIcon from '@/assets/symbols/chevron-down.svg';
 
 interface CollapsibleHeaderProps {
   title: string;
@@ -21,12 +21,11 @@ export function CollapsibleHeader({
   title,
   items,
   color,
-  isOpen,
+  isOpen = false,
   clickable = true,
   onToggle,
 }: CollapsibleHeaderProps) {
-  const theme = useColorScheme() ?? 'light';
-  const chevronColor = theme === 'light' ? Colors.light.text : Colors.dark.text; // color ??
+  const chevronColor = useThemeColor({}, 'text');
 
   return (
     <View style={styles.container}>
@@ -36,15 +35,11 @@ export function CollapsibleHeader({
         activeOpacity={0.4}
         disabled={!clickable}
       >
-        <Feather
-          name="chevron-right"
-          size={24}
-          color={chevronColor}
-          style={[
-            styles.chevron,
-            { transform: [{ rotate: isOpen ? '90deg' : '0deg' }] },
-          ]}
-        />
+        {isOpen ? (
+          <ChevronDownIcon width={24} height={24} color={chevronColor} />
+        ) : (
+          <ChevronRightIcon width={24} height={24} color={chevronColor} />
+        )}
         <Text style={[styles.title, { color }]}>{title}</Text>
         <Text style={[styles.number, { color }]}>{items}</Text>
       </TouchableOpacity>
