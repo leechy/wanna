@@ -55,6 +55,15 @@
         {
           "fonts": ["./assets/fonts/GreatVibes-Regular.ttf"]
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}"
+          }
+        }
       ]
     ],
     "experiments": {

@@ -4,7 +4,6 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { Tabs } from 'expo-router';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 
 import WishesIcon from '@/assets/symbols/wishes-icon.svg';
 import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
