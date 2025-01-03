@@ -1,8 +1,9 @@
 // hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// components
 import { Tabs } from 'expo-router';
-
 import { HapticTab } from '@/components/HapticTab';
 
 import WishesIcon from '@/assets/symbols/wishes-icon.svg';
@@ -10,6 +11,7 @@ import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
 import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 
 export default function TabLayout() {
+  const { bottom } = useSafeAreaInsets();
   const tabBarActiveTintColor = useThemeColor({}, 'primary');
   const tabBarBackgroundColor: string = useThemeColor({}, 'tabBarBackground');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
@@ -22,7 +24,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: [
           {
-            height: 92,
+            height: 66 + bottom,
             paddingTop: 9,
             backgroundColor: tabBarBackgroundColor,
             borderTopColor: barelyVisibleColor,

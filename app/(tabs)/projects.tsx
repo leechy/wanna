@@ -1,8 +1,7 @@
-import { StyleSheet, SafeAreaView } from 'react-native';
-
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
+import Page from '@/components/Page';
 
 export default function ProjectsScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -150,12 +149,8 @@ export default function ProjectsScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <Page>
       <Accordion title="Projects" blocks={blocks} openBlock={0} />
-    </SafeAreaView>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  safeAreaView: { flex: 1 },
-});

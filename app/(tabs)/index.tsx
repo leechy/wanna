@@ -3,10 +3,11 @@ import { useSelector } from '@legendapp/state/react';
 import { profiles$ } from '@/state/user';
 
 // components
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { Accordion } from '@/components/Accordion';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
+import Page from '@/components/Page';
 
 export default function HomeScreen() {
   const profiles = useSelector(profiles$);
@@ -164,12 +165,8 @@ export default function HomeScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <Page>
       <Accordion title="Current wishes" blocks={blocks} openBlock={0} />
-    </SafeAreaView>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  safeAreaView: { flex: 1 },
-});
