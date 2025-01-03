@@ -43,9 +43,10 @@ const styles = StyleSheet.create({
   },
   defaultSemiBold: {
     fontFamily: 'Montserrat',
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 24,
-    fontWeight: '600',
+    fontWeight: '700',
+    textAlign: 'left',
   },
   title: {
     fontFamily: 'GreatVibes-Regular',

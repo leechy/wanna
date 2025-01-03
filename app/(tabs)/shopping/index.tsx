@@ -8,8 +8,7 @@ export default function ShoppingScreen() {
   const primaryColor = useThemeColor({}, 'primary');
 
   function newList() {
-    console.log('New list button pressed');
-    router.push('/shopping/new-list');
+    router.navigate('/shopping/new-list');
   }
 
   const blocks: AccordionBlockProps[] = [

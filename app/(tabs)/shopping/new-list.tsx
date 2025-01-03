@@ -17,6 +17,8 @@ import SmallButton from '@/components/SmallButton';
 
 import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
 import SquareCalendarIcon from '@/assets/symbols/square-calendar.svg';
+import Checkbox from '@/components/Checkbox';
+import { ThemedText } from '@/components/ThemedText';
 
 export default function Modal() {
   const [title, setTitle] = useState('');
@@ -43,6 +45,21 @@ export default function Modal() {
           value={title}
           onChange={setTitle}
         />
+
+        <View style={{ width: '100%', marginTop: 16, marginBottom: 8 }}>
+          <ThemedText type="defaultSemiBold">
+            Send push notifications when:
+          </ThemedText>
+        </View>
+        <Checkbox checked={true} onChange={() => {}}>
+          list is shared with a new user
+        </Checkbox>
+        <Checkbox checked={true} onChange={() => {}}>
+          new item is added or removed
+        </Checkbox>
+        <Checkbox checked={true} onChange={() => {}}>
+          an item was placed in the cart
+        </Checkbox>
       </View>
     </KeyboardAvoidingView>
   );

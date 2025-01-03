@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checkbox matches snapshot 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignItems": "center",
+      "alignSelf": "stretch",
+      "flexDirection": "row",
+      "marginVertical": 4,
+      "opacity": 1,
+    }
+  }
+  testID="checkbox"
+>
+  <View
+    style={
+      {
+        "alignSelf": "flex-start",
+        "marginRight": 8,
+      }
+    }
+  >
+    <SquareIcon
+      color="#3a1fc1"
+      height={28}
+      width={28}
+    />
+  </View>
+  <Text
+    style={
+      [
+        {
+          "flex": 1,
+          "fontFamily": "Montserrat",
+          "fontSize": 16,
+          "lineHeight": 22,
+          "marginVertical": 3,
+        },
+        {
+          "color": "#333333",
+        },
+        undefined,
+      ]
+    }
+  >
+    <Text>
+      Label with
+       
+      <Text
+        onPress={[Function]}
+        testID="link"
+      >
+        link
+      </Text>
+    </Text>
+  </Text>
+</View>
+`;

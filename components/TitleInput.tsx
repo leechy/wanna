@@ -16,6 +16,7 @@ export default function TitleInput({
   onChange,
 }: TitleInputProps) {
   const primaryColor = useThemeColor({}, 'primary');
+  const inputPlaceholderColor = useThemeColor({}, 'inputPlaceholder');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
 
   return (
@@ -27,6 +28,7 @@ export default function TitleInput({
     >
       <TextInput
         placeholder={placeholder}
+        placeholderTextColor={inputPlaceholderColor}
         value={value}
         onChangeText={onChange}
         style={[
@@ -36,6 +38,7 @@ export default function TitleInput({
             height: Platform.OS === 'ios' ? 85 : 104,
           },
         ]}
+        autoFocus={true}
       />
     </View>
   );
