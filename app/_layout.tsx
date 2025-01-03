@@ -11,9 +11,11 @@ import {
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
 import {
-  Nunito_500Medium,
-  Nunito_800ExtraBold,
-} from '@expo-google-fonts/nunito';
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from '@expo-google-fonts/montserrat';
+import { Colors } from '@/constants/Colors';
 
 // navigation
 import { Redirect, Stack } from 'expo-router';
@@ -26,12 +28,9 @@ import { user$ } from '@/state/user';
 // system
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
+import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
-import {
-  Montserrat_500Medium,
-  Montserrat_600SemiBold,
-  Montserrat_700Bold,
-} from '@expo-google-fonts/montserrat';
+import { Platform } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -77,16 +76,22 @@ export default function RootLayout() {
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     'GreatVibes-Regular': require('../assets/fonts/GreatVibes-Regular.ttf'),
-    Nunito_500Medium,
-    Nunito_800ExtraBold,
     Montserrat_500Medium,
     Montserrat_600SemiBold,
     Montserrat_700Bold,
   });
 
   const user = useSelector(user$);
+
+  // set the color for the navigation bar
+  useEffect(() => {
+    if (Platform.OS === 'android' && colorScheme) {
+      NavigationBar.setBackgroundColorAsync(
+        Colors[colorScheme].tabBarBackground
+      );
+    }
+  }, [colorScheme]);
 
   useEffect(() => {
     if (loaded) {

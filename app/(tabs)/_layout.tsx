@@ -26,13 +26,15 @@ export default function TabLayout() {
         tabBarStyle: [
           {
             height: 66 + bottom,
-            paddingTop: 9,
             backgroundColor: tabBarBackgroundColor,
             borderTopColor: barelyVisibleColor,
             borderTopWidth: 1,
             opacity: 1,
           },
         ],
+        tabBarIconStyle: {
+          marginTop: 6,
+        },
         tabBarLabelStyle: {
           paddingTop: 6,
           fontSize: 10,
