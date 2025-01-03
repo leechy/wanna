@@ -19,8 +19,6 @@ import PlayIcon from '../assets/symbols/square-play.svg';
 import PlayFillIcon from '../assets/symbols/square-play-fill.svg';
 import CartIcon from '../assets/symbols/cart-arr-down.svg';
 import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
-import SubmenuIOS from '../assets/symbols/submenu-ios.svg';
-import SubmenuAndroid from '../assets/symbols/submenu-android.svg';
 import ChevronRightIcon from '../assets/symbols/chevron-right.svg';
 import CalendarIcon from '../assets/symbols/square-calendar.svg';
 import ListIcon from '../assets/symbols/square-list.svg';
@@ -28,6 +26,7 @@ import ListIcon from '../assets/symbols/square-list.svg';
 // types
 import { ListItem } from '@/types/listItem';
 import { humanDate } from '@/utils/dates';
+import SubmenuIcon from './SubmenuIcon';
 
 interface ItemsListProps {
   newItemLabel?: string;
@@ -71,7 +70,7 @@ export function ItemsList({
     const itemBorderRadius =
       index === 0
         ? { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
-        : index === items?.length
+        : index === (items?.length || 0) - (newItemLabel !== undefined ? 0 : 1)
         ? {
             borderBottomLeftRadius: 8,
             borderBottomRightRadius: 8,
@@ -79,7 +78,7 @@ export function ItemsList({
           }
         : { borderBottomColor };
 
-    const overdue = item.deadline && item.deadline < Date.now();
+    const overdue = (item.deadline || 0) < Date.now();
 
     return (
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
@@ -244,6 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 48,
     borderBottomWidth: 1,
+    overflow: 'hidden',
   },
   gradient: {
     flexDirection: 'row',
@@ -275,19 +275,3 @@ const styles = StyleSheet.create({
     padding: 0,
   },
 });
-
-function SubmenuIcon({
-  width,
-  height,
-  color,
-}: {
-  width: number;
-  height: number;
-  color: string;
-}) {
-  return Platform.OS === 'ios' || Platform.OS === 'macos' ? (
-    <SubmenuIOS width={width || 28} height={height || 28} color={color} />
-  ) : (
-    <SubmenuAndroid width={width || 28} height={height || 28} color={color} />
-  );
-}
