@@ -13,8 +13,18 @@ export default function SubmenuIcon({
   color: string;
 }) {
   return Platform.OS === 'ios' || Platform.OS === 'macos' ? (
-    <SubmenuIOS width={width || 28} height={height || 28} color={color} />
+    <SubmenuIOS
+      width={width || 28}
+      height={height || 28}
+      color={color}
+      testID="SubmenuIOS"
+    />
   ) : (
-    <SubmenuAndroid width={width || 28} height={height || 28} color={color} />
+    <SubmenuAndroid
+      width={width || 28}
+      height={height || 28}
+      color={color}
+      testID="SubmenuAndroid"
+    />
   );
 }
