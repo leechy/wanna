@@ -1,25 +1,26 @@
 /**
  * Function returns a date in a human readable format:
- * Last Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday
+ * Last {day of the week} if the date is between 4 and 7 days ago
  * 2/3 days ago
  * Yesterday
  * Today
  * Tomorrow
  * In 2/3 days
- * Next Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday
+ * Next {day of the week} if the date is between 4 and 7 days in the future
  * or the date in format DD MMMM with added year if the date is more than 6 months away
  *
  * @param {number} date - date in milliseconds since epoch
  * @returns {string} - human readable date
  */
 export function humanDate(date: number): string {
-  const now = Date.now();
-  const diff = date - now;
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const dayOfWeek = new Date(date).getDay();
-  const day = new Date(date).getDate();
-  const month = new Date(date).getMonth();
-  const year = new Date(date).getFullYear();
+  const todayStart = new Date().setHours(0, 0, 0, 0);
+  const todayEnd = todayStart + 1000 * 60 * 60 * 24;
+
+  if (date >= todayStart && date < todayEnd) {
+    return 'Today';
+  }
+
+  // TODO: when localized, use toLocaleString() call
   const dayNames = [
     'Sunday',
     'Monday',
@@ -29,6 +30,35 @@ export function humanDate(date: number): string {
     'Friday',
     'Saturday',
   ];
+
+  if (date < todayStart) {
+    // past branch
+    const daysDiff = Math.ceil((todayStart - date) / (1000 * 60 * 60 * 24));
+    if (daysDiff === 1) {
+      return 'Yesterday';
+    } else if (daysDiff > 1 && daysDiff < 4) {
+      return `${daysDiff} days ago`;
+    } else if (daysDiff >= 4 && daysDiff < 7) {
+      return `Last ${dayNames[new Date(date).getDay()]}`;
+    }
+  } else {
+    // future branch
+    const daysDiff = Math.ceil((date - todayEnd) / (1000 * 60 * 60 * 24));
+    if (daysDiff === 1) {
+      return 'Tomorrow';
+    } else if (daysDiff > 1 && daysDiff < 4) {
+      return `In ${daysDiff} days`;
+    } else if (daysDiff >= 4 && daysDiff < 7) {
+      return `Next ${dayNames[new Date(date).getDay()]}`;
+    }
+  }
+
+  const diff = date < todayStart ? todayStart - date : date - todayEnd;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  const day = new Date(date).getDate();
+  const month = new Date(date).getMonth();
+  const year = new Date(date).getFullYear();
   const monthNames = [
     'January',
     'February',
@@ -44,21 +74,7 @@ export function humanDate(date: number): string {
     'December',
   ];
 
-  if (days === 0) {
-    return 'Today';
-  } else if (days === 1) {
-    return 'Tomorrow';
-  } else if (days === -1) {
-    return 'Yesterday';
-  } else if (days > 1 && days < 4) {
-    return `In ${days} days`;
-  } else if (days < -1 && days > -4) {
-    return `${-days} days ago`;
-  } else if (days >= 4 && days < 7) {
-    return `Next ${dayNames[dayOfWeek]}`;
-  } else if (days <= -4 && days > -7) {
-    return `Last ${dayNames[dayOfWeek]}`;
-  } else if ((days >= 7 && days < 183) || (days <= -7 && days > -183)) {
+  if ((days >= 7 && days < 183) || (days <= -7 && days > -183)) {
     return `${day} ${monthNames[month]}`;
   } else {
     return `${day} ${monthNames[month]} ${year}`;

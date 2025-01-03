@@ -2,10 +2,12 @@
 
 exports[`renders correctly 1`] = `
 <Text
+  adjustsFontSizeToFit={false}
+  numberOfLines={0}
   style={
     [
       {
-        "color": "#11181C",
+        "color": "#333333",
       },
       {
         "fontSize": 16,
