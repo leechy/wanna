@@ -13,11 +13,12 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import TitleInput from '@/components/TitleInput';
+import SmallButton from '@/components/SmallButton';
+
+import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
+import SquareCalendarIcon from '@/assets/symbols/square-calendar.svg';
 
 export default function Modal() {
-  const isPresented = router.canGoBack();
-  const primaryColor = useThemeColor({}, 'primary');
-
   const [title, setTitle] = useState('');
 
   return (
@@ -25,13 +26,23 @@ export default function Modal() {
       <View style={styles.container}>
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 
+        <View style={styles.properties}>
+          <SmallButton
+            title="No deadline"
+            icon={SquareCalendarIcon}
+            onPress={() => {}}
+          />
+          <SmallButton
+            title="Not shared"
+            icon={PersonPlusIcon}
+            onPress={() => {}}
+          />
+        </View>
         <TitleInput
           placeholder="Shopping list"
           value={title}
           onChange={setTitle}
         />
-        <Text>Modal screen</Text>
-        {!isPresented && <Link href="../">Dismiss modal</Link>}
       </View>
     </KeyboardAvoidingView>
   );
@@ -44,16 +55,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  titleInputContainer: {
-    borderRadius: 12,
+  properties: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginBottom: 16,
     width: '100%',
-    height: 85,
-    transform: [{ rotate: '-1deg' }],
-  },
-  titleInput: {
-    width: '100%',
-    fontFamily: 'GreatVibes-Regular',
-    fontSize: 60,
-    lineHeight: 76,
   },
 });
