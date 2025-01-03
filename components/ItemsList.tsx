@@ -173,25 +173,33 @@ export function ItemsList({
             </View>
             {item.type === 'item' ? (
               item.inProgress ? (
-                <CartWithItemIcon width={28} height={28} color={primaryColor} />
+                <CartWithItemIcon
+                  width={28}
+                  height={28}
+                  color={primaryColor + '99'}
+                />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
               )
             ) : item.type === 'task' ? (
               item.inProgress ? (
-                <PlayFillIcon width={28} height={28} color={primaryColor} />
+                <PlayFillIcon
+                  width={28}
+                  height={28}
+                  color={primaryColor + '99'}
+                />
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
               )
+            ) : item.type === 'list' ? (
+              <ChevronRightIcon
+                width={28}
+                height={28}
+                color={barelyVisibleColor}
+              />
             ) : null}
           </TouchableOpacity>
-          {item.type === 'list' ? (
-            <ChevronRightIcon
-              width={28}
-              height={28}
-              color={barelyVisibleColor}
-            />
-          ) : (
+          {item.type !== 'list' && (
             <SubmenuIcon width={28} height={28} color={disabledColor} />
           )}
         </LinearGradient>

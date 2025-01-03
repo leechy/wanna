@@ -25,7 +25,7 @@ export function CollapsibleHeader({
   clickable = true,
   onToggle,
 }: CollapsibleHeaderProps) {
-  const chevronColor = useThemeColor({}, 'text');
+  const textColor = useThemeColor({}, 'text');
 
   return (
     <View style={styles.container}>
@@ -36,12 +36,16 @@ export function CollapsibleHeader({
         disabled={!clickable}
       >
         {isOpen ? (
-          <ChevronDownIcon width={24} height={24} color={chevronColor} />
+          <ChevronDownIcon width={24} height={24} color={textColor} />
         ) : (
-          <ChevronRightIcon width={24} height={24} color={chevronColor} />
+          <ChevronRightIcon width={24} height={24} color={textColor} />
         )}
-        <Text style={[styles.title, { color }]}>{title}</Text>
-        <Text style={[styles.number, { color }]}>{items}</Text>
+        <Text style={[styles.title, { color: color || textColor }]}>
+          {title}
+        </Text>
+        <Text style={[styles.number, { color: color || textColor }]}>
+          {items}
+        </Text>
       </TouchableOpacity>
     </View>
   );

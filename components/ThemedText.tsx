@@ -16,11 +16,12 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const primaryColor = useThemeColor({}, 'primary');
 
   return (
     <Text
       style={[
-        { color },
+        { color: type === 'title' ? primaryColor : color },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     fontFamily: 'GreatVibes-Regular',
     fontSize: 60,
     lineHeight: 76,
-    color: '#3A1FC1',
     transformOrigin: 'top middle',
     transform: [{ rotate: '-1deg' }],
   },

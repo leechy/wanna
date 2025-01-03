@@ -37,14 +37,14 @@ export const Colors = {
   },
   dark: {
     text: '#cccccc',
-    background: '#151718',
+    background: '#000000',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
 
-    tabBarBackground: '#000000',
-    smallButtonBackground: '#000000',
+    tabBarBackground: '#151718',
+    smallButtonBackground: '#151718',
 
     primary: '#ffd700',
     barelyVisible: '#333333',
@@ -53,12 +53,12 @@ export const Colors = {
     touchable: '#999999',
     danger: '#e73d01',
 
-    listBackground: '#000000',
-    listSeparator: '#333333',
+    listBackground: '#151718',
+    listSeparator: '#0a0a0a',
 
     inputText: '#ffffff',
-    inputPlaceholder: '#999999',
-    inputBackground: '#3e3e3e',
+    inputPlaceholder: '#666666',
+    inputBackground: '#151718',
     cursorColor: '#ffffff',
     fullButtonText: '#efefef',
     fullButtonBackground: '#3A1FC1',
