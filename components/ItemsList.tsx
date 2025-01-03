@@ -50,10 +50,22 @@ export function ItemsList({
   const touchableColor = useThemeColor({}, 'touchable');
   const dangerColor = useThemeColor({}, 'danger');
 
-  const onNewItem = () => {
+  function onNewItem() {
     console.log('onNewItem');
     newItemHandler?.();
-  };
+  }
+
+  function onItemChecked(item: ListItem) {
+    console.log('onItemChecked', item);
+  }
+
+  function onItemToggled(item: ListItem) {
+    console.log('onItemToggled', item);
+  }
+
+  function onItemEdit(item: ListItem) {
+    console.log('onItemEdit', item);
+  }
 
   function renderItem({ item, index }: { item: ListItem; index: number }) {
     const itemBorderRadius =
@@ -83,7 +95,9 @@ export function ItemsList({
         >
           <TouchableOpacity
             style={styles.button}
-            onPress={onNewItem}
+            onPress={
+              item.type === 'new' ? onNewItem : () => onItemChecked(item)
+            }
             activeOpacity={0.4}
           >
             {item.type === 'new' ? (
@@ -92,88 +106,93 @@ export function ItemsList({
               <SquareIcon width={28} height={28} color={touchableColor} />
             )}
           </TouchableOpacity>
-          <View style={styles.labelContainer}>
-            <Text
-              style={[
-                styles.label,
-                { color: item.type === 'new' ? inactiveColor : textColor },
-              ]}
-              adjustsFontSizeToFit={true}
-              numberOfLines={2}
-            >
-              {(item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
-              {item.label}
-            </Text>
-            {(item.deadline || item.list) && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginStart: -2,
-                }}
+          <TouchableOpacity
+            onPress={
+              item.type === 'new' ? onNewItem : () => onItemToggled(item)
+            }
+            onLongPress={() => onItemEdit(item)}
+            activeOpacity={0.4}
+            style={styles.labelButton}
+          >
+            <View style={styles.labelContainer}>
+              <Text
+                style={[
+                  styles.label,
+                  { color: item.type === 'new' ? inactiveColor : textColor },
+                ]}
+                adjustsFontSizeToFit={true}
+                numberOfLines={2}
               >
-                {item.deadline && (
-                  <>
-                    <CalendarIcon
-                      width={14}
-                      height={14}
-                      color={overdue ? dangerColor : inactiveColor}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: 'Montserrat',
-                        fontSize: 11,
-                        color: overdue ? dangerColor : inactiveColor,
-                      }}
-                    >
-                      {humanDate(item.deadline)}
-                    </Text>
-                  </>
-                )}
+                {(item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
+                {item.label}
+              </Text>
+              {(item.deadline || item.list) && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginStart: -2,
+                    opacity: 0.6,
+                  }}
+                >
+                  {item.deadline && (
+                    <>
+                      <CalendarIcon
+                        width={14}
+                        height={14}
+                        color={overdue ? dangerColor : touchableColor}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: 'Montserrat',
+                          fontSize: 11,
+                          color: overdue ? dangerColor : touchableColor,
+                        }}
+                      >
+                        {humanDate(item.deadline)}
+                      </Text>
+                    </>
+                  )}
 
-                {item.list && (
-                  <>
-                    <ListIcon width={14} height={14} color={inactiveColor} />
-                    <Text
-                      style={{
-                        fontFamily: 'Montserrat',
-                        fontSize: 11,
-                        color: inactiveColor,
-                      }}
-                    >
-                      {item.list}
-                    </Text>
-                  </>
-                )}
-              </View>
-            )}
-          </View>
-          {item.type === 'new' ? (
-            <SubmenuIcon width={28} height={28} color={disabledColor} />
-          ) : item.type === 'item' ? (
-            <>
-              {item.inProgress ? (
+                  {item.list && (
+                    <>
+                      <ListIcon width={14} height={14} color={touchableColor} />
+                      <Text
+                        style={{
+                          fontFamily: 'Montserrat',
+                          fontSize: 11,
+                          color: touchableColor,
+                        }}
+                      >
+                        {item.list}
+                      </Text>
+                    </>
+                  )}
+                </View>
+              )}
+            </View>
+            {item.type === 'item' ? (
+              item.inProgress ? (
                 <CartWithItemIcon width={28} height={28} color={primaryColor} />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
-              )}
-              <SubmenuIcon width={28} height={28} color={disabledColor} />
-            </>
-          ) : item.type === 'task' ? (
-            <>
-              {item.inProgress ? (
+              )
+            ) : item.type === 'task' ? (
+              item.inProgress ? (
                 <PlayFillIcon width={28} height={28} color={primaryColor} />
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
-              )}
-              <SubmenuIcon width={28} height={28} color={disabledColor} />
-            </>
-          ) : (
+              )
+            ) : null}
+          </TouchableOpacity>
+          {item.type === 'list' ? (
             <ChevronRightIcon
               width={28}
               height={28}
               color={barelyVisibleColor}
             />
+          ) : (
+            <SubmenuIcon width={28} height={28} color={disabledColor} />
           )}
         </LinearGradient>
       </View>
@@ -222,6 +241,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 52,
+  },
+  labelButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   labelContainer: {
     flex: 1,

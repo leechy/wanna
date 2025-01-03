@@ -34,7 +34,7 @@ export default function ShoppingLayout() {
               <HeaderButton
                 title="Cancel"
                 color={backButtonColor}
-                onPress={router.back}
+                onPress={() => router.dismissTo('/shopping')}
               />
             ) : null,
           headerRight: () => (
