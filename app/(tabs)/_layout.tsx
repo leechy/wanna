@@ -19,6 +19,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor,
         headerShown: false,
         tabBarButton: HapticTab,

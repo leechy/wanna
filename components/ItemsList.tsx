@@ -31,10 +31,15 @@ import { humanDate } from '@/utils/dates';
 
 interface ItemsListProps {
   newItemLabel?: string;
+  newItemHandler?: () => void;
   items?: ListItem[];
 }
 
-export function ItemsList({ newItemLabel, items }: ItemsListProps) {
+export function ItemsList({
+  newItemLabel,
+  newItemHandler,
+  items,
+}: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
   const textColor = useThemeColor({}, 'text');
@@ -47,6 +52,7 @@ export function ItemsList({ newItemLabel, items }: ItemsListProps) {
 
   const onNewItem = () => {
     console.log('onNewItem');
+    newItemHandler?.();
   };
 
   function renderItem({ item, index }: { item: ListItem; index: number }) {

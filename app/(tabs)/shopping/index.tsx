@@ -2,17 +2,24 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
+import { router } from 'expo-router';
 
 export default function ShoppingScreen() {
   const primaryColor = useThemeColor({}, 'primary');
 
+  function newList() {
+    console.log('New list button pressed');
+    router.push('/shopping/new-list');
+  }
+
   const blocks: AccordionBlockProps[] = [
     {
-      title: 'Yet to buy',
-      newItemLabel: 'New item',
+      title: 'Active lists',
+      newItemLabel: 'New list',
+      newItemHandler: newList,
       items: [
         {
-          type: 'item',
+          type: 'list',
           id: '1',
           label: 'Milk 3.5%',
           quantity: 6,

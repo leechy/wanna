@@ -21,10 +21,12 @@ export interface AccordionBlockProps {
   title: string;
   color?: string;
   newItemLabel?: string;
+  newItemHandler?: () => void;
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;
   emptyText?: string;
+  onNew?: () => void;
 }
 
 export function AccordionBlock(block: AccordionBlockProps) {
@@ -67,7 +69,11 @@ export function AccordionBlock(block: AccordionBlockProps) {
         ]}
       >
         {block.items.length > 0 ? (
-          <ItemsList newItemLabel={block.newItemLabel} items={block.items} />
+          <ItemsList
+            newItemLabel={block.newItemLabel}
+            newItemHandler={block.newItemHandler}
+            items={block.items}
+          />
         ) : (
           <View
             style={{
