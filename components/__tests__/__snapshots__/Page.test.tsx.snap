@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page component matches snapshot 1`] = `
+<View
+  style={
+    {
+      "flex": 1,
+      "marginTop": 0,
+    }
+  }
+>
+  <View />
+</View>
+`;
