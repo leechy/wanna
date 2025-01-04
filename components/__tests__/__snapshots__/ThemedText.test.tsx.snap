@@ -1,5 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ThemedText renders correctly 1`] = `
+<Text
+  adjustsFontSizeToFit={false}
+  numberOfLines={0}
+  style={
+    [
+      {
+        "color": "#333333",
+      },
+      {
+        "fontSize": 16,
+        "lineHeight": 24,
+      },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]
+  }
+>
+  Snapshot test!
+</Text>
+`;
+
+exports[`ThemedText subtitle renders correctly 1`] = `
+<Text
+  adjustsFontSizeToFit={false}
+  numberOfLines={0}
+  style={
+    [
+      {
+        "color": "#333333",
+      },
+      undefined,
+      undefined,
+      undefined,
+      {
+        "fontFamily": "Montserrat",
+        "fontSize": 18,
+        "fontWeight": "bold",
+      },
+      undefined,
+      undefined,
+    ]
+  }
+>
+  Snapshot test!
+</Text>
+`;
+
+exports[`ThemedText title renders correctly 1`] = `
+<Text
+  adjustsFontSizeToFit={true}
+  numberOfLines={1}
+  style={
+    [
+      {
+        "color": "#3a1fc1",
+      },
+      undefined,
+      {
+        "fontFamily": "GreatVibes-Regular",
+        "fontSize": 60,
+        "lineHeight": 76,
+        "transform": [
+          {
+            "rotate": "-1deg",
+          },
+        ],
+        "transformOrigin": "top middle",
+      },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]
+  }
+>
+  Snapshot test!
+</Text>
+`;
+
 exports[`renders correctly 1`] = `
 <Text
   adjustsFontSizeToFit={false}

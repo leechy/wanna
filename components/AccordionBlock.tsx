@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 // components
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { CollapsibleHeader } from './CollapsibleHeader';
 import { ThemedText } from './ThemedText';
 import { ItemsList } from './ItemsList';
@@ -75,14 +75,7 @@ export function AccordionBlock(block: AccordionBlockProps) {
             items={block.items}
           />
         ) : (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 16,
-            }}
-          >
+          <View style={styles.centered}>
             <ThemedText>{block.emptyText || 'No items here'}</ThemedText>
           </View>
         )}
@@ -90,3 +83,12 @@ export function AccordionBlock(block: AccordionBlockProps) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+});

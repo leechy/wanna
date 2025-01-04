@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThemedButton matches snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "alignSelf": "stretch",
+        "borderRadius": 8,
+        "boxShadow": "0px 0px 4px 1px rgba(0, 0, 0, 0.25)",
+        "marginVertical": 12,
+        "shadowColor": "#000",
+      },
+      undefined,
+    ]
+  }
+>
+  <ViewManagerAdapter_ExpoLinearGradient
+    colors={
+      [
+        4294956800,
+        4294961152,
+        4294956800,
+      ]
+    }
+    endPoint={
+      [
+        0.302,
+        1,
+      ]
+    }
+    locations={
+      [
+        0,
+        0.23,
+        1,
+      ]
+    }
+    startPoint={
+      [
+        0.3,
+        -0.3,
+      ]
+    }
+    style={
+      {
+        "borderRadius": 8,
+      }
+    }
+  >
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        [
+          {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "borderRadius": 8,
+            "flexDirection": "row",
+            "justifyContent": "center",
+            "minHeight": 52,
+            "paddingHorizontal": 24,
+            "width": "100%",
+          },
+          {
+            "backgroundColor": "transparent",
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <Text
+        style={
+          [
+            {
+              "color": "#000000",
+            },
+            {
+              "fontFamily": "Nunito",
+              "fontSize": 21,
+              "fontWeight": "900",
+              "lineHeight": 32,
+              "textAlign": "center",
+            },
+          ]
+        }
+      >
+        Click me
+      </Text>
+    </View>
+  </ViewManagerAdapter_ExpoLinearGradient>
+</View>
+`;
