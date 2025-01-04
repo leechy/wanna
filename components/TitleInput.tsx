@@ -29,6 +29,9 @@ export default function TitleInput({
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={inputPlaceholderColor}
+        cursorColor={primaryColor}
+        selectionColor={primaryColor + '66'}
+        selectionHandleColor={primaryColor}
         value={value}
         onChangeText={onChange}
         style={[
