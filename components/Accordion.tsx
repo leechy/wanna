@@ -14,6 +14,7 @@ interface AccordionProps {
 }
 
 export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
+  const [prevBlock, setPrevBlock] = useState(Math.abs(openBlock - 1));
   const [currentBlock, setCurrentBlock] = useState(openBlock);
 
   return (
@@ -27,7 +28,13 @@ export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
           isOpen={currentBlock === index}
           key={'block' + index}
           onToggle={() => {
-            setCurrentBlock(index);
+            if (currentBlock === index) {
+              setCurrentBlock(prevBlock);
+              setPrevBlock(index);
+            } else {
+              setPrevBlock(currentBlock);
+              setCurrentBlock(index);
+            }
           }}
         />
       ))}

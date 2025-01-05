@@ -1,12 +1,7 @@
 // hooks
 import { useEffect } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 // components
 import { StyleSheet, View } from 'react-native';
@@ -55,7 +50,6 @@ export function AccordionBlock(block: AccordionBlockProps) {
           color={block.color}
           isOpen={block.isOpen!}
           onToggle={() => block.onToggle?.()}
-          clickable={!block.isOpen}
         />
         {block.action && <View style={styles.action}>{block.action}</View>}
       </View>
@@ -69,11 +63,7 @@ export function AccordionBlock(block: AccordionBlockProps) {
         ]}
       >
         {block.items.length > 0 ? (
-          <ItemsList
-            newItemLabel={block.newItemLabel}
-            newItemHandler={block.newItemHandler}
-            items={block.items}
-          />
+          <ItemsList newItemLabel={block.newItemLabel} newItemHandler={block.newItemHandler} items={block.items} />
         ) : (
           <View style={styles.centered}>
             <ThemedText>{block.emptyText || 'No items here'}</ThemedText>
