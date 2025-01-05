@@ -3,6 +3,8 @@ import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import { router } from 'expo-router';
+import SmallButton from '@/components/SmallButton';
+import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 
 export default function ShoppingScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -128,6 +130,7 @@ export default function ShoppingScreen() {
     {
       title: 'Cart',
       color: primaryColor,
+      action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
       newItemLabel: 'Not planned item in the cart',
       items: [
         {

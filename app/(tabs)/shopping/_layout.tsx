@@ -1,10 +1,12 @@
-import HeaderButton from '@/components/HeaderButton';
+// hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
+
+// components
+import HeaderButton from '@/components/HeaderButton';
 import { router, Stack } from 'expo-router';
-import { Button, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 export default function ShoppingLayout() {
-  const primaryColor = useThemeColor({}, 'primary');
   const backButtonColor = useThemeColor({}, 'inactive');
   const backgroundColor = useThemeColor({}, 'background');
 
@@ -31,15 +33,9 @@ export default function ShoppingLayout() {
           },
           headerLeft: () =>
             Platform.OS === 'ios' ? (
-              <HeaderButton
-                title="Cancel"
-                color={backButtonColor}
-                onPress={() => router.dismissTo('/shopping')}
-              />
+              <HeaderButton title="Cancel" color={backButtonColor} onPress={() => router.dismissTo('/shopping')} />
             ) : null,
-          headerRight: () => (
-            <HeaderButton title="Create" onPress={router.back} />
-          ),
+          headerRight: () => <HeaderButton title="Create" onPress={router.back} />,
         }}
       />
     </Stack>
