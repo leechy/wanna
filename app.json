@@ -10,10 +10,6 @@
     "newArchEnabled": true,
     "backgroundColor": "#f2f2f2",
     "primaryColor": "#3a1fc1",
-    "androidNavigationBar": {
-      "backgroundColor": "#ffffff",
-      "barStyle": "light-content"
-    },
     "githubUrl": "https://github.com/leechy/wanna",
     "platforms": ["ios", "android", "web"],
     "ios": {
