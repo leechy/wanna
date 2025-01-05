@@ -53,6 +53,7 @@ exports[`SmallButton matches snapshot 1`] = `
           "alignItems": "center",
           "borderRadius": 8,
           "flexDirection": "row",
+          "minHeight": 24,
           "paddingHorizontal": 12,
           "paddingTop": 1,
         },

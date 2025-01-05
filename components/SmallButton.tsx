@@ -1,12 +1,12 @@
+// hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native';
+
+// components
+import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { PressableArea } from './PressableArea';
+
+// types
+import { ReactNode } from 'react';
 import { SvgProps } from 'react-native-svg';
 
 export type SmallButtonProps = {
@@ -14,51 +14,20 @@ export type SmallButtonProps = {
   title: String;
   icon?: React.FC<SvgProps>;
   onPress?: () => void;
+  children?: ReactNode;
 };
 
-export default function SmallButton({
-  title,
-  icon,
-  style,
-  onPress,
-}: SmallButtonProps) {
-  const primaryColor = useThemeColor({}, 'primary');
+export default function SmallButton({ title, icon, style, onPress, children }: SmallButtonProps) {
   const smallButtonText = useThemeColor({}, 'touchable');
   const smallButtonBackground = useThemeColor({}, 'smallButtonBackground');
   const inactiveColor = useThemeColor({}, 'inactive');
 
   const Icon = icon || (() => <></>);
 
-  return (
-    <View
-      style={[
-        styles.container,
-        style,
-        { backgroundColor: smallButtonBackground, borderColor: inactiveColor },
-      ]}
-    >
-      <Pressable
-        android_ripple={{
-          color: primaryColor + '33',
-          borderless: false,
-        }}
-        style={({ pressed }) => [
-          styles.button,
-          Platform.select({
-            ios: {
-              opacity: pressed ? 0.4 : 1,
-              backgroundColor: pressed ? '#ffffff' : 'transparent',
-            },
-          }),
-        ]}
-        onPress={onPress}
-      >
-        <Icon
-          width={24}
-          height={24}
-          color={smallButtonText}
-          style={styles.icon}
-        />
+  function getContents() {
+    return (
+      <>
+        <Icon width={24} height={24} color={smallButtonText} style={styles.icon} />
         <Text
           style={[
             {
@@ -69,7 +38,20 @@ export default function SmallButton({
         >
           {title}
         </Text>
-      </Pressable>
+        {children}
+      </>
+    );
+  }
+
+  return (
+    <View style={[styles.container, style, { backgroundColor: smallButtonBackground, borderColor: inactiveColor }]}>
+      {onPress ? (
+        <PressableArea style={styles.button} onPress={onPress}>
+          {getContents()}
+        </PressableArea>
+      ) : (
+        <View style={styles.button}>{getContents()}</View>
+      )}
     </View>
   );
 }
@@ -86,6 +68,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 24,
 
     borderRadius: 8,
     paddingTop: 1,

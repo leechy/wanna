@@ -82,28 +82,3 @@ exports[`ThemedText title renders correctly 1`] = `
   Snapshot test!
 </Text>
 `;
-
-exports[`renders correctly 1`] = `
-<Text
-  adjustsFontSizeToFit={false}
-  numberOfLines={0}
-  style={
-    [
-      {
-        "color": "#333333",
-      },
-      {
-        "fontSize": 16,
-        "lineHeight": 24,
-      },
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ]
-  }
->
-  Snapshot test!
-</Text>
-`;
