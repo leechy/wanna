@@ -3,11 +3,15 @@ import { useSelector } from '@legendapp/state/react';
 import { profiles$ } from '@/state/user';
 
 // components
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { Accordion } from '@/components/Accordion';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import Page from '@/components/Page';
+import SmallButton from '@/components/SmallButton';
+
+import SortIcon from '@/assets/symbols/sort.svg';
+import { DropdownMenu } from '@/components/DropdownMenu';
+import { useState } from 'react';
 
 export default function HomeScreen() {
   const profiles = useSelector(profiles$);
@@ -16,6 +20,8 @@ export default function HomeScreen() {
   };
 
   const dangerColor = useThemeColor({}, 'danger');
+
+  const [openDropdown, setOpenDropdown] = useState(false);
 
   const blocks: AccordionBlockProps[] = [
     {
@@ -52,6 +58,20 @@ export default function HomeScreen() {
     {
       title: 'Open items',
       newItemLabel: 'New wish or task',
+      action: (
+        <DropdownMenu
+          open={openDropdown}
+          onOpen={() => setOpenDropdown(true)}
+          onClose={() => setOpenDropdown(false)}
+          items={[
+            { label: 'Sort by name', onPress: () => {} },
+            { label: 'Sort by deadline', onPress: () => {} },
+            { label: 'Sort by quantity', onPress: () => {} },
+          ]}
+        >
+          <SmallButton title="Sort" icon={SortIcon} />
+        </DropdownMenu>
+      ),
       items: [
         {
           type: 'task',

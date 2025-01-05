@@ -20,6 +20,7 @@ import { ListItem } from '@/types/listItem';
 export interface AccordionBlockProps {
   title: string;
   color?: string;
+  action?: React.ReactNode;
   newItemLabel?: string;
   newItemHandler?: () => void;
   items: ListItem[];
@@ -47,7 +48,7 @@ export function AccordionBlock(block: AccordionBlockProps) {
 
   return (
     <>
-      <View style={{ paddingHorizontal: 12, backgroundColor }}>
+      <View style={[styles.header, { backgroundColor }]}>
         <CollapsibleHeader
           title={block.title}
           items={block.items?.length}
@@ -56,13 +57,12 @@ export function AccordionBlock(block: AccordionBlockProps) {
           onToggle={() => block.onToggle?.()}
           clickable={!block.isOpen}
         />
+        {block.action && <View style={styles.action}>{block.action}</View>}
       </View>
       <Animated.View
         style={[
           {
-            // flex: currentBlock === index ? 1 : 0,
             flexBasis: 0,
-            // opacity: currentBlock === index ? 1 : 0,
             backgroundColor,
           },
           flexStyle,
@@ -85,6 +85,15 @@ export function AccordionBlock(block: AccordionBlockProps) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  action: {
+    marginTop: 6,
+  },
   centered: {
     flex: 1,
     alignItems: 'center',
