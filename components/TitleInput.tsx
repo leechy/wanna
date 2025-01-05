@@ -10,22 +10,13 @@ interface TitleInputProps {
   onChange?: (text: string) => void;
 }
 
-export default function TitleInput({
-  placeholder,
-  value,
-  onChange,
-}: TitleInputProps) {
+export default function TitleInput({ placeholder, value, onChange }: TitleInputProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const inputPlaceholderColor = useThemeColor({}, 'inputPlaceholder');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
 
   return (
-    <View
-      style={[
-        styles.titleInputContainer,
-        { backgroundColor: inputBackgroundColor },
-      ]}
-    >
+    <View style={[styles.titleInputContainer, { backgroundColor: inputBackgroundColor }]}>
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={inputPlaceholderColor}
@@ -34,13 +25,7 @@ export default function TitleInput({
         selectionHandleColor={primaryColor}
         value={value}
         onChangeText={onChange}
-        style={[
-          styles.titleInput,
-          {
-            color: primaryColor,
-            height: Platform.OS === 'ios' ? 85 : 104,
-          },
-        ]}
+        style={[styles.titleInput, { color: primaryColor }]}
         autoFocus={true}
       />
     </View>
@@ -51,13 +36,13 @@ const styles = StyleSheet.create({
   titleInputContainer: {
     borderRadius: 12,
     width: '100%',
-    height: 85,
     transform: [{ rotate: '-1deg' }],
   },
   titleInput: {
     width: '100%',
+    height: 100,
     fontFamily: 'GreatVibes-Regular',
-    fontSize: 60,
-    lineHeight: 76,
+    fontSize: Platform.OS === 'ios' ? 60 : 52,
+    lineHeight: Platform.OS === 'ios' ? 76 : 66,
   },
 });

@@ -10,6 +10,8 @@ import WishesIcon from '@/assets/symbols/wishes-icon.svg';
 import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
 import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 
+export const TAB_BAR_HEIGHT = 66;
+
 export default function TabLayout() {
   const { bottom } = useSafeAreaInsets();
   const tabBarActiveTintColor = useThemeColor({}, 'primary');
@@ -25,7 +27,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: [
           {
-            height: 66 + bottom,
+            height: TAB_BAR_HEIGHT + bottom,
             backgroundColor: tabBarBackgroundColor,
             borderTopColor: barelyVisibleColor,
             borderTopWidth: 1,
