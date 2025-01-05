@@ -8,5 +8,5 @@ interface PageProps {
 export default function Page({ children }: PageProps) {
   const { top } = useSafeAreaInsets();
 
-  return <View style={{ marginTop: top, flex: 1 }}>{children}</View>;
+  return <View style={{ marginTop: top, paddingTop: 18, flex: 1 }}>{children}</View>;
 }
