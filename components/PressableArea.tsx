@@ -11,12 +11,7 @@ interface PressableAreaProps {
   children: React.ReactNode;
 }
 
-export function PressableArea({
-  style,
-  onPress,
-  rippleColor,
-  children,
-}: PressableAreaProps) {
+export function PressableArea({ style, onPress, rippleColor, children }: PressableAreaProps) {
   const primaryColor = useThemeColor({}, 'primary');
 
   return (
@@ -28,10 +23,7 @@ export function PressableArea({
       style={({ pressed }) => [
         style,
         Platform.select({
-          ios: {
-            opacity: pressed ? 0.4 : 1,
-            backgroundColor: pressed ? '#ffffff' : 'transparent',
-          },
+          ios: { opacity: pressed ? 0.4 : 1 },
         }),
       ]}
       onPress={onPress}
