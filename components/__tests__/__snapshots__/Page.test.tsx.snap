@@ -6,6 +6,7 @@ exports[`Page component matches snapshot 1`] = `
     {
       "flex": 1,
       "marginTop": 0,
+      "paddingTop": 18,
     }
   }
 >
