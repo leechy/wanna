@@ -1,6 +1,14 @@
 # Wanna Wanna
 
-the best small grocery list app
+The shared grocery list app that sends notifications when your lists are updated
+
+We are building another grocery list app to be able to add all the missing features we need:
+- notifications when somebody updates the list;
+- cart: to see what is already picked up when you shop together;
+- past purchases: to add items you buy regularly with one click;
+- plus all essentials you can find in the other grocery list apps.
+
+If that goes well, we are planning to add location-based lists and notifications!
 
 ## The ultimate sharing experience
 
