@@ -9,13 +9,29 @@ import { Platform } from 'react-native';
 export default function ShoppingLayout() {
   const backButtonColor = useThemeColor({}, 'inactive');
   const backgroundColor = useThemeColor({}, 'background');
+  const toolbarBackgroundColor = useThemeColor({}, 'tabBarBackground');
 
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
+          title: 'Shopping',
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="[list]"
+        options={{
+          title: '',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: toolbarBackgroundColor,
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat',
+          },
+          headerTintColor: backButtonColor,
         }}
       />
       <Stack.Screen

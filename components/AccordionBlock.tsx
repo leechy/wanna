@@ -18,6 +18,8 @@ export interface AccordionBlockProps {
   action?: React.ReactNode;
   newItemLabel?: string;
   newItemHandler?: () => void;
+  actionHandler?: (item: ListItem) => void;
+  checkboxHandler?: (item: ListItem) => void;
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;
@@ -63,7 +65,13 @@ export function AccordionBlock(block: AccordionBlockProps) {
         ]}
       >
         {block.items.length > 0 ? (
-          <ItemsList newItemLabel={block.newItemLabel} newItemHandler={block.newItemHandler} items={block.items} />
+          <ItemsList
+            newItemLabel={block.newItemLabel}
+            newItemHandler={block.newItemHandler}
+            actionHandler={block.actionHandler}
+            checkboxHandler={block.checkboxHandler}
+            items={block.items}
+          />
         ) : (
           <View style={styles.centered}>
             <ThemedText>{block.emptyText || 'No items here'}</ThemedText>

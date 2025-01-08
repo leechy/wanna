@@ -24,14 +24,20 @@ import { ListItem } from '@/types/listItem';
 import { humanDate } from '@/utils/dates';
 import SubmenuIcon from './SubmenuIcon';
 import { DropdownMenu } from './DropdownMenu';
+import NewItem from './NewItem';
+import ShoppingListItem from './ShoppingListItem';
+import ProjectListItem from './ProjectListItem';
+import ListItemLabel from './ListItemLabel';
 
 interface ItemsListProps {
   newItemLabel?: string;
   newItemHandler?: () => void;
+  actionHandler?: (item: ListItem) => void;
+  checkboxHandler?: (item: ListItem) => void;
   items?: ListItem[];
 }
 
-export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProps) {
+export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkboxHandler, items }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
   const textColor = useThemeColor({}, 'text');
@@ -47,16 +53,17 @@ export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProp
     newItemHandler?.();
   }
 
-  function onItemChecked(item: ListItem) {
-    console.log('onItemChecked', item);
-  }
-
-  function onItemToggled(item: ListItem) {
-    console.log('onItemToggled', item);
+  function onItemAction(item: ListItem) {
+    console.log('ItemsList Action item', item, actionHandler);
+    actionHandler?.(item);
   }
 
   function onItemEdit(item: ListItem) {
-    console.log('onItemEdit', item);
+    console.log('Edit item', item);
+  }
+
+  function onCheckboxToggled(item: ListItem) {
+    checkboxHandler?.(item);
   }
 
   function renderItem({ item, index }: { item: ListItem; index: number }) {
@@ -73,6 +80,24 @@ export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProp
 
     const overdue = (item.deadline || 0) < Date.now();
 
+    if (item.type === 'new') {
+      return <NewItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={onNewItem} />;
+    }
+    if (item.type === 'shopping-list') {
+      return (
+        <ShoppingListItem
+          item={item}
+          itemBorderRadius={itemBorderRadius}
+          actionHandler={(item) => onItemAction(item)}
+        />
+      );
+    }
+    if (item.type === 'project') {
+      return (
+        <ProjectListItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />
+      );
+    }
+
     return (
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
         <LinearGradient
@@ -82,73 +107,16 @@ export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProp
           end={[1, 0]}
           style={[styles.gradient, itemBorderRadius]}
         >
-          <TouchableOpacity
-            style={styles.button}
-            onPress={item.type === 'new' ? onNewItem : () => onItemChecked(item)}
-            activeOpacity={0.4}
-          >
-            {item.type === 'new' ? (
-              <PlusIcon width={28} height={28} color={inactiveColor} />
-            ) : (
-              <SquareIcon width={28} height={28} color={touchableColor} />
-            )}
+          <TouchableOpacity style={styles.button} onPress={() => onCheckboxToggled(item)} activeOpacity={0.4}>
+            <SquareIcon width={28} height={28} color={touchableColor} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={item.type === 'new' ? onNewItem : () => onItemToggled(item)}
+            onPress={() => onItemAction(item)}
             onLongPress={() => onItemEdit(item)}
             activeOpacity={0.4}
             style={styles.labelButton}
           >
-            <View style={styles.labelContainer}>
-              <Text
-                style={[styles.label, { color: item.type === 'new' ? inactiveColor : textColor }]}
-                adjustsFontSizeToFit={true}
-                numberOfLines={2}
-              >
-                {(item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
-                {item.label}
-              </Text>
-              {(item.deadline || item.list) && (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginStart: -2,
-                    opacity: 0.6,
-                  }}
-                >
-                  {item.deadline && (
-                    <>
-                      <CalendarIcon width={14} height={14} color={overdue ? dangerColor : touchableColor} />
-                      <Text
-                        style={{
-                          fontFamily: 'Montserrat',
-                          fontSize: 11,
-                          color: overdue ? dangerColor : touchableColor,
-                        }}
-                      >
-                        {humanDate(item.deadline)}
-                      </Text>
-                    </>
-                  )}
-
-                  {item.list && (
-                    <>
-                      <ListIcon width={14} height={14} color={touchableColor} />
-                      <Text
-                        style={{
-                          fontFamily: 'Montserrat',
-                          fontSize: 11,
-                          color: touchableColor,
-                        }}
-                      >
-                        {item.list}
-                      </Text>
-                    </>
-                  )}
-                </View>
-              )}
-            </View>
+            <ListItemLabel item={item} showQuantity={true} />
             {item.type === 'item' ? (
               item.inProgress ? (
                 <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
@@ -161,34 +129,31 @@ export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProp
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
               )
-            ) : item.type === 'list' ? (
-              <ChevronRightIcon width={28} height={28} color={barelyVisibleColor} />
             ) : null}
           </TouchableOpacity>
-          {item.type !== 'list' && (
-            <DropdownMenu
-              items={[
-                {
-                  label: 'Rearrange',
-                  onPress: () => {},
-                  icon: RearrangeIcon,
-                },
-                {
-                  label: 'Edit',
-                  onPress: () => {},
-                  icon: EditIcon,
-                },
-                {
-                  label: 'Delete',
-                  onPress: () => {},
-                  color: dangerColor,
-                  icon: SquareMinusIcon,
-                },
-              ]}
-            >
-              <SubmenuIcon width={28} height={28} color={disabledColor} />
-            </DropdownMenu>
-          )}
+
+          <DropdownMenu
+            items={[
+              {
+                label: 'Rearrange',
+                onPress: () => {},
+                icon: RearrangeIcon,
+              },
+              {
+                label: 'Edit',
+                onPress: () => {},
+                icon: EditIcon,
+              },
+              {
+                label: 'Delete',
+                onPress: () => {},
+                color: dangerColor,
+                icon: SquareMinusIcon,
+              },
+            ]}
+          >
+            <SubmenuIcon width={28} height={28} color={disabledColor} />
+          </DropdownMenu>
         </LinearGradient>
       </View>
     );
@@ -229,14 +194,14 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 48,
+    minHeight: 56,
     borderBottomWidth: 1,
     overflow: 'hidden',
   },
   gradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 52,
+    minHeight: 56,
   },
   labelButton: {
     flex: 1,

@@ -1,38 +1,46 @@
-// hooks and state
-import { useSelector } from '@legendapp/state/react';
-import { profiles$ } from '@/state/user';
+// hooks
+import { useThemeColor } from '@/hooks/useThemeColor';
+
+import { router } from 'expo-router';
 
 // components
-import { Accordion } from '@/components/Accordion';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
+import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 
-import SortIcon from '@/assets/symbols/sort.svg';
-import { DropdownMenu } from '@/components/DropdownMenu';
-import { useState } from 'react';
+// icons
+import BagFillIcon from '@/assets/symbols/bag-fill.svg';
+import { ListItem } from '@/types/listItem';
 
-export default function HomeScreen() {
-  const profiles = useSelector(profiles$);
-  const displayProfiles = () => {
-    console.log('profiles', profiles);
-  };
+export default function ShoppingListScreen() {
+  const primaryColor = useThemeColor({}, 'primary');
 
-  const dangerColor = useThemeColor({}, 'danger');
+  function newList() {
+    router.navigate('/shopping/new-list');
+  }
 
-  const [openDropdown, setOpenDropdown] = useState(false);
+  function goToList(item: ListItem) {
+    router.navigate(`/shopping/${item.id}`);
+  }
+
+  function checkoutList(item: ListItem) {
+    console.log('checkoutList', item);
+  }
 
   const blocks: AccordionBlockProps[] = [
     {
-      title: 'Past deadline',
-      color: dangerColor,
+      title: 'Still have to buy',
+      newItemLabel: 'New item',
+      newItemHandler: newList,
+      actionHandler: goToList,
+      checkboxHandler: checkoutList,
+      emptyText: 'List is empty. Add some items!',
       items: [
         {
           type: 'item',
           id: '1',
           label: 'Milk 3.5%',
-          deadline: new Date('2024-12-24 12:00').getTime(),
           quantity: 6,
           inProgress: false,
         },
@@ -40,7 +48,6 @@ export default function HomeScreen() {
           type: 'item',
           id: '2',
           label: 'Toast bread',
-          deadline: new Date('2024-12-12 12:00').getTime(),
           quantity: 1,
           inProgress: false,
         },
@@ -48,55 +55,15 @@ export default function HomeScreen() {
           type: 'item',
           id: '3',
           label: 'Mozarella',
-          deadline: new Date('2024-11-21 12:00').getTime(),
           quantity: 2,
           inProgress: true,
-        },
-      ],
-      emptyText: 'Great, no overdue tasks!',
-    },
-    {
-      title: 'Open items',
-      newItemLabel: 'New wish or task',
-      action: (
-        <DropdownMenu
-          open={openDropdown}
-          onOpen={() => setOpenDropdown(true)}
-          onClose={() => setOpenDropdown(false)}
-          items={[
-            { label: 'Sort by name', onPress: () => {} },
-            { label: 'Sort by deadline', onPress: () => {} },
-            { label: 'Sort by quantity', onPress: () => {} },
-          ]}
-        >
-          <SmallButton title="Sort" icon={SortIcon} />
-        </DropdownMenu>
-      ),
-      items: [
-        {
-          type: 'task',
-          id: '1',
-          label: 'Mark this item as ongoing and then as completed',
-          list: 'Tutorial',
-          quantity: 1,
-          inProgress: false,
         },
         {
           type: 'item',
-          id: '3',
-          label: 'Mozarella',
-          deadline: Date.now() + 1000 * 60 * 60 * 24 * 2,
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'task',
           id: '4',
-          label: 'Attach the neck to the body',
-          deadline: new Date('2024-12-24 12:00').getTime(),
+          label: 'Coca Cola Zero',
           quantity: 1,
           inProgress: true,
-          list: 'Neon Guitar',
         },
         {
           type: 'item',
@@ -176,18 +143,40 @@ export default function HomeScreen() {
           inProgress: false,
         },
       ],
-      emptyText: 'Hm, nothing to do here, add some wishes!',
     },
     {
-      title: 'Recently completed',
+      title: 'Cart',
+      color: primaryColor,
+      action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
+      newItemLabel: 'Not planned item in the cart',
+      items: [
+        {
+          type: 'item',
+          id: '3',
+          label: 'Mozarella',
+          quantity: 2,
+          inProgress: true,
+        },
+        {
+          type: 'item',
+          id: '4',
+          label: 'Coca Cola Zero',
+          quantity: 1,
+          inProgress: true,
+        },
+      ],
+      emptyText: 'Cart is still empty',
+    },
+    {
+      title: 'Past purchases',
       items: [],
-      emptyText: 'No completed tasks, no worries!',
+      emptyText: 'No purchases yet',
     },
   ];
 
   return (
     <Page>
-      <Accordion title="Current wishes" blocks={blocks} openBlock={0} />
+      <Accordion title="Home groceries" blocks={blocks} openBlock={0} />
     </Page>
   );
 }
