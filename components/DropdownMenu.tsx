@@ -21,7 +21,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import * as NavigationBar from 'expo-navigation-bar';
 
 interface DropdownMenuProps {
-  open: boolean;
+  open?: boolean;
   items: DropdownItem[];
   side?: 'top' | 'right' | 'bottom' | 'right';
   align?: 'start' | 'center' | 'end';
@@ -32,7 +32,7 @@ interface DropdownMenuProps {
 }
 
 export function DropdownMenu({
-  open,
+  open = false,
   items,
   side = 'bottom',
   align = 'end',
@@ -64,8 +64,8 @@ export function DropdownMenu({
     }
   }, [colorScheme, isOpen]);
 
-  useEffect(() => {
-    if (triggerRef.current && open) {
+  function calculatePosition() {
+    if (triggerRef.current) {
       triggerRef.current.measure((fx, fy, buttonW, buttonH, px, py) => {
         let { x, y } = position;
         let height = items.length * 40 + 3;
@@ -116,10 +116,17 @@ export function DropdownMenu({
         setIsOpen(true);
       });
     }
+  }
+
+  useEffect(() => {
+    if (open) {
+      calculatePosition();
+    }
   }, [open]);
 
   function onTriggerPress() {
     setIsOpen(true);
+    calculatePosition();
     onOpen?.();
   }
 
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    backgroundColor: '#00000001',
+    backgroundColor: Platform.OS === 'ios' ? '#00000033' : '#00000001',
   },
   menuContainer: {
     position: 'absolute',

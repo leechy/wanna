@@ -2,14 +2,7 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // icons
@@ -22,11 +15,15 @@ import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
 import ChevronRightIcon from '../assets/symbols/chevron-right.svg';
 import CalendarIcon from '../assets/symbols/square-calendar.svg';
 import ListIcon from '../assets/symbols/square-list.svg';
+import SquareMinusIcon from '../assets/symbols/square-minus.svg';
+import EditIcon from '../assets/symbols/edit.svg';
+import RearrangeIcon from '../assets/symbols/rearrange.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
 import { humanDate } from '@/utils/dates';
 import SubmenuIcon from './SubmenuIcon';
+import { DropdownMenu } from './DropdownMenu';
 
 interface ItemsListProps {
   newItemLabel?: string;
@@ -34,11 +31,7 @@ interface ItemsListProps {
   items?: ListItem[];
 }
 
-export function ItemsList({
-  newItemLabel,
-  newItemHandler,
-  items,
-}: ItemsListProps) {
+export function ItemsList({ newItemLabel, newItemHandler, items }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
   const textColor = useThemeColor({}, 'text');
@@ -84,19 +77,14 @@ export function ItemsList({
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
         <LinearGradient
           // Item In Progress Linear Gradient
-          colors={[
-            backgroundColor + '00',
-            item.inProgress ? primaryColor + '1d' : backgroundColor + '00',
-          ]}
+          colors={[backgroundColor + '00', item.inProgress ? primaryColor + '1d' : backgroundColor + '00']}
           start={[0, 0]}
           end={[1, 0]}
           style={[styles.gradient, itemBorderRadius]}
         >
           <TouchableOpacity
             style={styles.button}
-            onPress={
-              item.type === 'new' ? onNewItem : () => onItemChecked(item)
-            }
+            onPress={item.type === 'new' ? onNewItem : () => onItemChecked(item)}
             activeOpacity={0.4}
           >
             {item.type === 'new' ? (
@@ -106,19 +94,14 @@ export function ItemsList({
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={
-              item.type === 'new' ? onNewItem : () => onItemToggled(item)
-            }
+            onPress={item.type === 'new' ? onNewItem : () => onItemToggled(item)}
             onLongPress={() => onItemEdit(item)}
             activeOpacity={0.4}
             style={styles.labelButton}
           >
             <View style={styles.labelContainer}>
               <Text
-                style={[
-                  styles.label,
-                  { color: item.type === 'new' ? inactiveColor : textColor },
-                ]}
+                style={[styles.label, { color: item.type === 'new' ? inactiveColor : textColor }]}
                 adjustsFontSizeToFit={true}
                 numberOfLines={2}
               >
@@ -136,11 +119,7 @@ export function ItemsList({
                 >
                   {item.deadline && (
                     <>
-                      <CalendarIcon
-                        width={14}
-                        height={14}
-                        color={overdue ? dangerColor : touchableColor}
-                      />
+                      <CalendarIcon width={14} height={14} color={overdue ? dangerColor : touchableColor} />
                       <Text
                         style={{
                           fontFamily: 'Montserrat',
@@ -172,34 +151,43 @@ export function ItemsList({
             </View>
             {item.type === 'item' ? (
               item.inProgress ? (
-                <CartWithItemIcon
-                  width={28}
-                  height={28}
-                  color={primaryColor + '99'}
-                />
+                <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
               )
             ) : item.type === 'task' ? (
               item.inProgress ? (
-                <PlayFillIcon
-                  width={28}
-                  height={28}
-                  color={primaryColor + '99'}
-                />
+                <PlayFillIcon width={28} height={28} color={primaryColor + '99'} />
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
               )
             ) : item.type === 'list' ? (
-              <ChevronRightIcon
-                width={28}
-                height={28}
-                color={barelyVisibleColor}
-              />
+              <ChevronRightIcon width={28} height={28} color={barelyVisibleColor} />
             ) : null}
           </TouchableOpacity>
           {item.type !== 'list' && (
-            <SubmenuIcon width={28} height={28} color={disabledColor} />
+            <DropdownMenu
+              items={[
+                {
+                  label: 'Rearrange',
+                  onPress: () => {},
+                  icon: RearrangeIcon,
+                },
+                {
+                  label: 'Edit',
+                  onPress: () => {},
+                  icon: EditIcon,
+                },
+                {
+                  label: 'Delete',
+                  onPress: () => {},
+                  color: dangerColor,
+                  icon: SquareMinusIcon,
+                },
+              ]}
+            >
+              <SubmenuIcon width={28} height={28} color={disabledColor} />
+            </DropdownMenu>
           )}
         </LinearGradient>
       </View>
