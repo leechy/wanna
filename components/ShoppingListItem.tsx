@@ -29,12 +29,7 @@ export default function ShoppingListItem({ itemBorderRadius, item, actionHandler
   const inactiveColor = useThemeColor({}, 'inactive');
 
   function onItemAction() {
-    console.log('ItemsList Action item', item, actionHandler);
     actionHandler?.(item);
-  }
-
-  function onItemEdit(item: ListItem) {
-    console.log('Edit item', item);
   }
 
   return (
@@ -46,7 +41,12 @@ export default function ShoppingListItem({ itemBorderRadius, item, actionHandler
         end={[1, 0]}
         style={[globalStyles.listItemGradient, itemBorderRadius]}
       >
-        <TouchableOpacity style={globalStyles.listItemAction} onPressIn={onItemAction} activeOpacity={0.4}>
+        <TouchableOpacity
+          style={globalStyles.listItemAction}
+          onPress={onItemAction}
+          onLongPress={onItemAction}
+          activeOpacity={0.4}
+        >
           <View style={globalStyles.listItemLeadButton}>
             {item.inProgress || 0 > 0 ? (
               <CartNotEmptyIcon width={28} height={28} color={primaryColor} />

@@ -35,7 +35,7 @@ export const globalStyles = StyleSheet.create({
     lineHeight: 18,
   },
   itemListLabelMetaContainer: {
-    paddingTop: 3,
+    paddingTop: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
