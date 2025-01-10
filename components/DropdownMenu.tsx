@@ -136,8 +136,7 @@ export function DropdownMenu({
   }
 
   function onItemPress(item: DropdownItem) {
-    console.log('item', item);
-    item.onPress();
+    item.onPress(item);
     setIsOpen(false);
     onClose?.();
   }

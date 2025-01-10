@@ -2,7 +2,7 @@ import { SvgProps } from 'react-native-svg';
 
 export type DropdownItem = {
   label: string;
-  onPress: () => void;
+  onPress: (item?: DropdownItem) => void;
   icon?: React.FC<SvgProps>;
   color?: string;
 };

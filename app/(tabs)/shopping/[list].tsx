@@ -8,10 +8,14 @@ import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
+import { ListItem } from '@/types/listItem';
+import { View } from 'react-native';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-import { ListItem } from '@/types/listItem';
+import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
+import { DropdownMenu } from '@/components/DropdownMenu';
+import { copyListLinkToClipboard, shareList } from '@/utils/share';
 
 export default function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -175,7 +179,29 @@ export default function ShoppingListScreen() {
   ];
 
   return (
-    <Page>
+    <Page hasHeader={true}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16 }}>
+        <DropdownMenu
+          items={[
+            {
+              label: 'Share link',
+              onPress: () => {
+                console.log('Share link');
+                shareList('123');
+              },
+            },
+            {
+              label: 'Copy link',
+              onPress: () => {
+                console.log('Copy link');
+                copyListLinkToClipboard('123');
+              },
+            },
+          ]}
+        >
+          <SmallButton icon={PersonPlusIcon} title="Not shared" />
+        </DropdownMenu>
+      </View>
       <Accordion title="Home groceries" blocks={blocks} openBlock={0} />
     </Page>
   );
