@@ -21,13 +21,20 @@ import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import { press } from '@testing-library/react-native/build/user-event/press';
+import DateSelector from '@/components/DateSelector';
 
 export default function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
   const touchableColor = useThemeColor({}, 'touchable');
 
   function newList() {
-    router.navigate('/shopping/new-list');
+    router.navigate({
+      pathname: '/shopping/new-item',
+      params: {
+        listId: '123',
+        listName: 'Home groceries',
+      },
+    });
   }
 
   function goToList(item: ListItem) {
@@ -186,7 +193,10 @@ export default function ShoppingListScreen() {
 
   return (
     <Page hasHeader={true}>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16 }}>
+      <View
+        style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, gap: 12 }}
+      >
+        <DateSelector placeholder="No deadline" onChange={() => {}} />
         <DropdownMenu
           items={[
             {

@@ -1,27 +1,22 @@
 // hooks
 import { useState } from 'react';
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { Link, router } from 'expo-router';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import TitleInput from '@/components/TitleInput';
 import SmallButton from '@/components/SmallButton';
-
-import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
-import SquareCalendarIcon from '@/assets/symbols/square-calendar.svg';
-import Checkbox from '@/components/Checkbox';
 import { ThemedText } from '@/components/ThemedText';
+import Checkbox from '@/components/Checkbox';
 
-export default function Modal() {
+// icons
+import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
+import DateSelector from '@/components/DateSelector';
+
+export default function NewListModal() {
   const [title, setTitle] = useState('');
+  const [deadline, setDeadline] = useState<number | undefined>();
+  const [sharedNewUser, setSharedNewUser] = useState(true);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -29,29 +24,15 @@ export default function Modal() {
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 
         <View style={styles.properties}>
-          <SmallButton
-            title="No deadline"
-            icon={SquareCalendarIcon}
-            onPress={() => {}}
-          />
-          <SmallButton
-            title="Not shared"
-            icon={PersonPlusIcon}
-            onPress={() => {}}
-          />
+          <DateSelector placeholder="Deadline" value={deadline} onChange={setDeadline} />
+          <SmallButton title="Not yet shared" icon={PersonPlusIcon} onPress={() => {}} />
         </View>
-        <TitleInput
-          placeholder="Shopping list"
-          value={title}
-          onChange={setTitle}
-        />
+        <TitleInput placeholder="Shopping list" value={title} onChange={setTitle} />
 
         <View style={{ width: '100%', marginTop: 16, marginBottom: 8 }}>
-          <ThemedText type="defaultSemiBold">
-            Send push notifications when:
-          </ThemedText>
+          <ThemedText type="defaultSemiBold">Send push notifications when:</ThemedText>
         </View>
-        <Checkbox checked={true} onChange={() => {}}>
+        <Checkbox checked={sharedNewUser} onChange={setSharedNewUser}>
           list is shared with a new user
         </Checkbox>
         <Checkbox checked={true} onChange={() => {}}>

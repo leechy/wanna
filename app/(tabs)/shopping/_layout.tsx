@@ -7,9 +7,10 @@ import { router, Stack } from 'expo-router';
 import { Platform } from 'react-native';
 
 export default function ShoppingLayout() {
-  const backButtonColor = useThemeColor({}, 'inactive');
+  const primaryColor = useThemeColor({}, 'primary');
   const backgroundColor = useThemeColor({}, 'background');
   const toolbarBackgroundColor = useThemeColor({}, 'tabBarBackground');
+  const backButtonColor = primaryColor + '80';
 
   return (
     <Stack>
@@ -53,6 +54,31 @@ export default function ShoppingLayout() {
             ) : null,
           headerRight: () => <HeaderButton title="Create" onPress={router.back} />,
         }}
+      />
+      <Stack.Screen
+        name="new-item"
+        options={({ route }) => ({
+          title: 'New item',
+          presentation: 'modal',
+          headerStyle: {
+            backgroundColor,
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat',
+            fontSize: Platform.OS === 'ios' ? 18 : 20,
+            fontWeight: '700',
+          },
+          headerLeft: () =>
+            Platform.OS === 'ios' ? (
+              <HeaderButton
+                title="Cancel"
+                color={backButtonColor}
+                // @ts-ignore
+                onPress={() => router.dismissTo(`/shopping/${route.params?.listId}`)}
+              />
+            ) : null,
+          headerRight: () => <HeaderButton title="Add" onPress={router.back} />,
+        })}
       />
       <Stack.Screen
         name="choose-contact"

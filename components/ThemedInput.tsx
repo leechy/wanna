@@ -1,13 +1,4 @@
-import {
-  Text,
-  type ViewStyle,
-  StyleSheet,
-  Pressable,
-  Platform,
-  View,
-  TextInput,
-  TextStyle,
-} from 'react-native';
+import { Text, type ViewStyle, StyleSheet, Pressable, Platform, View, TextInput, TextStyle } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -18,6 +9,7 @@ export type ThemedInputProps = {
   darkColor?: string;
   placeholder: string;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
+  enterKeyHint?: 'done' | 'enter' | 'go' | 'next' | 'previous' | 'search' | 'send';
   value: string;
   onChange?: (value: string) => void;
 };
@@ -29,25 +21,14 @@ export function ThemedInput({
   darkColor,
   placeholder,
   keyboardType,
+  enterKeyHint = 'go',
   value,
   onChange,
 }: ThemedInputProps) {
-  const color = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'inputText'
-  );
-  const inputPlaceholder = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'inputPlaceholder'
-  );
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'inputBackground'
-  );
-  const cursorColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'cursorColor'
-  );
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'inputText');
+  const inputPlaceholder = useThemeColor({ light: lightColor, dark: darkColor }, 'inputPlaceholder');
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'inputBackground');
+  const cursorColor = useThemeColor({ light: lightColor, dark: darkColor }, 'cursorColor');
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -58,6 +39,7 @@ export function ThemedInput({
         placeholder={placeholder}
         placeholderTextColor={inputPlaceholder}
         keyboardType={keyboardType ?? 'default'}
+        enterKeyHint={enterKeyHint}
         selectionColor={cursorColor}
         cursorColor={cursorColor}
         autoFocus={true}
@@ -77,7 +59,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 0,
     borderRadius: 8,
-    fontFamily: 'Nunito',
+    fontFamily: 'Montserrat',
     fontSize: 18,
+    lineHeight: 24,
+    height: 56,
   },
 });
