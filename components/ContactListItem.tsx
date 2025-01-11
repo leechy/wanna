@@ -7,7 +7,6 @@ import { StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native
 import ListItemLabel from './ListItemLabel';
 
 // icons and styles
-import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import PersonIcon from '@/assets/symbols/persona.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
@@ -21,9 +20,7 @@ interface ContactListItemProps {
 
 export default function ContactListItem({ itemBorderRadius, item, actionHandler }: ContactListItemProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
-  const primaryColor = useThemeColor({}, 'primary');
   const textColor = useThemeColor({}, 'text');
-  const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const inactiveColor = useThemeColor({}, 'inactive');
 
   function onItemAction() {
@@ -32,12 +29,7 @@ export default function ContactListItem({ itemBorderRadius, item, actionHandler 
 
   return (
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
-      <TouchableOpacity
-        style={globalStyles.listItemAction}
-        onPress={onItemAction}
-        onLongPress={onItemAction}
-        activeOpacity={0.4}
-      >
+      <TouchableOpacity style={globalStyles.listItemAction} onPress={onItemAction} activeOpacity={0.4}>
         <View style={globalStyles.listItemLeadButton}>
           <PersonIcon width={28} height={28} color={textColor} />
         </View>

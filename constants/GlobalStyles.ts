@@ -18,6 +18,8 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   listItemLeadButton: {
     padding: 5,

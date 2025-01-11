@@ -1,13 +1,5 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import SquareIcon from '@/assets/symbols/square.svg';
 import CheckIcon from '@/assets/symbols/square-check.svg';
@@ -23,15 +15,7 @@ interface CheckboxProps {
   children?: React.ReactNode;
 }
 
-export default function Checkbox({
-  checked,
-  onChange,
-  style,
-  labelStyle,
-  color,
-  testID,
-  children,
-}: CheckboxProps) {
+export default function Checkbox({ checked, onChange, style, labelStyle, color, testID, children }: CheckboxProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const textColor = useThemeColor({}, 'text');
 
@@ -47,7 +31,7 @@ export default function Checkbox({
 
   return (
     <TouchableOpacity
-      onPress={() => updateState(!localState)}
+      onPressOut={() => updateState(!localState)}
       style={[styles.container, style]}
       testID={testID}
       activeOpacity={0.4}
@@ -59,9 +43,7 @@ export default function Checkbox({
           <SquareIcon width={28} height={28} color={color || primaryColor} />
         )}
       </View>
-      <Text style={[styles.label, { color: textColor }, labelStyle]}>
-        {children}
-      </Text>
+      <Text style={[styles.label, { color: textColor }, labelStyle]}>{children}</Text>
     </TouchableOpacity>
   );
 }

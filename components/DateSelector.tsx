@@ -12,7 +12,7 @@ interface DateSelectorProps {
   placeholder: string;
   value?: number; // Unix timestamp
   initialOffset?: number; // days from now — date selector will have this date, when activated
-  onChange: (value: number | null) => void;
+  onChange: (value: number | undefined) => void;
 }
 
 export default function DateSelector({ placeholder, value, initialOffset = 2, onChange }: DateSelectorProps) {
@@ -46,7 +46,7 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
   function deactivate() {
     if (active) {
       setActive(false);
-      onChange(null);
+      onChange(undefined);
     }
   }
 
