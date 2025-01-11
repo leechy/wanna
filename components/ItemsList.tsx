@@ -2,26 +2,18 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // icons
 import SquareIcon from '../assets/symbols/square.svg';
-import PlusIcon from '../assets/symbols/square-plus.svg';
 import PlayIcon from '../assets/symbols/square-play.svg';
 import PlayFillIcon from '../assets/symbols/square-play-fill.svg';
 import CartIcon from '../assets/symbols/cart-arr-down.svg';
 import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
-import ChevronRightIcon from '../assets/symbols/chevron-right.svg';
-import CalendarIcon from '../assets/symbols/square-calendar.svg';
-import ListIcon from '../assets/symbols/square-list.svg';
 import SquareMinusIcon from '../assets/symbols/square-minus.svg';
 import EditIcon from '../assets/symbols/edit.svg';
 import RearrangeIcon from '../assets/symbols/rearrange.svg';
-
-// types
-import { ListItem } from '@/types/listItem';
-import { humanDate } from '@/utils/dates';
 import SubmenuIcon from './SubmenuIcon';
 import { DropdownMenu } from './DropdownMenu';
 import NewItem from './NewItem';
@@ -29,15 +21,29 @@ import ShoppingListItem from './ShoppingListItem';
 import ProjectListItem from './ProjectListItem';
 import ListItemLabel from './ListItemLabel';
 
+// types
+import { ListItem } from '@/types/listItem';
+import { SvgProps } from 'react-native-svg';
+import { useEffect, useState } from 'react';
+import ContactListItem from './ContactListItem';
+
 interface ItemsListProps {
   newItemLabel?: string;
   newItemHandler?: () => void;
+  newItemIcon?: React.FC<SvgProps>;
   actionHandler?: (item: ListItem) => void;
   checkboxHandler?: (item: ListItem) => void;
   items?: ListItem[];
 }
 
-export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkboxHandler, items }: ItemsListProps) {
+export function ItemsList({
+  newItemLabel,
+  newItemHandler,
+  newItemIcon,
+  actionHandler,
+  checkboxHandler,
+  items,
+}: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
   const textColor = useThemeColor({}, 'text');
@@ -66,11 +72,32 @@ export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkbo
     checkboxHandler?.(item);
   }
 
+  const getListItems = (incomingItems?: ListItem[]) => {
+    return [
+      ...((newItemLabel
+        ? [
+            {
+              id: 'new',
+              label: newItemLabel,
+              type: 'new',
+            },
+          ]
+        : []) as ListItem[]),
+      ...(incomingItems || []),
+    ];
+  };
+  const [listItems, setListItems] = useState<ListItem[]>(getListItems(items));
+  useEffect(() => {
+    setListItems(getListItems(items));
+  }, [items]);
+
   function renderItem({ item, index }: { item: ListItem; index: number }) {
     const itemBorderRadius =
       index === 0
-        ? { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
-        : index === (items?.length || 0) - (newItemLabel !== undefined ? 0 : 1)
+        ? listItems?.length === 1
+          ? { borderRadius: 8 }
+          : { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
+        : index === (listItems?.length || 0) - 1
         ? {
             borderBottomLeftRadius: 8,
             borderBottomRightRadius: 8,
@@ -78,10 +105,8 @@ export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkbo
           }
         : { borderBottomColor };
 
-    const overdue = (item.deadline || 0) < Date.now();
-
     if (item.type === 'new') {
-      return <NewItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={onNewItem} />;
+      return <NewItem item={item} icon={newItemIcon} itemBorderRadius={itemBorderRadius} actionHandler={onNewItem} />;
     }
     if (item.type === 'shopping-list') {
       return (
@@ -95,6 +120,11 @@ export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkbo
     if (item.type === 'project') {
       return (
         <ProjectListItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />
+      );
+    }
+    if (item.type === 'contact') {
+      return (
+        <ContactListItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />
       );
     }
 
@@ -161,23 +191,7 @@ export function ItemsList({ newItemLabel, newItemHandler, actionHandler, checkbo
 
   return (
     <View style={styles.container}>
-      <FlatList
-        keyExtractor={(item) => item.id}
-        data={[
-          ...((newItemLabel
-            ? [
-                {
-                  id: 'new',
-                  label: newItemLabel,
-                  type: 'new',
-                },
-              ]
-            : []) as ListItem[]),
-          ...(items || []),
-        ]}
-        renderItem={renderItem}
-        style={[styles.list]}
-      />
+      <FlatList keyExtractor={(item) => item.id} data={listItems} renderItem={renderItem} style={[styles.list]} />
     </View>
   );
 }

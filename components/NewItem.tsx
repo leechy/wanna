@@ -10,16 +10,20 @@ import PlusIcon from '@/assets/symbols/square-plus.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
+import { SvgProps } from 'react-native-svg';
 
 interface NewItemProps {
   item: ListItem;
+  icon?: React.FC<SvgProps>;
   actionHandler?: (item: ListItem) => void;
   itemBorderRadius: StyleProp<ViewStyle>;
 }
 
-export default function NewItem({ item, itemBorderRadius, actionHandler }: NewItemProps) {
+export default function NewItem({ item, icon, itemBorderRadius, actionHandler }: NewItemProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const inactiveColor = useThemeColor({}, 'inactive');
+
+  const Icon = icon;
 
   function onItemAction() {
     console.log('ItemsList Action item', item, actionHandler);
@@ -30,7 +34,11 @@ export default function NewItem({ item, itemBorderRadius, actionHandler }: NewIt
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
       <TouchableOpacity style={globalStyles.listItemAction} onPress={onItemAction} activeOpacity={0.4}>
         <View style={globalStyles.listItemLeadButton}>
-          <PlusIcon width={28} height={28} color={inactiveColor} />
+          {Icon ? (
+            <Icon width={28} height={28} color={inactiveColor} />
+          ) : (
+            <PlusIcon width={28} height={28} color={inactiveColor} />
+          )}
         </View>
         <View style={globalStyles.itemListLabelContainer}>
           <Text

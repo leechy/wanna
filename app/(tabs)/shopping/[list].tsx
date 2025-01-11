@@ -19,9 +19,12 @@ import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
+import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
+import { press } from '@testing-library/react-native/build/user-event/press';
 
 export default function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
+  const touchableColor = useThemeColor({}, 'touchable');
 
   function newList() {
     router.navigate('/shopping/new-list');
@@ -225,6 +228,21 @@ export default function ShoppingListScreen() {
                 console.log('Share list with Djawaharlal');
               },
               icon: PersonPlusIcon,
+            },
+            {
+              label: 'Choose contact',
+              onPress: () => {
+                // @ts-ignore
+                router.push({
+                  pathname: '/shopping/choose-contact',
+                  params: {
+                    listId: '123',
+                    listName: 'Home groceries',
+                  },
+                });
+              },
+              icon: ChevronRightIcon,
+              color: touchableColor,
             },
           ]}
         >

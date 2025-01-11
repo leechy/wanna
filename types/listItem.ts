@@ -1,5 +1,5 @@
 export type ListItem = {
-  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project';
+  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'contact';
   id: string;
   label: string;
   list?: string;

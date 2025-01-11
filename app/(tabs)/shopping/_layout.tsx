@@ -54,6 +54,22 @@ export default function ShoppingLayout() {
           headerRight: () => <HeaderButton title="Create" onPress={router.back} />,
         }}
       />
+      <Stack.Screen
+        name="choose-contact"
+        options={({ route }) => ({
+          title: '',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: toolbarBackgroundColor,
+          },
+          // @ts-ignore
+          headerBackTitle: route.params?.listName || 'Back',
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat',
+          },
+          headerTintColor: backButtonColor,
+        })}
+      />
     </Stack>
   );
 }
