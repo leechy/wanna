@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
   listItem: {
@@ -60,5 +60,25 @@ export const globalStyles = StyleSheet.create({
   },
   titleContainer: {
     paddingHorizontal: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    backgroundColor: Platform.OS === 'ios' ? '#00000033' : '#00000001',
+  },
+  menuContainer: {
+    position: 'absolute',
+    borderRadius: 8,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  menu: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 });

@@ -25,6 +25,7 @@ import CheckIcon from '@/assets/symbols/check.svg';
 // types and constants
 import { TAB_BAR_HEIGHT } from '@/app/(tabs)/_layout';
 import { DropdownItem } from '@/types/DropdownItem';
+import { globalStyles } from '@/constants/GlobalStyles';
 
 interface DropdownMenuProps {
   open?: boolean;
@@ -156,10 +157,10 @@ export function DropdownMenu({
       {isOpen && (
         <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
           <TouchableWithoutFeedback onPress={onOverlayPress}>
-            <View style={[styles.modalOverlay]}>
+            <View style={[globalStyles.modalOverlay]}>
               <View
                 style={[
-                  styles.menuContainer,
+                  globalStyles.menuContainer,
                   {
                     top: position.y,
                     left: position.x,
@@ -168,7 +169,7 @@ export function DropdownMenu({
                   },
                 ]}
               >
-                <View style={[styles.menu, { width: width, backgroundColor }]}>
+                <View style={[globalStyles.menu, { width: width, backgroundColor }]}>
                   {items.map((item, index) => {
                     if (!item.onPress) {
                       return (
@@ -214,26 +215,6 @@ export function DropdownMenu({
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    backgroundColor: Platform.OS === 'ios' ? '#00000033' : '#00000001',
-  },
-  menuContainer: {
-    position: 'absolute',
-    borderRadius: 8,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  menu: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
   menuOption: {
     flexDirection: 'row',
     alignItems: 'center',

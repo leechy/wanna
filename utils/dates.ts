@@ -21,15 +21,7 @@ export function humanDate(date: number): string {
   }
 
   // TODO: when localized, use toLocaleString() call
-  const dayNames = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   if (date < todayStart) {
     // past branch
@@ -53,7 +45,7 @@ export function humanDate(date: number): string {
     }
   }
 
-  const diff = date < todayStart ? todayStart - date : date - todayEnd;
+  const diff = date < todayStart ? date - todayStart : date - todayEnd;
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
   const day = new Date(date).getDate();
@@ -74,7 +66,8 @@ export function humanDate(date: number): string {
     'December',
   ];
 
-  if ((days >= 7 && days < 183) || (days <= -7 && days > -183)) {
+  console.log('days', days, year);
+  if ((days < 183 || days > -183) && new Date().getFullYear() === year) {
     return `${day} ${monthNames[month]}`;
   } else {
     return `${day} ${monthNames[month]} ${year}`;

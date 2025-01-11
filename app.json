@@ -73,6 +73,27 @@
             "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}"
           }
         }
+      ],
+      [
+        "@react-native-community/datetimepicker",
+        {
+          "android": {
+            "datePicker": {
+              "colorAccent": {
+                "light": "#3a1fc1",
+                "dark": "#ffd700"
+              },
+              "textColor": {
+                "light": "#3a1fc1",
+                "dark": "#ffd700"
+              },
+              "colorControlActivated": {
+                "light": "#3a1fc1",
+                "dark": "#ffd700"
+              }
+            }
+          }
+        }
       ]
     ],
     "experiments": {

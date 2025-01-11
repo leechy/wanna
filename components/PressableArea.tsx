@@ -26,7 +26,7 @@ export function PressableArea({ style, onPress, rippleColor, children }: Pressab
           ios: { opacity: pressed ? 0.4 : 1 },
         }),
       ]}
-      onPress={onPress}
+      onPressOut={onPress}
     >
       {children}
     </Pressable>
