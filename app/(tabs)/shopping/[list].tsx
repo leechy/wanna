@@ -1,7 +1,9 @@
 // hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+// utils
 import { router } from 'expo-router';
+import { copyListLinkToClipboard, shareList } from '@/utils/share';
 
 // components
 import { AccordionBlockProps } from '@/components/AccordionBlock';
@@ -10,12 +12,13 @@ import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 import { ListItem } from '@/types/listItem';
 import { View } from 'react-native';
+import { DropdownMenu } from '@/components/DropdownMenu';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
-import { DropdownMenu } from '@/components/DropdownMenu';
-import { copyListLinkToClipboard, shareList } from '@/utils/share';
+import ShareIcon from '@/assets/symbols/share.svg';
+import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 
 export default function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -189,6 +192,7 @@ export default function ShoppingListScreen() {
                 console.log('Share link');
                 shareList('123');
               },
+              icon: ShareIcon,
             },
             {
               label: 'Copy link',
@@ -196,6 +200,31 @@ export default function ShoppingListScreen() {
                 console.log('Copy link');
                 copyListLinkToClipboard('123');
               },
+              icon: CopyLinkIcon,
+            },
+            {
+              label: 'Share with',
+            },
+            {
+              label: 'Soulntse',
+              onPress: () => {
+                console.log('Share list with Soulntse');
+              },
+              icon: PersonPlusIcon,
+            },
+            {
+              label: 'Vicky',
+              onPress: () => {
+                console.log('Share list with Vicky');
+              },
+              icon: PersonPlusIcon,
+            },
+            {
+              label: 'Djawaharlal Nehru the second',
+              onPress: () => {
+                console.log('Share list with Djawaharlal');
+              },
+              icon: PersonPlusIcon,
             },
           ]}
         >

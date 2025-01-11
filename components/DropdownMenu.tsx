@@ -49,6 +49,7 @@ export function DropdownMenu({
 
   const backgroundColor = useThemeColor({}, 'smallButtonBackground');
   const textColor = useThemeColor({}, 'text');
+  const inactiveColor = useThemeColor({}, 'inactive');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const tabBarBackground = useThemeColor({}, 'tabBarBackground');
 
@@ -136,7 +137,7 @@ export function DropdownMenu({
   }
 
   function onItemPress(item: DropdownItem) {
-    item.onPress(item);
+    item.onPress?.(item);
     setIsOpen(false);
     onClose?.();
   }
@@ -162,21 +163,36 @@ export function DropdownMenu({
                 ]}
               >
                 <View style={[styles.menu, { width: width, backgroundColor }]}>
-                  {items.map((item, index) => (
-                    <PressableArea key={index} onPress={() => onItemPress(item)}>
-                      <View
-                        style={[
-                          styles.menuOption,
-                          index < items.length - 1
-                            ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
-                            : {},
-                        ]}
-                      >
-                        {item.icon && <item.icon width={24} height={24} color={item.color || textColor} />}
-                        <Text style={[styles.menuLabel, { color: item.color || textColor }]}>{item.label}</Text>
-                      </View>
-                    </PressableArea>
-                  ))}
+                  {items.map((item, index) => {
+                    if (!item.onPress) {
+                      return (
+                        <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
+                          <Text style={[styles.menuHeaderLabel, { color: textColor }]}>{item.label}</Text>
+                        </View>
+                      );
+                    }
+                    return (
+                      <PressableArea key={index} onPress={() => onItemPress(item)}>
+                        <View
+                          style={[
+                            styles.menuOption,
+                            index < items.length - 1
+                              ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
+                              : {},
+                          ]}
+                        >
+                          {item.icon && <item.icon width={24} height={24} color={item.color || textColor} />}
+                          <Text
+                            style={[styles.menuLabel, { color: item.color || textColor }]}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            {item.label}
+                          </Text>
+                        </View>
+                      </PressableArea>
+                    );
+                  })}
                 </View>
               </View>
             </View>
@@ -218,9 +234,20 @@ const styles = StyleSheet.create({
   menuOptionBorder: {
     borderBottomWidth: 1,
   },
+  menuHeader: {
+    paddingTop: 6,
+    paddingBottom: 4,
+    paddingHorizontal: 8,
+  },
+  menuHeaderLabel: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+  },
   menuLabel: {
     fontFamily: 'Montserrat',
     fontSize: 16,
     marginLeft: 8,
+    overflow: 'hidden',
+    width: '80%',
   },
 });
