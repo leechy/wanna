@@ -8,13 +8,7 @@ export type ThemedTextProps = TextProps & {
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
-}: ThemedTextProps) {
+export function ThemedText({ style, lightColor, darkColor, type = 'default', ...rest }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const primaryColor = useThemeColor({}, 'primary');
 
@@ -38,8 +32,12 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
+    fontFamily: 'Montserrat',
+    fontSize: 17,
     lineHeight: 24,
+    fontWeight: '500',
+    textAlign: 'left',
+    letterSpacing: -0.2,
   },
   defaultSemiBold: {
     fontFamily: 'Montserrat',
@@ -61,6 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
+    fontFamily: 'Montserrat',
     lineHeight: 30,
     fontSize: 16,
     color: '#0a7ea4',

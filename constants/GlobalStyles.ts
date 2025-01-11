@@ -58,19 +58,7 @@ export const globalStyles = StyleSheet.create({
     textAlign: 'center',
     minWidth: 40,
   },
-  labelButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  labelContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    alignContent: 'center',
-    // borderWidth: 1,
-  },
-  chevron: {
-    padding: 0,
+  titleContainer: {
+    paddingHorizontal: 16,
   },
 });

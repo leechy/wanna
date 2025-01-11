@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { AccordionBlock, AccordionBlockProps } from './AccordionBlock';
+import { globalStyles } from '@/constants/GlobalStyles';
 
 interface AccordionProps {
   blocks: AccordionBlockProps[];
@@ -19,7 +20,7 @@ export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
 
   return (
     <View style={styles.container}>
-      <ThemedView style={styles.titleContainer}>
+      <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">{title} </ThemedText>
       </ThemedView>
       {blocks.map((block, index) => (
@@ -45,8 +46,5 @@ export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  titleContainer: {
-    paddingHorizontal: 16,
   },
 });
