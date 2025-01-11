@@ -64,12 +64,13 @@ export default function HomeScreen() {
           onOpen={() => setOpenDropdown(true)}
           onClose={() => setOpenDropdown(false)}
           items={[
-            { label: 'Sort by name', onPress: () => {} },
-            { label: 'Sort by deadline', onPress: () => {} },
-            { label: 'Sort by quantity', onPress: () => {} },
+            { label: 'by time added', selected: true, onPress: () => {} },
+            { label: 'by name', onPress: () => {} },
+            { label: 'by deadline', onPress: () => {} },
+            { label: 'by quantity', onPress: () => {} },
           ]}
         >
-          <SmallButton title="Sort" icon={SortIcon} />
+          <SmallButton title="Latest on top" icon={SortIcon} />
         </DropdownMenu>
       ),
       items: [

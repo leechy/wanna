@@ -2,9 +2,12 @@
  * DropdownMenu component
  * based on https://medium.com/@mindelias/building-a-custom-dropdown-menu-in-react-native-a-step-by-step-guide-939b5f16627b
  */
-import { TAB_BAR_HEIGHT } from '@/app/(tabs)/_layout';
-import { DropdownItem } from '@/types/DropdownItem';
+// hooks
 import React, { useRef, useEffect, useState, ReactNode } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeColor } from '@/hooks/useThemeColor';
+
+// components
 import {
   Modal,
   Platform,
@@ -15,10 +18,13 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PressableArea } from './PressableArea';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import * as NavigationBar from 'expo-navigation-bar';
+import CheckIcon from '@/assets/symbols/check.svg';
+
+// types and constants
+import { TAB_BAR_HEIGHT } from '@/app/(tabs)/_layout';
+import { DropdownItem } from '@/types/DropdownItem';
 
 interface DropdownMenuProps {
   open?: boolean;
@@ -49,7 +55,7 @@ export function DropdownMenu({
 
   const backgroundColor = useThemeColor({}, 'smallButtonBackground');
   const textColor = useThemeColor({}, 'text');
-  const inactiveColor = useThemeColor({}, 'inactive');
+  const touchableColor = useThemeColor({}, 'touchable');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const tabBarBackground = useThemeColor({}, 'tabBarBackground');
 
@@ -167,7 +173,7 @@ export function DropdownMenu({
                     if (!item.onPress) {
                       return (
                         <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
-                          <Text style={[styles.menuHeaderLabel, { color: textColor }]}>{item.label}</Text>
+                          <Text style={[styles.menuHeaderLabel, { color: touchableColor }]}>{item.label}</Text>
                         </View>
                       );
                     }
@@ -181,7 +187,6 @@ export function DropdownMenu({
                               : {},
                           ]}
                         >
-                          {item.icon && <item.icon width={24} height={24} color={item.color || textColor} />}
                           <Text
                             style={[styles.menuLabel, { color: item.color || textColor }]}
                             numberOfLines={1}
@@ -189,6 +194,11 @@ export function DropdownMenu({
                           >
                             {item.label}
                           </Text>
+                          {item.selected ? (
+                            <CheckIcon width={24} height={24} color={item.color || touchableColor} />
+                          ) : (
+                            item.icon && <item.icon width={24} height={24} color={item.color || textColor} />
+                          )}
                         </View>
                       </PressableArea>
                     );
