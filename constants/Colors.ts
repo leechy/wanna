@@ -19,7 +19,7 @@ export const Colors = {
     smallButtonBackground: '#ffffff',
 
     primary: '#3a1fc1',
-    barelyVisible: '#cccccc',
+    barelyVisible: '#dddddd',
     disabled: '#bbbbbb',
     inactive: '#999999',
     touchable: '#666666',
@@ -47,7 +47,7 @@ export const Colors = {
     smallButtonBackground: '#151718',
 
     primary: '#ffd700',
-    barelyVisible: '#333333',
+    barelyVisible: '#222222',
     disabled: '#454545',
     inactive: '#666666',
     touchable: '#999999',
