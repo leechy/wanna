@@ -52,7 +52,7 @@ export default function SmallButton({ title, icon, style, onPress, color, childr
       style={[
         styles.container,
         style,
-        { backgroundColor: smallButtonBackground, borderColor: color ? color + '80' : inactiveColor },
+        { backgroundColor: smallButtonBackground, borderColor: color ? color + '80' : smallButtonText + '55' },
       ]}
     >
       {onPress ? (

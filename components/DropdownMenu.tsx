@@ -35,6 +35,7 @@ interface DropdownMenuProps {
   onOpen?: () => void;
   onClose?: () => void;
   width?: number;
+  isHeaderMenu?: boolean;
   children: ReactNode;
 }
 
@@ -47,6 +48,7 @@ export function DropdownMenu({
   onClose,
   children,
   width = 200,
+  isHeaderMenu = false,
 }: DropdownMenuProps) {
   const triggerRef = useRef<View>(null);
   const { height: winH, width: winW, scale } = useWindowDimensions();
@@ -73,10 +75,13 @@ export function DropdownMenu({
   }, [colorScheme, isOpen]);
 
   function calculatePosition() {
-    if (triggerRef.current) {
+    if (isHeaderMenu) {
+      setPosition({ x: winW - width - 12, y: safeT + 32, width });
+      setIsOpen(true);
+    } else if (triggerRef.current) {
       triggerRef.current.measure((fx, fy, buttonW, buttonH, px, py) => {
         let { x, y } = position;
-        let height = items.length * 40 + 3;
+        let height = items.length * 46 + 3;
 
         const topFix = Platform.OS === 'android' ? safeT : 0;
 
@@ -121,6 +126,7 @@ export function DropdownMenu({
         }
 
         setPosition({ x, y, width });
+        console.log('position trigger:', { px, py, buttonH }, 'menu:', { x, y, width });
         setIsOpen(true);
       });
     }
@@ -154,62 +160,60 @@ export function DropdownMenu({
       <PressableArea onPress={onTriggerPress}>
         <View ref={triggerRef}>{children}</View>
       </PressableArea>
-      {isOpen && (
-        <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
-          <TouchableWithoutFeedback onPress={onOverlayPress}>
-            <View style={[globalStyles.modalOverlay]}>
-              <View
-                style={[
-                  globalStyles.menuContainer,
-                  {
-                    top: position.y,
-                    left: position.x,
-                    width: width,
-                    shadowColor: textColor,
-                  },
-                ]}
-              >
-                <View style={[globalStyles.menu, { width: width, backgroundColor }]}>
-                  {items.map((item, index) => {
-                    if (!item.onPress) {
-                      return (
-                        <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
-                          <Text style={[styles.menuHeaderLabel, { color: touchableColor }]}>{item.label}</Text>
-                        </View>
-                      );
-                    }
+      <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
+        <TouchableWithoutFeedback onPress={onOverlayPress}>
+          <View style={[globalStyles.modalOverlay]}>
+            <View
+              style={[
+                globalStyles.menuContainer,
+                {
+                  top: position.y,
+                  left: position.x,
+                  width: width,
+                  shadowColor: textColor,
+                },
+              ]}
+            >
+              <View style={[globalStyles.menu, { width: width, backgroundColor }]}>
+                {items.map((item, index) => {
+                  if (!item.onPress) {
                     return (
-                      <PressableArea key={index} onPress={() => onItemPress(item)}>
-                        <View
-                          style={[
-                            styles.menuOption,
-                            index < items.length - 1
-                              ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
-                              : {},
-                          ]}
-                        >
-                          <Text
-                            style={[styles.menuLabel, { color: item.color || textColor }]}
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                          >
-                            {item.label}
-                          </Text>
-                          {item.selected ? (
-                            <CheckIcon width={24} height={24} color={item.color || touchableColor} />
-                          ) : (
-                            item.icon && <item.icon width={24} height={24} color={item.color || textColor} />
-                          )}
-                        </View>
-                      </PressableArea>
+                      <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
+                        <Text style={[styles.menuHeaderLabel, { color: touchableColor }]}>{item.label}</Text>
+                      </View>
                     );
-                  })}
-                </View>
+                  }
+                  return (
+                    <PressableArea key={index} onPress={() => onItemPress(item)}>
+                      <View
+                        style={[
+                          styles.menuOption,
+                          index < items.length - 1
+                            ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
+                            : {},
+                        ]}
+                      >
+                        <Text
+                          style={[styles.menuLabel, { color: item.color || textColor }]}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {item.label}
+                        </Text>
+                        {item.selected ? (
+                          <CheckIcon width={24} height={24} color={item.color || touchableColor} />
+                        ) : (
+                          item.icon && <item.icon width={24} height={24} color={item.color || textColor} />
+                        )}
+                      </View>
+                    </PressableArea>
+                  );
+                })}
               </View>
             </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      )}
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 }
@@ -220,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 2,
     paddingHorizontal: 8,
-    minHeight: 40,
+    minHeight: 46,
   },
   menuOptionBorder: {
     borderBottomWidth: 1,
