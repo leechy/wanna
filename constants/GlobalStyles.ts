@@ -61,6 +61,9 @@ export const globalStyles = StyleSheet.create({
     minWidth: 40,
   },
   titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
   modalOverlay: {

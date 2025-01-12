@@ -7,21 +7,34 @@ import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { AccordionBlock, AccordionBlockProps } from './AccordionBlock';
 import { globalStyles } from '@/constants/GlobalStyles';
+import { SvgProps } from 'react-native-svg';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { PressableArea } from './PressableArea';
 
 interface AccordionProps {
   blocks: AccordionBlockProps[];
   title?: string;
+  titleIcon?: React.FC<SvgProps>;
+  titleAction?: () => void;
   openBlock?: number;
 }
 
-export function Accordion({ title, blocks, openBlock = 0 }: AccordionProps) {
+export function Accordion({ title, blocks, titleIcon, titleAction, openBlock = 0 }: AccordionProps) {
   const [prevBlock, setPrevBlock] = useState(Math.abs(openBlock - 1));
   const [currentBlock, setCurrentBlock] = useState(openBlock);
+  const textColor = useThemeColor({}, 'text');
+
+  const TitleIcon = titleIcon || (() => null);
 
   return (
     <View style={styles.container}>
       <ThemedView style={globalStyles.titleContainer}>
-        <ThemedText type="title">{title} </ThemedText>
+        <ThemedText type="title">{title}</ThemedText>
+        {titleIcon && titleAction && (
+          <PressableArea onPress={titleAction} style={{ padding: 8 }}>
+            <TitleIcon width={24} height={24} color={textColor} />
+          </PressableArea>
+        )}
       </ThemedView>
       {blocks.map((block, index) => (
         <AccordionBlock

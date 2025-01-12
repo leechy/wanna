@@ -1,17 +1,19 @@
 // hooks and state
+import { useState } from 'react';
 import { useSelector } from '@legendapp/state/react';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { profiles$ } from '@/state/user';
+import { router } from 'expo-router';
 
 // components
 import { Accordion } from '@/components/Accordion';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
+import { DropdownMenu } from '@/components/DropdownMenu';
 
 import SortIcon from '@/assets/symbols/sort.svg';
-import { DropdownMenu } from '@/components/DropdownMenu';
-import { useState } from 'react';
+import SettingsIcon from '@/assets/symbols/settings.svg';
 
 export default function HomeScreen() {
   const profiles = useSelector(profiles$);
@@ -186,9 +188,20 @@ export default function HomeScreen() {
     },
   ];
 
+  function gotoSettings() {
+    router.push('/settings');
+    // console.log('gotoSettings');
+  }
+
   return (
     <Page>
-      <Accordion title="Current wishes" blocks={blocks} openBlock={0} />
+      <Accordion
+        title="Current wishes"
+        titleIcon={SettingsIcon}
+        titleAction={gotoSettings}
+        blocks={blocks}
+        openBlock={0}
+      />
     </Page>
   );
 }
