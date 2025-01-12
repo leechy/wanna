@@ -29,6 +29,11 @@
             "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
           }
         ]
+      },
+      "icon": {
+        "light": "./assets/icon.png",
+        "dark": "./assets/icon-dark.png",
+        "tinted": "./assets/icon-tinted.png"
       }
     },
     "android": {
