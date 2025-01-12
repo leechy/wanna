@@ -45,7 +45,7 @@ export function humanDate(date: number): string {
     }
   }
 
-  const diff = date < todayStart ? date - todayStart : date - todayEnd;
+  const diff = date < todayStart ? todayStart - date : date - todayEnd;
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
   const day = new Date(date).getDate();
@@ -66,8 +66,7 @@ export function humanDate(date: number): string {
     'December',
   ];
 
-  console.log('days', days, year);
-  if ((days < 183 || days > -183) && new Date().getFullYear() === year) {
+  if (days < 183 && days > -183 && new Date().getFullYear() === year) {
     return `${day} ${monthNames[month]}`;
   } else {
     return `${day} ${monthNames[month]} ${year}`;

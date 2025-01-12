@@ -1,5 +1,5 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 import SquareIcon from '@/assets/symbols/square.svg';
 import CheckIcon from '@/assets/symbols/square-check.svg';
@@ -25,13 +25,17 @@ export default function Checkbox({ checked, onChange, style, labelStyle, color, 
   }, [checked]);
 
   function updateState(newState: boolean) {
+    console.log('Checkbox updateState', newState);
     setLocalState(newState);
     onChange?.(newState);
   }
 
   return (
     <TouchableOpacity
-      onPressOut={() => updateState(!localState)}
+      onPress={() => updateState(!localState)}
+      // TODO: this is a workaround for the onPress not working on Android
+      // check the production builds for better behavior
+      onPressOut={() => Platform.OS === 'android' && updateState(!localState)}
       style={[styles.container, style]}
       testID={testID}
       activeOpacity={0.4}

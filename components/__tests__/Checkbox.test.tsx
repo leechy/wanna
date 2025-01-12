@@ -8,17 +8,13 @@ jest.mock('../../assets/symbols/square-check.svg', () => 'SquareCheckIcon');
 
 describe('Checkbox', () => {
   it('renders correctly', () => {
-    const { getByTestId } = render(
-      <Checkbox checked={false} onChange={() => {}} testID="checkbox" />
-    );
+    const { getByTestId } = render(<Checkbox checked={false} onChange={() => {}} testID="checkbox" />);
     expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('calls onChange when clicked', () => {
     const onChangeMock = jest.fn();
-    const { getByTestId } = render(
-      <Checkbox checked={false} onChange={onChangeMock} testID="checkbox" />
-    );
+    const { getByTestId } = render(<Checkbox checked={false} onChange={onChangeMock} testID="checkbox" />);
     const checkbox = getByTestId('checkbox');
 
     // Initially unchecked
