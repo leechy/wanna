@@ -103,13 +103,17 @@ export function ItemsList({
       index === 0
         ? listItems?.length === 1
           ? { borderRadius: 8 }
+          : inverted
+          ? { borderBottomLeftRadius: 8, borderBottomRightRadius: 8, borderBottomWidth: 0 }
           : { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
         : index === (listItems?.length || 0) - 1
-        ? {
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-            borderBottomWidth: 0,
-          }
+        ? inverted
+          ? { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
+          : {
+              borderBottomLeftRadius: 8,
+              borderBottomRightRadius: 8,
+              borderBottomWidth: 0,
+            }
         : { borderBottomColor };
 
     if (item.type === 'new') {
