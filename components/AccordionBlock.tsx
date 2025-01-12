@@ -1,5 +1,5 @@
 // hooks
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -43,12 +43,26 @@ export function AccordionBlock(block: AccordionBlockProps) {
     }),
   }));
 
+  const itemsCount: number = useMemo(() => {
+    // if the first item in the list is a group --
+    // we need to count only the group items
+    if (block.items?.[0]?.type === 'group') {
+      return block.items.reduce((acc, item) => {
+        if (item.type === 'group') {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+    }
+    return block.items?.length || 0;
+  }, [block.items]);
+
   return (
     <>
       <View style={[styles.header, { backgroundColor }]}>
         <CollapsibleHeader
           title={block.title}
-          items={block.items?.length}
+          items={itemsCount}
           color={block.color}
           isOpen={block.isOpen!}
           onToggle={() => block.onToggle?.()}

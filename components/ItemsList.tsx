@@ -1,9 +1,17 @@
 // hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { useEffect, useState } from 'react';
 
 // components
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { DropdownMenu } from './DropdownMenu';
+import NewItem from './NewItem';
+import ShoppingListItem from './ShoppingListItem';
+import ProjectListItem from './ProjectListItem';
+import ListItemLabel from './ListItemLabel';
+import ContactListItem from './ContactListItem';
+import GroupItem from './GroupItem';
 
 // icons
 import SquareIcon from '../assets/symbols/square.svg';
@@ -15,17 +23,13 @@ import SquareMinusIcon from '../assets/symbols/square-minus.svg';
 import EditIcon from '../assets/symbols/edit.svg';
 import RearrangeIcon from '../assets/symbols/rearrange.svg';
 import SubmenuIcon from './SubmenuIcon';
-import { DropdownMenu } from './DropdownMenu';
-import NewItem from './NewItem';
-import ShoppingListItem from './ShoppingListItem';
-import ProjectListItem from './ProjectListItem';
-import ListItemLabel from './ListItemLabel';
+import SquareCheckIcon from '../assets/symbols/square-check.svg';
+import RestoreIcon from '../assets/symbols/restore.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
 import { SvgProps } from 'react-native-svg';
-import { useEffect, useState } from 'react';
-import ContactListItem from './ContactListItem';
+import { DropdownItem } from '@/types/DropdownItem';
 
 interface ItemsListProps {
   newItemLabel?: string;
@@ -34,6 +38,9 @@ interface ItemsListProps {
   actionHandler?: (item: ListItem) => void;
   checkboxHandler?: (item: ListItem) => void;
   items?: ListItem[];
+  inverted?: boolean;
+  actionIcon?: boolean;
+  submenu?: boolean;
 }
 
 export function ItemsList({
@@ -43,14 +50,14 @@ export function ItemsList({
   actionHandler,
   checkboxHandler,
   items,
+  inverted = false,
+  actionIcon = true,
+  submenu = true,
 }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
-  const textColor = useThemeColor({}, 'text');
   const primaryColor = useThemeColor({}, 'primary');
   const disabledColor = useThemeColor({}, 'disabled');
-  const inactiveColor = useThemeColor({}, 'inactive');
-  const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const touchableColor = useThemeColor({}, 'touchable');
   const dangerColor = useThemeColor({}, 'danger');
 
@@ -127,6 +134,9 @@ export function ItemsList({
         <ContactListItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />
       );
     }
+    if (item.type === 'group') {
+      return <GroupItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />;
+    }
 
     return (
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
@@ -137,9 +147,15 @@ export function ItemsList({
           end={[1, 0]}
           style={[styles.gradient, itemBorderRadius]}
         >
-          <TouchableOpacity style={styles.button} onPress={() => onCheckboxToggled(item)} activeOpacity={0.4}>
-            <SquareIcon width={28} height={28} color={touchableColor} />
-          </TouchableOpacity>
+          {item.completed ? (
+            <View style={styles.button}>
+              <SquareCheckIcon width={28} height={28} color={disabledColor} />
+            </View>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={() => onCheckboxToggled(item)} activeOpacity={0.4}>
+              <SquareIcon width={28} height={28} color={touchableColor} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={() => onItemAction(item)}
             onLongPress={() => onItemEdit(item)}
@@ -147,7 +163,9 @@ export function ItemsList({
             style={styles.labelButton}
           >
             <ListItemLabel item={item} showQuantity={true} />
-            {item.type === 'item' ? (
+            {!actionIcon ? null : item.completed ? (
+              <RestoreIcon width={28} height={28} color={touchableColor} />
+            ) : item.type === 'item' ? (
               item.inProgress ? (
                 <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
               ) : (
@@ -161,29 +179,32 @@ export function ItemsList({
               )
             ) : null}
           </TouchableOpacity>
-
-          <DropdownMenu
-            items={[
-              {
-                label: 'Rearrange',
-                onPress: () => {},
-                icon: RearrangeIcon,
-              },
-              {
-                label: 'Edit',
-                onPress: () => {},
-                icon: EditIcon,
-              },
-              {
-                label: 'Delete',
-                onPress: () => {},
-                color: dangerColor,
-                icon: SquareMinusIcon,
-              },
-            ]}
-          >
-            <SubmenuIcon width={28} height={28} color={disabledColor} />
-          </DropdownMenu>
+          {submenu && (
+            <DropdownMenu
+              items={
+                [
+                  !item.completed && {
+                    label: 'Rearrange',
+                    onPress: () => {},
+                    icon: RearrangeIcon,
+                  },
+                  !item.completed && {
+                    label: 'Edit',
+                    onPress: () => {},
+                    icon: EditIcon,
+                  },
+                  {
+                    label: 'Delete',
+                    onPress: () => {},
+                    color: dangerColor,
+                    icon: SquareMinusIcon,
+                  },
+                ].filter((item) => item) as DropdownItem[]
+              }
+            >
+              <SubmenuIcon width={28} height={28} color={disabledColor} />
+            </DropdownMenu>
+          )}
         </LinearGradient>
       </View>
     );
@@ -191,7 +212,13 @@ export function ItemsList({
 
   return (
     <View style={styles.container}>
-      <FlatList keyExtractor={(item) => item.id} data={listItems} renderItem={renderItem} style={[styles.list]} />
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={listItems}
+        renderItem={renderItem}
+        style={[styles.list]}
+        inverted={inverted}
+      />
     </View>
   );
 }

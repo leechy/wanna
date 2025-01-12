@@ -1,5 +1,5 @@
 export type ListItem = {
-  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'contact';
+  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'contact' | 'group';
   id: string;
   label: string;
   list?: string;
@@ -7,5 +7,5 @@ export type ListItem = {
   deadline?: number;
   quantity?: number;
   inProgress?: boolean | number;
-  completed?: number;
+  completed?: boolean | number;
 };

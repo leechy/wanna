@@ -186,7 +186,29 @@ export default function ShoppingListScreen() {
     },
     {
       title: 'Past purchases',
-      items: [],
+      items: [
+        {
+          id: 'purchase1',
+          type: 'group',
+          label: '25 Decemeber 2024',
+        },
+        {
+          type: 'item',
+          id: 'beefbullion',
+          label: 'Beef bullion',
+          quantity: 1,
+          inProgress: false,
+          completed: true,
+        },
+        {
+          type: 'item',
+          id: 'crepeflour',
+          label: 'Crepe flour',
+          quantity: 2,
+          inProgress: false,
+          completed: true,
+        },
+      ],
       emptyText: 'No purchases yet',
     },
   ];
