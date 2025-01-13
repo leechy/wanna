@@ -224,15 +224,15 @@ export default function ShoppingListScreen() {
             {
               label: 'Share link',
               onPress: () => {
-                console.log('Share link');
-                shareList('123');
+                setTimeout(() => {
+                  shareList('123');
+                }, 600);
               },
               icon: ShareIcon,
             },
             {
               label: 'Copy link',
               onPress: () => {
-                console.log('Copy link');
                 copyListLinkToClipboard('123');
               },
               icon: CopyLinkIcon,
