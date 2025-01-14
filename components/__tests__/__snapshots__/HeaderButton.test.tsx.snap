@@ -2,6 +2,9 @@
 
 exports[`HeaderButton matches snapshot 1`] = `
 <View
+  accessibilityHint="Press to go to the previous screen"
+  accessibilityLabel="Go back"
+  accessibilityRole="button"
   accessibilityState={
     {
       "busy": undefined,

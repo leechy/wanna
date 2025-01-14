@@ -49,6 +49,9 @@ exports[`ThemedButton matches snapshot 1`] = `
     }
   >
     <View
+      accessibilityHint="Press to Click me"
+      accessibilityLabel="Click me"
+      accessibilityRole="button"
       accessibilityState={
         {
           "busy": undefined,

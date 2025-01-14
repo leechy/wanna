@@ -27,6 +27,10 @@ export default function TitleInput({ placeholder, value, onChange }: TitleInputP
         onChangeText={onChange}
         style={[styles.titleInput, { color: primaryColor }]}
         autoFocus={true}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={placeholder}
+        accessibilityHint={`Tap to enter ${placeholder}`}
       />
     </View>
   );

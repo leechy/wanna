@@ -82,7 +82,12 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
       )}
       {isOpen && Platform.OS === 'ios' && (
         <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
-          <TouchableWithoutFeedback onPress={onOverlayPress}>
+          <TouchableWithoutFeedback
+            onPress={onOverlayPress}
+            accessibilityRole="button"
+            accessibilityLabel="Close date picker"
+            accessibilityHint="Press to close the date picker"
+          >
             <View style={[globalStyles.modalOverlay]}>
               <View
                 style={[

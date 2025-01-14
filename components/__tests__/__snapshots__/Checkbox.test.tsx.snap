@@ -2,6 +2,9 @@
 
 exports[`Checkbox matches snapshot 1`] = `
 <View
+  accessibilityHint="Press to check"
+  accessibilityLabel="Checkbox for Label with link"
+  accessibilityRole="checkbox"
   accessibilityState={
     {
       "busy": undefined,

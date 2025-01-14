@@ -26,6 +26,7 @@ import CheckIcon from '@/assets/symbols/check.svg';
 import { TAB_BAR_HEIGHT } from '@/app/(tabs)/_layout';
 import { DropdownItem } from '@/types/DropdownItem';
 import { globalStyles } from '@/constants/GlobalStyles';
+import { extractText } from '@/utils/text';
 
 interface DropdownMenuProps {
   open?: boolean;
@@ -158,11 +159,23 @@ export function DropdownMenu({
 
   return (
     <View>
-      <PressableArea onPress={onTriggerPress}>
+      <PressableArea
+        onPress={onTriggerPress}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`Open menu ${extractText(children)}`}
+        accessibilityHint="Press to open the menu"
+      >
         <View ref={triggerRef}>{children}</View>
       </PressableArea>
       <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
-        <TouchableWithoutFeedback onPress={onOverlayPress}>
+        <TouchableWithoutFeedback
+          onPress={onOverlayPress}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Close the menu"
+          accessibilityHint="Press to close the menu"
+        >
           <View style={[globalStyles.modalOverlay]}>
             <View
               style={[
@@ -185,7 +198,14 @@ export function DropdownMenu({
                     );
                   }
                   return (
-                    <PressableArea key={index} onPress={() => onItemPress(item)}>
+                    <PressableArea
+                      key={index}
+                      onPress={() => onItemPress(item)}
+                      accessible={true}
+                      accessibilityRole="button"
+                      accessibilityLabel={item.label}
+                      accessibilityHint={`Press to ${item.label}`}
+                    >
                       <View
                         style={[
                           styles.menuOption,

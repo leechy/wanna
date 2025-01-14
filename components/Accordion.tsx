@@ -31,7 +31,15 @@ export function Accordion({ title, blocks, titleIcon, titleAction, openBlock = 0
       <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">{title}</ThemedText>
         {titleIcon && titleAction && (
-          <PressableArea onPress={titleAction} style={{ padding: 8 }}>
+          <PressableArea
+            onPress={titleAction}
+            style={{ padding: 8 }}
+            accessible={true}
+            accessibilityRole="button"
+            // TODO: update when there is more than one button in the title
+            accessibilityLabel="Settings"
+            accessibilityHint="Press to open settings"
+          >
             <TitleIcon width={24} height={24} color={textColor} />
           </PressableArea>
         )}

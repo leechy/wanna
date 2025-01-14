@@ -4,6 +4,7 @@ import { Platform, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, Vie
 import SquareIcon from '@/assets/symbols/square.svg';
 import CheckIcon from '@/assets/symbols/square-check.svg';
 import { useEffect, useState } from 'react';
+import { extractText } from '@/utils/text';
 
 interface CheckboxProps {
   checked: boolean;
@@ -38,6 +39,9 @@ export default function Checkbox({ checked, onChange, style, labelStyle, color, 
       style={[styles.container, style]}
       testID={testID}
       activeOpacity={0.4}
+      accessibilityRole="checkbox"
+      accessibilityLabel={`Checkbox for ${extractText(children)}`}
+      accessibilityHint={`Press to ${localState ? 'uncheck' : 'check'}`}
     >
       <View style={styles.checkbox}>
         {localState ? (

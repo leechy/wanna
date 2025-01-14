@@ -37,6 +37,9 @@ export function CollapsibleHeader({
         activeOpacity={0.4}
         disabled={!clickable}
         testID={testID}
+        accessibilityRole="header"
+        accessibilityLabel={`Header for ${title} items group`}
+        accessibilityHint={`Press to ${isOpen ? 'collapse' : 'expand'}`}
       >
         {isOpen ? (
           <ChevronDownIcon width={24} height={24} color={textColor} testID="chevron-down-icon" />

@@ -46,6 +46,10 @@ export default function ShoppingListItem({ itemBorderRadius, item, actionHandler
           onPress={onItemAction}
           onLongPress={onItemAction}
           activeOpacity={0.4}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={`Open shopping list ${item.label}`}
+          accessibilityHint={`Press to open ${item.label}`}
         >
           <View style={globalStyles.listItemLeadButton}>
             {item.inProgress || 0 > 0 ? (

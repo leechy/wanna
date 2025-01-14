@@ -41,6 +41,10 @@ export function ThemedButton({ style, lightColor, darkColor, title, onPress }: T
             }),
           ]}
           onPress={onPress}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={title}
+          accessibilityHint={`Press to ${title}`}
         >
           <Text
             style={[

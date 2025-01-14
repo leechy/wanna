@@ -30,7 +30,15 @@ export default function ContactListItem({ itemBorderRadius, item, actionHandler,
 
   return (
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
-      <TouchableOpacity style={globalStyles.listItemAction} onPress={onItemAction} activeOpacity={0.4} testID={testID}>
+      <TouchableOpacity
+        style={globalStyles.listItemAction}
+        onPress={onItemAction}
+        activeOpacity={0.4}
+        testID={testID}
+        accessibilityRole="button"
+        accessibilityLabel={`Contact item for ${item.label}`}
+        accessibilityHint={`Press to share the list with ${item.label}`}
+      >
         <View style={globalStyles.listItemLeadButton}>
           <PersonIcon width={28} height={28} color={textColor} />
         </View>

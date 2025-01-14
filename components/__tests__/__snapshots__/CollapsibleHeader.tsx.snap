@@ -13,6 +13,9 @@ exports[`CollapsibleHeader matches snapshot when closed 1`] = `
   }
 >
   <View
+    accessibilityHint="Press to expand"
+    accessibilityLabel="Header for Test Title items group"
+    accessibilityRole="header"
     accessibilityState={
       {
         "busy": undefined,
@@ -109,6 +112,9 @@ exports[`CollapsibleHeader matches snapshot when open 1`] = `
   }
 >
   <View
+    accessibilityHint="Press to collapse"
+    accessibilityLabel="Header for Test Title items group"
+    accessibilityRole="header"
     accessibilityState={
       {
         "busy": undefined,

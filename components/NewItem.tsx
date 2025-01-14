@@ -32,7 +32,14 @@ export default function NewItem({ item, icon, itemBorderRadius, actionHandler }:
 
   return (
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
-      <TouchableOpacity style={globalStyles.listItemAction} onPressOut={onItemAction} activeOpacity={0.4}>
+      <TouchableOpacity
+        style={globalStyles.listItemAction}
+        onPressOut={onItemAction}
+        activeOpacity={0.4}
+        accessibilityRole="button"
+        accessibilityLabel="Create new"
+        accessibilityHint="Press to create a new item"
+      >
         <View style={globalStyles.listItemLeadButton}>
           {Icon ? (
             <Icon width={28} height={28} color={inactiveColor} />

@@ -10,7 +10,14 @@ jest.mock('@/hooks/useThemeColor', () => ({
 describe('PressableArea', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <PressableArea onPress={() => {}} testID="pressable-area">
+      <PressableArea
+        onPress={() => {}}
+        testID="pressable-area"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Press me"
+        accessibilityHint="Press me"
+      >
         <Text>Press me</Text>
       </PressableArea>
     );
@@ -20,7 +27,14 @@ describe('PressableArea', () => {
   it('calls onPress when pressed', () => {
     const onPressMock = jest.fn();
     const { getByTestId } = render(
-      <PressableArea onPress={onPressMock} testID="pressable-area">
+      <PressableArea
+        onPress={onPressMock}
+        testID="pressable-area"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Press me"
+        accessibilityHint="Press me"
+      >
         <Text>Press me</Text>
       </PressableArea>
     );
@@ -32,7 +46,14 @@ describe('PressableArea', () => {
 
   it('matches snapshot', () => {
     const { toJSON } = render(
-      <PressableArea onPress={() => {}} testID="pressable-area">
+      <PressableArea
+        onPress={() => {}}
+        testID="pressable-area"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Press me"
+        accessibilityHint="Press me"
+      >
         <Text>Press me</Text>
       </PressableArea>
     );

@@ -47,6 +47,10 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
           onPress={onItemAction}
           onLongPress={onItemAction}
           activeOpacity={0.4}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={`Open project ${item.label}`}
+          accessibilityHint={`Press to open ${item.label}`}
         >
           <View style={globalStyles.listItemLeadButton}>
             {item.inProgress || 0 > 0 ? (
@@ -61,7 +65,8 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
           <ListItemLabel item={item} />
           {item.quantity && (
             <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${
-              (item.inProgress ? (item.inProgress === true ? 1 : item.inProgress) : 0) + (item.completed || 0)
+              (item.inProgress ? (item.inProgress === true ? 1 : item.inProgress) : 0) +
+              (item.completed === true ? 1 : item.completed || 0)
             }/${item.quantity}`}</Text>
           )}
           <ChevronRightIcon width={28} height={28} color={barelyVisibleColor} />

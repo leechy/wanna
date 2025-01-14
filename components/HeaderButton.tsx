@@ -8,15 +8,17 @@ interface HeaderButtonProps {
   color?: string;
 }
 
-export default function HeaderButton({
-  title,
-  onPress,
-  color,
-}: HeaderButtonProps) {
+export default function HeaderButton({ title, onPress, color }: HeaderButtonProps) {
   const primaryColor = useThemeColor({}, 'primary');
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel="Go back"
+      accessibilityHint="Press to go to the previous screen"
+    >
       <Text
         style={[
           styles.label,

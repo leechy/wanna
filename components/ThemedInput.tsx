@@ -43,6 +43,10 @@ export function ThemedInput({
         selectionColor={cursorColor}
         cursorColor={cursorColor}
         autoFocus={true}
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={inputPlaceholder}
+        accessibilityHint={`Tap to enter ${inputPlaceholder}`}
       />
     </View>
   );

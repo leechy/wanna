@@ -2,6 +2,9 @@
 
 exports[`PressableArea matches snapshot 1`] = `
 <View
+  accessibilityHint="Press me"
+  accessibilityLabel="Press me"
+  accessibilityRole="button"
   accessibilityState={
     {
       "busy": undefined,

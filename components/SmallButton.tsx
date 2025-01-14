@@ -55,7 +55,14 @@ export default function SmallButton({ title, icon, style, onPress, color, childr
       ]}
     >
       {onPress ? (
-        <PressableArea style={styles.button} onPress={onPress}>
+        <PressableArea
+          style={styles.button}
+          onPress={onPress}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={title || 'Button'}
+          accessibilityHint={`Press to activate`}
+        >
           {getContents()}
         </PressableArea>
       ) : (

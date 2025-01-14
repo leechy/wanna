@@ -2,7 +2,7 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { Platform, Pressable } from 'react-native';
+import { AccessibilityRole, Platform, Pressable } from 'react-native';
 
 interface PressableAreaProps {
   style?: any;
@@ -10,9 +10,23 @@ interface PressableAreaProps {
   rippleColor?: string;
   children: React.ReactNode;
   testID?: string;
+  accessible: boolean;
+  accessibilityRole: AccessibilityRole;
+  accessibilityLabel: string;
+  accessibilityHint: string;
 }
 
-export function PressableArea({ style, onPress, rippleColor, children, testID }: PressableAreaProps) {
+export function PressableArea({
+  style,
+  onPress,
+  rippleColor,
+  children,
+  testID,
+  accessible,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
+}: PressableAreaProps) {
   const primaryColor = useThemeColor({}, 'primary');
 
   return (
@@ -30,6 +44,10 @@ export function PressableArea({ style, onPress, rippleColor, children, testID }:
       onPress={onPress}
       onPressOut={() => Platform.OS === 'android' && onPress()}
       testID={testID}
+      accessible={accessible}
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
     >
       {children}
     </Pressable>

@@ -157,7 +157,15 @@ export function ItemsList({
               <SquareCheckIcon width={28} height={28} color={disabledColor} />
             </View>
           ) : (
-            <TouchableOpacity style={styles.button} onPress={() => onCheckboxToggled(item)} activeOpacity={0.4}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => onCheckboxToggled(item)}
+              activeOpacity={0.4}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel={`Check out ${item.label}`}
+              accessibilityHint={`Press to check out ${item.label}`}
+            >
               <SquareIcon width={28} height={28} color={touchableColor} />
             </TouchableOpacity>
           )}
@@ -166,6 +174,26 @@ export function ItemsList({
             onLongPress={() => onItemEdit(item)}
             activeOpacity={0.4}
             style={styles.labelButton}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={
+              item.type === 'item'
+                ? item.inProgress
+                  ? `Remove ${item.label} from the cart`
+                  : `Put ${item.label} in the cart`
+                : item.inProgress
+                ? `Pause ${item.label}`
+                : `Start ${item.label}`
+            }
+            accessibilityHint={
+              item.type === 'item'
+                ? item.inProgress
+                  ? 'Press to remove from the cart'
+                  : 'Press to put in the cart'
+                : item.inProgress
+                ? 'Press to put on pause'
+                : 'Press to start'
+            }
           >
             <ListItemLabel item={item} showQuantity={true} />
             {!actionIcon ? null : item.completed ? (
