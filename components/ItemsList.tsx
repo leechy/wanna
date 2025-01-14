@@ -139,7 +139,7 @@ export function ItemsList({
       );
     }
     if (item.type === 'group') {
-      return <GroupItem item={item} itemBorderRadius={itemBorderRadius} actionHandler={(item) => onItemAction(item)} />;
+      return <GroupItem item={item} itemBorderRadius={itemBorderRadius} />;
     }
 
     return (

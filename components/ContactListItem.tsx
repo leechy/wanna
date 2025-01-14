@@ -16,9 +16,10 @@ interface ContactListItemProps {
   actionHandler?: (item: ListItem) => void;
   editHandler?: (item: ListItem) => void;
   itemBorderRadius: StyleProp<ViewStyle>;
+  testID?: string;
 }
 
-export default function ContactListItem({ itemBorderRadius, item, actionHandler }: ContactListItemProps) {
+export default function ContactListItem({ itemBorderRadius, item, actionHandler, testID }: ContactListItemProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const textColor = useThemeColor({}, 'text');
   const inactiveColor = useThemeColor({}, 'inactive');
@@ -29,7 +30,7 @@ export default function ContactListItem({ itemBorderRadius, item, actionHandler 
 
   return (
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
-      <TouchableOpacity style={globalStyles.listItemAction} onPress={onItemAction} activeOpacity={0.4}>
+      <TouchableOpacity style={globalStyles.listItemAction} onPress={onItemAction} activeOpacity={0.4} testID={testID}>
         <View style={globalStyles.listItemLeadButton}>
           <PersonIcon width={28} height={28} color={textColor} />
         </View>

@@ -25,7 +25,6 @@ export default function Checkbox({ checked, onChange, style, labelStyle, color, 
   }, [checked]);
 
   function updateState(newState: boolean) {
-    console.log('Checkbox updateState', newState);
     setLocalState(newState);
     onChange?.(newState);
   }

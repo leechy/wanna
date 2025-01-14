@@ -9,9 +9,10 @@ interface PressableAreaProps {
   onPress: () => void;
   rippleColor?: string;
   children: React.ReactNode;
+  testID?: string;
 }
 
-export function PressableArea({ style, onPress, rippleColor, children }: PressableAreaProps) {
+export function PressableArea({ style, onPress, rippleColor, children, testID }: PressableAreaProps) {
   const primaryColor = useThemeColor({}, 'primary');
 
   return (
@@ -26,7 +27,9 @@ export function PressableArea({ style, onPress, rippleColor, children }: Pressab
           ios: { opacity: pressed ? 0.4 : 1 },
         }),
       ]}
-      onPressOut={onPress}
+      onPress={onPress}
+      onPressOut={() => Platform.OS === 'android' && onPress()}
+      testID={testID}
     >
       {children}
     </Pressable>

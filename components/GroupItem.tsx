@@ -13,21 +13,16 @@ import { ListItem } from '@/types/listItem';
 
 interface GroupItemProps {
   item: ListItem;
-  actionHandler?: (item: ListItem) => void;
   itemBorderRadius: StyleProp<ViewStyle>;
+  testId?: string;
 }
 
-export default function GroupItem({ item, itemBorderRadius, actionHandler }: GroupItemProps) {
+export default function GroupItem({ item, itemBorderRadius, testId }: GroupItemProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const inactiveColor = useThemeColor({}, 'inactive');
 
-  function onItemAction() {
-    console.log('ItemsList Action item', item, actionHandler);
-    actionHandler?.(item);
-  }
-
   return (
-    <View style={[styles.groupItem, { backgroundColor, minHeight: 20 }, itemBorderRadius]}>
+    <View style={[styles.groupItem, { backgroundColor, minHeight: 20 }, itemBorderRadius]} testID={testId}>
       <View style={globalStyles.listItemLeadButton}>
         <PurchaseIcon width={20} height={20} color={inactiveColor} />
       </View>

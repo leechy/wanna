@@ -15,6 +15,7 @@ interface CollapsibleHeaderProps {
   isOpen: boolean;
   clickable?: boolean;
   onToggle: () => void;
+  testID?: string;
 }
 
 export function CollapsibleHeader({
@@ -24,6 +25,7 @@ export function CollapsibleHeader({
   isOpen = false,
   clickable = true,
   onToggle,
+  testID,
 }: CollapsibleHeaderProps) {
   const textColor = useThemeColor({}, 'text');
 
@@ -34,18 +36,15 @@ export function CollapsibleHeader({
         onPress={onToggle}
         activeOpacity={0.4}
         disabled={!clickable}
+        testID={testID}
       >
         {isOpen ? (
-          <ChevronDownIcon width={24} height={24} color={textColor} />
+          <ChevronDownIcon width={24} height={24} color={textColor} testID="chevron-down-icon" />
         ) : (
-          <ChevronRightIcon width={24} height={24} color={textColor} />
+          <ChevronRightIcon width={24} height={24} color={textColor} testID="chevron-right-icon" />
         )}
-        <Text style={[styles.title, { color: color || textColor }]}>
-          {title}
-        </Text>
-        <Text style={[styles.number, { color: color || textColor }]}>
-          {items}
-        </Text>
+        <Text style={[styles.title, { color: color || textColor }]}>{title}</Text>
+        <Text style={[styles.number, { color: color || textColor }]}>{items}</Text>
       </TouchableOpacity>
     </View>
   );
