@@ -2,7 +2,7 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 // styles and icons
 import { globalStyles } from '@/constants/GlobalStyles';

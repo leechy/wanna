@@ -1,11 +1,8 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 
 export default function ProjectsScreen() {
-  const primaryColor = useThemeColor({}, 'primary');
-
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Present continuous',

@@ -96,6 +96,7 @@ export function ItemsList({
   const [listItems, setListItems] = useState<ListItem[]>(getListItems(items));
   useEffect(() => {
     setListItems(getListItems(items));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   function renderItem({ item, index }: { item: ListItem; index: number }) {

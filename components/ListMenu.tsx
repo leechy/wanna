@@ -9,12 +9,12 @@ interface ListMenuProps {
 }
 
 export default function ListMenu({ listId }: ListMenuProps) {
+  const primaryColor = useThemeColor({}, 'primary');
+  const dangerColor = useThemeColor({}, 'danger');
+
   if (!listId) {
     return null;
   }
-
-  const primaryColor = useThemeColor({}, 'primary');
-  const dangerColor = useThemeColor({}, 'danger');
 
   return (
     <DropdownMenu

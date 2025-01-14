@@ -51,7 +51,7 @@ export function DropdownMenu({
   isHeaderMenu = false,
 }: DropdownMenuProps) {
   const triggerRef = useRef<View>(null);
-  const { height: winH, width: winW, scale } = useWindowDimensions();
+  const { height: winH, width: winW } = useWindowDimensions();
   const { top: safeT, right: safeR, bottom: safeB, left: safeL } = useSafeAreaInsets();
   const [position, setPosition] = useState({ x: 0, y: 0, width });
   const [isOpen, setIsOpen] = useState(open);
@@ -72,7 +72,7 @@ export function DropdownMenu({
         NavigationBar.setButtonStyleAsync(colorScheme === 'dark' ? 'light' : 'dark');
       }, 80);
     }
-  }, [colorScheme, isOpen]);
+  }, [colorScheme, isOpen, tabBarBackground]);
 
   function calculatePosition() {
     if (isHeaderMenu) {
@@ -136,6 +136,7 @@ export function DropdownMenu({
     if (open) {
       calculatePosition();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function onTriggerPress() {

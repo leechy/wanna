@@ -29,7 +29,7 @@ describe('Checkbox', () => {
   });
 
   it('renders label with additional elements', () => {
-    const { getByText, queryByText } = render(
+    const { getByText } = render(
       <Checkbox checked={false} onChange={() => {}} testID="checkbox">
         <Text>
           Label with{' '}

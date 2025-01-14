@@ -1,14 +1,6 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-import {
-  Text,
-  type ViewStyle,
-  StyleSheet,
-  Pressable,
-  Platform,
-  View,
-  useColorScheme,
-} from 'react-native';
+import { Text, type ViewStyle, StyleSheet, Pressable, Platform, View, useColorScheme } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fullButtonBackgrounds } from '@/constants/Colors';
 
@@ -16,21 +8,12 @@ export type ThemedButtonProps = {
   style?: ViewStyle;
   lightColor?: string;
   darkColor?: string;
-  title: String;
+  title: string;
   onPress?: () => void;
 };
 
-export function ThemedButton({
-  style,
-  lightColor,
-  darkColor,
-  title,
-  onPress,
-}: ThemedButtonProps) {
-  const fullButtonText = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'fullButtonText'
-  );
+export function ThemedButton({ style, lightColor, darkColor, title, onPress }: ThemedButtonProps) {
+  const fullButtonText = useThemeColor({ light: lightColor, dark: darkColor }, 'fullButtonText');
   const theme = useColorScheme() ?? 'light';
   const fullButtonBackground = fullButtonBackgrounds[theme];
 

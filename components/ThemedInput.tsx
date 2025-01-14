@@ -1,6 +1,6 @@
-import { Text, type ViewStyle, StyleSheet, Pressable, Platform, View, TextInput, TextStyle } from 'react-native';
-
 import { useThemeColor } from '@/hooks/useThemeColor';
+
+import { type ViewStyle, StyleSheet, View, TextInput, TextStyle } from 'react-native';
 
 export type ThemedInputProps = {
   style?: TextStyle;

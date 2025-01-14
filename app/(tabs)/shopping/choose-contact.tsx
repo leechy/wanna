@@ -1,19 +1,20 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
+// hooks and utils
+import { useEffect } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { copyListLinkToClipboard } from '@/utils/share';
 
+// components
 import Page from '@/components/Page';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { globalStyles } from '@/constants/GlobalStyles';
 import { ItemsList } from '@/components/ItemsList';
-import { copyListLinkToClipboard } from '@/utils/share';
 import { View } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
+
+// icons
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 
 export default function ChooseContactScreen() {
-  const primaryColor = useThemeColor({}, 'primary');
-
   const { listId } = useLocalSearchParams();
 
   useEffect(() => {

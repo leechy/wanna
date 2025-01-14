@@ -11,7 +11,7 @@ import { SvgProps } from 'react-native-svg';
 
 export type SmallButtonProps = {
   style?: ViewStyle;
-  title?: String;
+  title?: string;
   icon?: React.FC<SvgProps>;
   onPress?: () => void;
   color?: string;
@@ -21,7 +21,6 @@ export type SmallButtonProps = {
 export default function SmallButton({ title, icon, style, onPress, color, children }: SmallButtonProps) {
   const smallButtonText = useThemeColor({}, 'touchable');
   const smallButtonBackground = useThemeColor({}, 'smallButtonBackground');
-  const inactiveColor = useThemeColor({}, 'inactive');
 
   const Icon = icon || (() => <></>);
 

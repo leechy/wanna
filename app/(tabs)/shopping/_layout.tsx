@@ -5,7 +5,6 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import HeaderButton from '@/components/HeaderButton';
 import { router, Stack } from 'expo-router';
 import { Platform } from 'react-native';
-import SubmenuIcon from '@/components/SubmenuIcon';
 import ListMenu from '@/components/ListMenu';
 
 export default function ShoppingLayout() {

@@ -20,7 +20,6 @@ import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
-import { press } from '@testing-library/react-native/build/user-event/press';
 import DateSelector from '@/components/DateSelector';
 
 export default function ShoppingListScreen() {
