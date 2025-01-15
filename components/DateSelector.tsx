@@ -1,12 +1,19 @@
+// hooks
 import { useRef, useState } from 'react';
-import SmallButton from './SmallButton';
-import CalendarIcon from '@/assets/symbols/square-calendar.svg';
-import { Modal, Platform, StyleSheet, Text, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native';
-import CloseIcon from '@/assets/symbols/x.svg';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { globalStyles } from '@/constants/GlobalStyles';
 import { humanDate } from '@/utils/dates';
+
+// components
+import { Modal, Platform, StyleSheet, Text, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native';
+import SmallButton from './SmallButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+// icons
+import CalendarIcon from '@/assets/symbols/square-calendar.svg';
+import CloseIcon from '@/assets/symbols/x.svg';
+
+// styles
+import { globalStyles } from '@/constants/GlobalStyles';
 
 interface DateSelectorProps {
   placeholder: string;
@@ -69,54 +76,54 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
           </>
         )}
       </SmallButton>
-      {isOpen && Platform.OS !== 'ios' && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode="date"
-          display="compact"
-          onChange={onDateChange}
-          onTouchCancel={onOverlayPress}
-          accentColor={primaryColor}
-        />
-      )}
-      {isOpen && Platform.OS === 'ios' && (
-        <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
-          <TouchableWithoutFeedback
-            onPress={onOverlayPress}
-            accessibilityRole="button"
-            accessibilityLabel="Close date picker"
-            accessibilityHint="Press to close the date picker"
-          >
-            <View style={[globalStyles.modalOverlay]}>
-              <View
-                style={[
-                  globalStyles.menuContainer,
-                  {
-                    top: (winH - height) / 2,
-                    left: (winW - width) / 2,
-                    width,
-                    height,
-                    shadowColor: textColor,
-                    backgroundColor,
-                    paddingHorizontal: 12,
-                  },
-                ]}
-              >
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode="date"
-                  display="inline"
-                  onChange={onDateChange}
-                  accentColor={primaryColor}
-                  key={date.toISOString()}
-                />
+      {isOpen &&
+        (Platform.OS === 'ios' ? (
+          <Modal transparent={true} visible={isOpen} animationType="fade" onRequestClose={onOverlayPress}>
+            <TouchableWithoutFeedback
+              onPress={onOverlayPress}
+              accessibilityRole="button"
+              accessibilityLabel="Close date picker"
+              accessibilityHint="Press to close the date picker"
+            >
+              <View style={[globalStyles.modalOverlay]}>
+                <View
+                  style={[
+                    globalStyles.menuContainer,
+                    {
+                      top: (winH - height) / 2,
+                      left: (winW - width) / 2,
+                      width,
+                      height,
+                      shadowColor: textColor,
+                      backgroundColor,
+                      paddingHorizontal: 12,
+                    },
+                  ]}
+                >
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="date"
+                    display="inline"
+                    onChange={onDateChange}
+                    accentColor={primaryColor}
+                    key={date.toISOString()}
+                  />
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      )}
+            </TouchableWithoutFeedback>
+          </Modal>
+        ) : (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            display="compact"
+            onChange={onDateChange}
+            onTouchCancel={onOverlayPress}
+            accentColor={primaryColor}
+          />
+        ))}
     </View>
   );
 }
