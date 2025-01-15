@@ -16,7 +16,7 @@ import { DropdownMenu } from '@/components/DropdownMenu';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
+import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';

@@ -10,7 +10,7 @@ import { ThemedText } from '@/components/ThemedText';
 import Checkbox from '@/components/Checkbox';
 
 // icons
-import PersonPlusIcon from '@/assets/symbols/person-plus.svg';
+import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import DateSelector from '@/components/DateSelector';
 
 export default function NewListModal() {
@@ -24,7 +24,7 @@ export default function NewListModal() {
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 
         <View style={styles.properties}>
-          <DateSelector placeholder="Deadline" value={deadline} onChange={setDeadline} />
+          <DateSelector placeholder="No deadline" value={deadline} onChange={setDeadline} />
           <SmallButton title="Not yet shared" icon={PersonPlusIcon} onPress={() => {}} />
         </View>
         <TitleInput placeholder="Shopping list" value={title} onChange={setTitle} />
