@@ -12,6 +12,7 @@ export type ThemedInputProps = {
   enterKeyHint?: 'done' | 'enter' | 'go' | 'next' | 'previous' | 'search' | 'send';
   value: string;
   onChange?: (value: string) => void;
+  onSubmit?: () => void;
 };
 
 export function ThemedInput({
@@ -24,6 +25,7 @@ export function ThemedInput({
   enterKeyHint = 'go',
   value,
   onChange,
+  onSubmit,
 }: ThemedInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'inputText');
   const inputPlaceholder = useThemeColor({ light: lightColor, dark: darkColor }, 'inputPlaceholder');
@@ -47,6 +49,7 @@ export function ThemedInput({
         accessibilityRole="text"
         accessibilityLabel={inputPlaceholder}
         accessibilityHint={`Tap to enter ${inputPlaceholder}`}
+        onSubmitEditing={onSubmit}
       />
     </View>
   );
