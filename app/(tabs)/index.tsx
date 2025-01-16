@@ -1,8 +1,6 @@
 // hooks and state
 import { useState } from 'react';
-import { useSelector } from '@legendapp/state/react';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { profiles$ } from '@/state/user';
 import { router } from 'expo-router';
 
 // components
@@ -16,11 +14,6 @@ import SortIcon from '@/assets/symbols/sort.svg';
 import SettingsIcon from '@/assets/symbols/settings.svg';
 
 export default function HomeScreen() {
-  const profiles = useSelector(profiles$);
-  const displayProfiles = () => {
-    console.log('profiles', profiles);
-  };
-
   const dangerColor = useThemeColor({}, 'danger');
 
   const [openDropdown, setOpenDropdown] = useState(false);

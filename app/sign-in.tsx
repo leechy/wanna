@@ -1,11 +1,11 @@
 // hooks and state
 import { useState } from 'react';
-import { supabase } from '@/app/_layout';
-import { addUserProfile } from '@/state/user';
+import { supabase } from '@/state/state';
+import { addUserProfile } from '@/state/state';
 
 // components
 import { router, Stack } from 'expo-router';
-import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedButton } from '@/components/ThemedButton';
@@ -22,7 +22,7 @@ export default function SignInScreen() {
       console.error('signInAnonymously error', error);
     }
     if (typeof data.user?.id === 'string') {
-      addUserProfile(data.user.id, name);
+      addUserProfile(data.user.id, name.trim());
       router.replace('/');
     }
   };
@@ -39,10 +39,7 @@ export default function SignInScreen() {
     <>
       <Stack.Screen options={{ title: 'Tell us your name' }} />
       <ThemedView style={styles.container}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardAV}
-        >
+        <KeyboardAvoidingView behavior={'padding'} style={styles.keyboardAV}>
           <ThemedText
             type="title"
             style={{
@@ -52,10 +49,7 @@ export default function SignInScreen() {
           >
             Wanna Wanna
           </ThemedText>
-          <ThemedText
-            type="subtitle"
-            style={{ textAlign: 'center', marginVertical: 8 }}
-          >
+          <ThemedText type="subtitle" style={{ textAlign: 'center', marginVertical: 8 }}>
             sharing wishes starts with...
           </ThemedText>
           <ThemedInput
@@ -63,12 +57,9 @@ export default function SignInScreen() {
             placeholder="your name"
             value={name}
             onChange={setName}
+            onSubmit={createAccount}
           />
-          <ThemedButton
-            style={{ marginHorizontal: 16 }}
-            title="Let's go"
-            onPress={createAccount}
-          />
+          <ThemedButton style={{ marginHorizontal: 16 }} title="Let's go" onPress={createAccount} />
         </KeyboardAvoidingView>
       </ThemedView>
     </>

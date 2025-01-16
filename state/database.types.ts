@@ -147,87 +147,6 @@ export type Database = {
         }
         Relationships: []
       }
-      location_items: {
-        Row: {
-          created_at: string | null
-          deleted: boolean | null
-          id: string
-          is_available: boolean | null
-          is_public: boolean
-          item_id: string | null
-          location_id: string | null
-          price: number | null
-          quantity: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_available?: boolean | null
-          is_public?: boolean
-          item_id?: string | null
-          location_id?: string | null
-          price?: number | null
-          quantity?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_available?: boolean | null
-          is_public?: boolean
-          item_id?: string | null
-          location_id?: string | null
-          price?: number | null
-          quantity?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      locations: {
-        Row: {
-          address: string | null
-          created_at: string | null
-          deleted: boolean | null
-          id: string
-          is_active: boolean | null
-          is_public: boolean | null
-          latitude: number | null
-          longitude: number | null
-          name: string
-          popularity: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          address?: string | null
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_active?: boolean | null
-          is_public?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
-          name: string
-          popularity?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          address?: string | null
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_active?: boolean | null
-          is_public?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
-          name?: string
-          popularity?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       user_lists: {
         Row: {
           created_at: string | null
@@ -277,45 +196,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user_locations: {
-        Row: {
-          created_at: string | null
-          deleted: boolean | null
-          id: string
-          is_active: boolean
-          location_id: string
-          name: string | null
-          sort_order: number | null
-          type: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_active?: boolean
-          location_id: string
-          name?: string | null
-          sort_order?: number | null
-          type?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          deleted?: boolean | null
-          id?: string
-          is_active?: boolean
-          location_id?: string
-          name?: string | null
-          sort_order?: number | null
-          type?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
       }
       user_profiles: {
         Row: {

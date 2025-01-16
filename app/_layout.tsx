@@ -13,9 +13,9 @@ import { Colors } from '@/constants/Colors';
 import { Redirect, Stack } from 'expo-router';
 
 // state
-import { initSupabase } from '@/state/supabase';
+import '@/state/state';
 import { useSelector } from '@legendapp/state/react';
-import { user$ } from '@/state/user';
+import { user$ } from '@/state/state';
 
 // system
 import * as Notifications from 'expo-notifications';
@@ -27,9 +27,6 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-// Initialize Supabase at the root of the app
-export const supabase = initSupabase();
 
 export default function RootLayout() {
   // Register for push notifications
