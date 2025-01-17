@@ -55,7 +55,6 @@ export default function ShoppingLayout() {
             Platform.OS === 'ios' ? (
               <HeaderButton title="Cancel" color={backButtonColor} onPress={() => router.dismissTo('/shopping')} />
             ) : null,
-          headerRight: () => <HeaderButton title="Create" onPress={router.back} />,
         }}
       />
       <Stack.Screen

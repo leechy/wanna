@@ -4,7 +4,7 @@ export type ListItem = {
   label: string;
   list?: string;
   shared?: string[];
-  deadline?: number;
+  deadline?: string | number | null;
   quantity?: number;
   inProgress?: boolean | number;
   completed?: boolean | number;

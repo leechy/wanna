@@ -3,6 +3,8 @@ import { DropdownMenu } from './DropdownMenu';
 import SubmenuIcon from './SubmenuIcon';
 import EditIcon from '@/assets/symbols/edit.svg';
 import SquareMinusIcon from '@/assets/symbols/square-minus.svg';
+import { router } from 'expo-router';
+import { deleteList } from '@/state/actions-lists';
 
 interface ListMenuProps {
   listId?: string;
@@ -22,14 +24,15 @@ export default function ListMenu({ listId }: ListMenuProps) {
         {
           label: 'Edit list',
           onPress: () => {
-            console.log('Edit list', listId);
+            router.navigate(`/shopping/new-list?listId=${listId}`);
           },
           icon: EditIcon,
         },
         {
           label: 'Delete list',
           onPress() {
-            console.log('Delete list', listId);
+            router.back();
+            deleteList(listId);
           },
           color: dangerColor,
           icon: SquareMinusIcon,

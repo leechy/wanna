@@ -1,4 +1,9 @@
+// hooks and state
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { observer, useSelector } from '@legendapp/state/react';
+import { lists$ as _lists$ } from '@/state/state';
+
+// components
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
@@ -7,7 +12,7 @@ import SmallButton from '@/components/SmallButton';
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import { ListItem } from '@/types/listItem';
 
-export default function ShoppingScreen() {
+function ShoppingScreen() {
   const primaryColor = useThemeColor({}, 'primary');
 
   function newList() {
@@ -22,6 +27,8 @@ export default function ShoppingScreen() {
     console.log('checkoutList', item);
   }
 
+  const lists = useSelector(_lists$);
+
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Active lists',
@@ -29,24 +36,36 @@ export default function ShoppingScreen() {
       newItemHandler: newList,
       actionHandler: goToList,
       checkboxHandler: checkoutList,
-      items: [
-        {
-          type: 'shopping-list',
-          id: '1',
-          label: 'Home groceries',
-          quantity: 14,
-          inProgress: 3,
-        },
-        {
-          type: 'shopping-list',
-          id: '2',
-          label: 'Materials for the bathroom renovation',
-          deadline: 1740441600000,
-          shared: ['John', 'Letitia'],
-          quantity: 8,
-          inProgress: false,
-        },
-      ],
+      items:
+        (lists &&
+          Object.keys(lists).map((listId) => {
+            const list = lists[listId];
+            return {
+              id: listId,
+              type: list.type as ListItem['type'],
+              label: list.name,
+              deadline: list.deadline,
+            };
+          })) ||
+        [],
+      // [
+      //   {
+      //     type: 'shopping-list',
+      //     id: '1',
+      //     label: 'Home groceries',
+      //     quantity: 14,
+      //     inProgress: 3,
+      //   },
+      //   {
+      //     type: 'shopping-list',
+      //     id: '2',
+      //     label: 'Materials for the bathroom renovation',
+      //     deadline: 1740441600000,
+      //     shared: ['John', 'Letitia'],
+      //     quantity: 8,
+      //     inProgress: false,
+      //   },
+      // ],
       emptyText: 'No Lists here! Create a new one to start shopping!',
     },
     {
@@ -85,3 +104,5 @@ export default function ShoppingScreen() {
     </Page>
   );
 }
+
+export default observer(ShoppingScreen);

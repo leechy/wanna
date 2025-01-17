@@ -1,5 +1,5 @@
 // hooks
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { humanDate } from '@/utils/dates';
 
@@ -17,9 +17,9 @@ import { globalStyles } from '@/constants/GlobalStyles';
 
 interface DateSelectorProps {
   placeholder: string;
-  value?: number; // Unix timestamp
+  value?: number | string; // Unix timestamp
   initialOffset?: number; // days from now — date selector will have this date, when activated
-  onChange: (value: number | undefined) => void;
+  onChange: (value: number | string | undefined) => void;
 }
 
 export default function DateSelector({ placeholder, value, initialOffset = 2, onChange }: DateSelectorProps) {
@@ -31,6 +31,13 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
   const backgroundColor = useThemeColor({}, 'listBackground');
 
   const [date, setDate] = useState(new Date(value || Date.now() + (initialOffset || 0) * 1000 * 60 * 60 * 24));
+  useEffect(() => {
+    if (value) {
+      setDate(new Date(value));
+      setActive(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   const width: number = 364;
   const height: number = 324;
@@ -38,10 +45,9 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
   const { height: winH, width: winW } = useWindowDimensions();
 
   function activate() {
-    console.log('activate', active, isOpen);
     if (!active) {
       setActive(true);
-      onChange(date.getTime());
+      onChange(value && typeof value === 'string' ? date.toISOString() : date.getTime());
     }
     setIsOpen(true);
   }
@@ -58,12 +64,12 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
   }
 
   function onDateChange(_: any, selectedDate?: Date) {
-    setIsOpen(false);
-
     if (selectedDate && date.getTime() !== selectedDate.getTime()) {
       setDate(selectedDate);
-      onChange(date.getTime());
+      onChange(value && typeof value === 'string' ? selectedDate.toISOString() : selectedDate.getTime());
     }
+
+    setIsOpen(false);
   }
 
   return (

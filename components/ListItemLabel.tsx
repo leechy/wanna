@@ -38,7 +38,7 @@ export default function ListItemLabel({
   const touchableColor = useThemeColor({}, 'touchable');
   const dangerColor = useThemeColor({}, 'danger');
 
-  const overdue = (item.deadline || 0) < Date.now();
+  const overdue = ((item.deadline && new Date(item.deadline).getTime()) || 0) < Date.now();
 
   return (
     <View style={globalStyles.itemListLabelContainer} testID={testID}>
@@ -52,7 +52,7 @@ export default function ListItemLabel({
             <View style={globalStyles.itemListLabelMetaItem} testID={testCalendarID}>
               <CalendarIcon width={14} height={14} color={overdue ? dangerColor : touchableColor} />
               <Text style={[globalStyles.itemListLabelMeta, { color: overdue ? dangerColor : touchableColor }]}>
-                {humanDate(item.deadline)}
+                {humanDate(new Date(item.deadline).getTime())}
               </Text>
             </View>
           )}

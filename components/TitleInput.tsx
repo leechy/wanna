@@ -8,9 +8,10 @@ interface TitleInputProps {
   placeholder?: string;
   value?: string;
   onChange?: (text: string) => void;
+  onSubmit?: () => void;
 }
 
-export default function TitleInput({ placeholder, value, onChange }: TitleInputProps) {
+export default function TitleInput({ placeholder, value, onChange, onSubmit }: TitleInputProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const inputPlaceholderColor = useThemeColor({}, 'inputPlaceholder');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
@@ -25,6 +26,7 @@ export default function TitleInput({ placeholder, value, onChange }: TitleInputP
         selectionHandleColor={primaryColor}
         value={value}
         onChangeText={onChange}
+        onSubmitEditing={onSubmit}
         style={[styles.titleInput, { color: primaryColor }]}
         autoFocus={true}
         accessible={true}
