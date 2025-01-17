@@ -7,3 +7,9 @@ export type UserState = {
   devicePushToken: string;
   notificationStatus: 'undetermined' | 'granted' | 'denied' | 'not-supported';
 };
+
+export type UserProfile = {
+  id: string;
+  user_id: string;
+  names: string | null;
+};

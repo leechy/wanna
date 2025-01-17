@@ -157,23 +157,41 @@ export function setSession(session: Session | null) {
   user$.session.set(session);
 }
 
-export async function addUserProfile(user_id: string, name: string) {
-  // Add the new user to the profiles collection
-  const profileId = generateId();
-  profiles$[profileId].set({
-    id: profileId,
-    user_id,
-    names: name,
-  });
-  // TODO: Implement addList and addListItem actions
-  // Create a new default list for the user
-  // const listId = await addList('Tutorial', 'project');
-  // Add a few default items to the default list
-  // addListItem(listId, 'Mark this item as ongoing, and then as completed');
-  // addListItem(listId, 'Swipe left to delete this item');
-  // addListItem(
-  //   listId,
-  //   'Create a new item by tapping on the “New Item” placeholder at the top'
-  // );
-  // addListItem(listId, 'Create a new list from the Lists screen');
-}
+/**
+ * User lists
+ * selecting everything from the lists table
+ * TODO: filter out the lists that are not shared with the current user
+ *       in the realtime sections
+ *
+ * @type {ObservableObject}
+ */
+export const lists$ = observable(
+  customSynced({
+    supabase,
+    collection: 'lists',
+    select: (from) => from.select('*'),
+    filter: (select) => select.contains('user_ids', [user$.id.get() || '']),
+    actions: ['create', 'read', 'update', 'delete'],
+    // Realtime filter by user_id
+    // TODO: not just current user, but all users we are sharing lists with
+    // realtime: { filter: `user_ids=cs.[${user$.get().id || ''}]`, },
+    realtime: true,
+    // Persist data and pending changes locally
+    persist: { name: 'lists', retrySync: true },
+    retry: { infinite: true },
+    // Sync only diffs
+    changesSince: 'last-sync',
+    transform: {
+      load(value, method) {
+        console.log('lists$ load user id', user$.get().id);
+        console.log('load', value, method);
+        return value;
+      },
+      save(value) {
+        console.log('lists$ save user id', user$.get().id);
+        console.log('save', value);
+        return value;
+      },
+    },
+  })
+);

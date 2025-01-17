@@ -1,7 +1,7 @@
 // hooks and state
 import { useState } from 'react';
 import { supabase } from '@/state/state';
-import { addUserProfile } from '@/state/state';
+import { addUserProfile } from '@/state/actions-user';
 
 // components
 import { router, Stack } from 'expo-router';

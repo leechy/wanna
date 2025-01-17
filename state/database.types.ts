@@ -98,13 +98,11 @@ export type Database = {
           hide_completed: boolean
           id: string
           is_active: boolean
-          location_id: string | null
           name: string
           notify_on_item_state_update: boolean
           notify_on_list_items_update: boolean
           notify_on_user_at_location: boolean
           share_id: string
-          shopping_location_id: string | null
           type: string
           updated_at: string | null
           user_ids: string[] | null
@@ -116,13 +114,11 @@ export type Database = {
           hide_completed?: boolean
           id?: string
           is_active?: boolean
-          location_id?: string | null
           name: string
           notify_on_item_state_update?: boolean
           notify_on_list_items_update?: boolean
           notify_on_user_at_location?: boolean
           share_id?: string
-          shopping_location_id?: string | null
           type: string
           updated_at?: string | null
           user_ids?: string[] | null
@@ -134,13 +130,11 @@ export type Database = {
           hide_completed?: boolean
           id?: string
           is_active?: boolean
-          location_id?: string | null
           name?: string
           notify_on_item_state_update?: boolean
           notify_on_list_items_update?: boolean
           notify_on_user_at_location?: boolean
           share_id?: string
-          shopping_location_id?: string | null
           type?: string
           updated_at?: string | null
           user_ids?: string[] | null
