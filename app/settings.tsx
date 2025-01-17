@@ -32,7 +32,7 @@ function SettingsScreen() {
         <SmallButton title="Log Out" onPress={logout} />
       </ThemedView>
       <View style={{ padding: 16, gap: 12 }}>
-        <Text>Current user id: {_user$.get()?.id}</Text>
+        <Text>Current user id: {_user$.id.get()}</Text>
         <Text>Current name: {userName}</Text>
       </View>
       <View style={{ padding: 16, gap: 12 }}>

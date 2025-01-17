@@ -8,7 +8,7 @@ import { generateId, lists$ as _lists$, user$ as _user$ } from './state';
  * @returns
  */
 export async function addList(list: Partial<List>) {
-  const uid = _user$.get()?.id;
+  const uid = _user$.id?.get();
   if (!uid) {
     throw new Error('No user id');
   }
@@ -44,7 +44,7 @@ export async function addList(list: Partial<List>) {
  * @returns {void}
  */
 export async function updateList(listId: string, update: Partial<List>) {
-  const list = _lists$[listId].get();
+  const list = _lists$[listId]?.get();
   _lists$[listId].set({
     ...list,
     ...update,

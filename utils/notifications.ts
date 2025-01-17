@@ -10,7 +10,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { user$ } from '@/state/user';
+import { user$ as _user$ } from '@/state/state';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -25,9 +25,7 @@ function handleRegistrationError(errorMessage: string) {
   throw new Error(errorMessage);
 }
 
-export async function registerForPushNotificationsAsync(): Promise<
-  [string, string] | void
-> {
+export async function registerForPushNotificationsAsync(): Promise<[string, string] | void> {
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -38,8 +36,7 @@ export async function registerForPushNotificationsAsync(): Promise<
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
     let finalStatus = existingStatus;
 
@@ -49,32 +46,25 @@ export async function registerForPushNotificationsAsync(): Promise<
     }
 
     if (finalStatus !== 'granted') {
-      handleRegistrationError(
-        'Permission not granted to get push token for push notification!'
-      );
+      handleRegistrationError('Permission not granted to get push token for push notification!');
       return;
     }
 
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ??
-      Constants?.easConfig?.projectId;
+    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
     if (!projectId) {
       handleRegistrationError('Project ID not found');
     }
 
     try {
-      const expoPushToken = (
-        await Notifications.getExpoPushTokenAsync({ projectId })
-      ).data;
-      const devicePushToken = (await Notifications.getDevicePushTokenAsync())
-        .data;
+      const expoPushToken = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+      const devicePushToken = (await Notifications.getDevicePushTokenAsync()).data;
       return [expoPushToken, devicePushToken];
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);
     }
   } else {
-    user$.notificationStatus.set('not-supported');
+    _user$.notificationStatus.set('not-supported');
     handleRegistrationError('Must use physical device for push notifications');
   }
 }
@@ -88,36 +78,34 @@ export async function registerForPushNotificationsAsync(): Promise<
  */
 export async function registerForPushNotifications() {
   const currentStatus = await checkPushNotificationsStatus();
-  const stateStatus = user$.notificationStatus.get();
+  const stateStatus = _user$.notificationStatus?.get();
 
   if (currentStatus === 'undetermined' && stateStatus === 'undetermined') {
     registerForPushNotificationsAsync()
       .then((tokens) => {
         if (tokens) {
           const [expoPushToken, devicePushToken] = tokens;
-          user$.expoPushToken.set(expoPushToken);
-          user$.devicePushToken.set(devicePushToken);
-          user$.notificationStatus.set('granted');
+          _user$.expoPushToken.set(expoPushToken);
+          _user$.devicePushToken.set(devicePushToken);
+          _user$.notificationStatus.set('granted');
         }
       })
-      .catch((error: any) =>
-        console.error(`Error getting notifications push tokens: ${error}`)
-      );
+      .catch((error: any) => console.error(`Error getting notifications push tokens: ${error}`));
   } else {
-    const deviceToken = user$.devicePushToken.get();
+    const deviceToken = _user$.devicePushToken?.get();
     if (!deviceToken || deviceToken === '') {
       Notifications.getDevicePushTokenAsync().then((token) => {
         if (token) {
-          user$.devicePushToken.set(token.data);
+          _user$.devicePushToken.set(token.data);
         }
       });
     }
-    const expoToken = user$.expoPushToken.get();
+    const expoToken = _user$.expoPushToken?.get();
     if (!expoToken || expoToken === '') {
       Notifications.getExpoPushTokenAsync().then((token) => {
         if (token) {
-          user$.expoPushToken.set(token.data);
-          user$.notificationStatus.set('granted');
+          _user$.expoPushToken.set(token.data);
+          _user$.notificationStatus.set('granted');
         }
       });
     }
@@ -125,8 +113,8 @@ export async function registerForPushNotifications() {
       'Push notifications already registered',
       currentStatus,
       stateStatus,
-      user$.devicePushToken.get(),
-      user$.expoPushToken.get()
+      _user$.devicePushToken?.get(),
+      _user$.expoPushToken?.get()
     );
   }
 }

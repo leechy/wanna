@@ -131,7 +131,7 @@ export const profiles$ = observable(
     // TODO: Filter only the users that we are sharing lists with
     // filter: (select) => select.eq('user_id', user$.id.get() || ''),
     // Don't allow delete
-    actions: ['read', 'create', 'update'],
+    actions: ['create', 'read', 'update'],
     // Realtime filter by user_id
     // TODO: not just current user, but all users we are sharing lists with
     // realtime: { filter: `user_id=eq.${user$.id.get()}` },
@@ -170,28 +170,28 @@ export const lists$ = observable(
     supabase,
     collection: 'lists',
     select: (from) => from.select('*'),
-    filter: (select) => select.contains('user_ids', [user$.id.get() || '']),
-    actions: ['create', 'read', 'update', 'delete'],
+    // filter: (select) => select.contains('user_ids', [user$.id.get() || '']),
+    actions: ['create', 'read', 'update'],
     // Realtime filter by user_id
     // TODO: not just current user, but all users we are sharing lists with
-    // realtime: { filter: `user_ids=cs.[${user$.get().id || ''}]`, },
+    // realtime: { filter: `user_ids=cs.[${user$.id?.get() || ''}]`, },
     realtime: true,
     // Persist data and pending changes locally
     persist: { name: 'lists', retrySync: true },
     retry: { infinite: true },
     // Sync only diffs
     changesSince: 'last-sync',
-    transform: {
-      load(value, method) {
-        console.log('lists$ load user id', user$.get().id);
-        console.log('load', value, method);
-        return value;
-      },
-      save(value) {
-        console.log('lists$ save user id', user$.get().id);
-        console.log('save', value);
-        return value;
-      },
-    },
+    // transform: {
+    //   load(value, method) {
+    //     console.log('lists$ load user id', user$.id?.get());
+    //     console.log('load', value, method);
+    //     return value;
+    //   },
+    //   save(value) {
+    //     console.log('lists$ save user id', user$.id?.get());
+    //     console.log('save', value);
+    //     return value;
+    //   },
+    // },
   })
 );

@@ -183,7 +183,6 @@ export default function HomeScreen() {
 
   function gotoSettings() {
     router.push('/settings');
-    // console.log('gotoSettings');
   }
 
   return (

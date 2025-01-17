@@ -1,8 +1,10 @@
-// hooks
+// hooks and state
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { router, useLocalSearchParams } from 'expo-router';
+import { observer } from '@legendapp/state/react';
+import { lists$ as _lists$ } from '@/state/state';
 
 // utils
-import { router } from 'expo-router';
 import { copyListLinkToClipboard, shareList } from '@/utils/share';
 
 // components
@@ -21,23 +23,34 @@ import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import DateSelector from '@/components/DateSelector';
+import { updateList } from '@/state/actions-lists';
 
-export default function ShoppingListScreen() {
+function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
   const touchableColor = useThemeColor({}, 'touchable');
 
-  function newList() {
-    router.navigate({
-      pathname: '/shopping/new-item',
-      params: {
-        listId: '123',
-        listName: 'Home groceries',
-      },
-    });
+  const params = useLocalSearchParams();
+  const listData = params?.list ? _lists$[params?.list as string]?.get() : null;
+
+  function updateDeadline(date: string | number | undefined) {
+    console.log('updateDeadline', date);
+    updateList(params?.list as string, { deadline: date ? new Date(date).toISOString() : null });
   }
 
-  function goToList(item: ListItem) {
-    router.navigate(`/shopping/${item.id}`);
+  function newItem() {
+    if (listData) {
+      router.navigate({
+        pathname: '/shopping/new-item',
+        params: {
+          listId: listData.id,
+          listName: listData.name,
+        },
+      });
+    }
+  }
+
+  function putInCart(item: ListItem) {
+    console.log('putInCart', item);
   }
 
   function checkoutList(item: ListItem) {
@@ -48,8 +61,8 @@ export default function ShoppingListScreen() {
     {
       title: 'Still have to buy',
       newItemLabel: 'New item',
-      newItemHandler: newList,
-      actionHandler: goToList,
+      newItemHandler: newItem,
+      actionHandler: putInCart,
       checkboxHandler: checkoutList,
       emptyText: 'List is empty. Add some items!',
       items: [
@@ -217,7 +230,7 @@ export default function ShoppingListScreen() {
       <View
         style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, gap: 12 }}
       >
-        <DateSelector placeholder="No deadline" onChange={() => {}} />
+        <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
         <DropdownMenu
           items={[
             {
@@ -280,7 +293,9 @@ export default function ShoppingListScreen() {
           <SmallButton icon={PersonPlusIcon} title="Not shared" />
         </DropdownMenu>
       </View>
-      <Accordion title="Home groceries" blocks={blocks} openBlock={0} />
+      <Accordion title={listData?.name || 'Shopping list'} blocks={blocks} openBlock={0} />
     </Page>
   );
 }
+
+export default observer(ShoppingListScreen);

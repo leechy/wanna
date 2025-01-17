@@ -25,7 +25,7 @@ export default function NewListModal() {
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
 
   const params = useLocalSearchParams();
-  const listData = params?.listId ? _lists$.get()?.[params?.listId as string] : null;
+  const listData = params?.listId ? _lists$[params?.listId as string]?.get() : null;
 
   useEffect(() => {
     if (listData) {

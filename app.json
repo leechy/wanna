@@ -4,7 +4,7 @@
     "slug": "wanna-wanna",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "wannawanna",
+    "scheme": "wanna",
     "newArchEnabled": true,
     "githubUrl": "https://github.com/leechy/wanna",
     "platforms": ["ios", "android", "web"],
