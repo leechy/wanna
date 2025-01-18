@@ -1,6 +1,6 @@
 import { observer } from '@legendapp/state/react';
-import { user$ as _user$, profiles$ as _profiles$, lists$ as _lists$ } from '@/state/state';
-import { getUserProfile, logout } from '@/state/actions-user';
+import { user$ as _user$, profile$ as _profile$, lists$ as _lists$ } from '@/state/state';
+import { clearProfile, logout } from '@/state/actions-user';
 import { clearLists } from '@/state/actions-lists';
 
 // components
@@ -14,15 +14,16 @@ import { ThemedView } from '@/components/ThemedView';
 import { globalStyles } from '@/constants/GlobalStyles';
 
 function SettingsScreen() {
-  const userName = getUserProfile()?.names || 'Unknown';
-
-  const profiles = _profiles$.get();
-  function dumpProfiles() {
-    console.log('profiles', profiles);
+  function dumpProfile() {
+    console.log('profiles', _profile$.get());
   }
 
   function dumpLists() {
     console.log('lists', _lists$.get());
+  }
+
+  function dumpUser() {
+    console.log('user', _user$.get());
   }
 
   return (
@@ -33,13 +34,18 @@ function SettingsScreen() {
       </ThemedView>
       <View style={{ padding: 16, gap: 12 }}>
         <Text>Current user id: {_user$.id.get()}</Text>
-        <Text>Current name: {userName}</Text>
+        <Text>Current name: {_profile$.names.get() as string}</Text>
       </View>
       <View style={{ padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <SmallButton title="Dump profiles" onPress={dumpProfiles} />
+          <SmallButton title="Dump user" onPress={dumpUser} />
         </View>
-        <Text>Profiles no: {Object.keys(_profiles$.get() || {}).length}</Text>
+      </View>
+      <View style={{ padding: 16, gap: 12 }}>
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <SmallButton title="Dump profile" onPress={dumpProfile} />
+          <SmallButton title="Clear profile" onPress={clearProfile} />
+        </View>
       </View>
       <View style={{ padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>

@@ -1,7 +1,8 @@
 // hooks and state
 import { useState } from 'react';
-import { supabase } from '@/state/state';
 import { addUserProfile } from '@/state/actions-user';
+import { auth } from '@/state/firebaseConfig';
+import { signInAnonymously } from 'firebase/auth';
 
 // components
 import { router, Stack } from 'expo-router';
@@ -14,25 +15,29 @@ import { ThemedInput } from '@/components/ThemedInput';
 export default function SignInScreen() {
   const [name, setName] = useState('');
 
-  const signInAnonymously = async () => {
-    const { data, error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      // TODO: handle errors here
-      // show some error message to the user
-      console.error('signInAnonymously error', error);
-    }
-    if (typeof data.user?.id === 'string') {
-      addUserProfile(data.user.id, name.trim());
-      router.replace('/');
-    }
+  const signIn = async () => {
+    signInAnonymously(auth)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+
+        if (typeof user?.uid === 'string') {
+          addUserProfile(user.uid, name.trim());
+          router.replace('/');
+        }
+      })
+      .catch((error) => {
+        // TODO: handle errors here
+        // show some error message to the user
+        console.error('signInAnonymously error', error);
+      });
   };
 
   const createAccount = () => {
     if (name.length === 0) {
       return;
     }
-
-    signInAnonymously();
+    signIn();
   };
 
   return (

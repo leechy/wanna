@@ -1,6 +1,6 @@
-import { generateId, profiles$, supabase, user$ } from '@/state/state';
-import { addList, clearLists } from '@/state/actions-lists';
-import { UserProfile } from '@/types/user';
+import { profile$, user$ as _user$ } from '@/state/state';
+import { clearLists } from '@/state/actions-lists';
+import { auth } from './firebaseConfig';
 
 /**
  * Creates a new user profile with the name provided in the login screen
@@ -8,19 +8,17 @@ import { UserProfile } from '@/types/user';
  * @param {string} user_id
  * @param {string} name
  */
-export async function addUserProfile(user_id: string, name: string) {
+export async function addUserProfile(uid: string, name: string) {
   // Add the new user to the profiles collection
-  const profileId = generateId();
-  profiles$[profileId].set({
-    id: profileId,
-    user_id,
+  profile$.set({
+    uid,
     names: name,
   });
 
   // Create a new default list for the user
-  const listId = await addList({ name: 'Tutorial', type: 'project' });
+  // const listId = await addList({ name: 'Tutorial', type: 'project' });
 
-  console.log('New tutorial list is created', listId);
+  // console.log('New tutorial list is created', listId);
   // Add a few default items to the default list
   // addListItem(listId, 'Mark this item as ongoing, and then as completed');
   // addListItem(listId, 'Swipe left to delete this item');
@@ -35,17 +33,10 @@ export async function addUserProfile(user_id: string, name: string) {
  * Returns the profile id for the given user id
  * if user id is not found, returns profile of the current user
  *
- * @param {string} user_id
  * @returns {UserProfile | null}
  */
-export function getUserProfile(user_id?: string): UserProfile | null {
-  const profiles = profiles$.get();
-  if (!profiles) {
-    return null;
-  }
-  const userId = user_id || user$.get().id;
-  const profileId = Object.keys(profiles).find((pid) => profiles[pid].user_id === userId);
-  return profileId ? profiles[profileId] : null;
+export function getUserProfile(): any | null {
+  return profile$.get() || null;
 }
 
 /**
@@ -53,8 +44,8 @@ export function getUserProfile(user_id?: string): UserProfile | null {
  *
  * @returns {void}
  */
-export function clearProfiles() {
-  for (const profile of Object.values(profiles$)) {
+export function clearProfile() {
+  for (const profile of Object.values(profile$)) {
     profile.delete();
   }
 }
@@ -66,7 +57,7 @@ export function clearProfiles() {
  * @returns {void}
  */
 export function logout() {
-  supabase.auth.signOut();
-  clearProfiles();
+  clearProfile();
   clearLists();
+  auth.signOut();
 }

@@ -1,68 +1,37 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState } from 'react-native';
 import * as Crypto from 'expo-crypto';
-import { createClient, Session } from '@supabase/supabase-js';
+import { auth, database } from './firebaseConfig';
 
 import { observable, ObservableObject } from '@legendapp/state';
 import { configureSynced, syncObservable } from '@legendapp/state/sync';
-import { configureSyncedSupabase, syncedSupabase } from '@legendapp/state/sync-plugins/supabase';
+import { configureSyncedFirebase, syncedFirebase } from '@legendapp/state/sync-plugins/firebase';
 import { observablePersistAsyncStorage } from '@legendapp/state/persist-plugins/async-storage';
 
-import { Database } from './database.types';
-import { UserState } from '@/types/user';
-
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
-
-// create supabase client
-export function initSupabase() {
-  const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
-    auth: {
-      storage: AsyncStorage,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: false,
-    },
-  });
-
-  // Tells Supabase Auth to continuously refresh the session automatically if
-  // the app is in the foreground. When this is added, you will continue to receive
-  // `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
-  // if the user's session is terminated. This should only be registered once.
-  AppState.addEventListener('change', (state) => {
-    if (state === 'active') {
-      supabase.auth.startAutoRefresh();
-    } else {
-      supabase.auth.stopAutoRefresh();
-    }
-  });
-
-  // Get the user session once the app is loaded
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    console.log('get session', session?.user?.id);
-    setSession(session);
-  });
-
-  // Listen to auth state changes
-  supabase.auth.onAuthStateChange((_event, session) => {
-    console.log('onAuthStateChange', session?.user?.id);
-    setSession(session);
-  });
-
-  return supabase;
-}
-
-// Initialize Supabase
-export const supabase = initSupabase();
+import { UserProfiles, UserState } from '@/types/user';
+import { User, UserProfile } from 'firebase/auth';
+import { equalTo, orderByChild, query, ref } from 'firebase/database';
 
 // provide a function to generate ids locally
 export const generateId = () => Crypto.randomUUID();
 
-// pass the generateId function to the syncedSupabase plugin
-configureSyncedSupabase({ generateId });
+configureSyncedFirebase({
+  realtime: true,
+  requireAuth: true,
+});
+
+// Listen for auth state changes
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // user$.session.set(user);
+    user$.id.set(user.uid);
+  } else {
+    user$.id.set(null);
+    // user$.session.set(null);
+  }
+});
 
 // Create a configured sync function
-export const customSynced = configureSynced(syncedSupabase, {
+export const customSynced = configureSynced(syncedFirebase, {
   // Use React Native Async Storage
   persist: {
     plugin: observablePersistAsyncStorage({
@@ -70,10 +39,12 @@ export const customSynced = configureSynced(syncedSupabase, {
     }),
   },
   generateId,
-  supabase,
+  initial: {},
+  requireAuth: true,
+  realtime: true,
   changesSince: 'last-sync',
-  fieldCreatedAt: 'created_at',
-  fieldUpdatedAt: 'updated_at',
+  fieldCreatedAt: 'createdAt',
+  fieldUpdatedAt: 'updatedAt',
   // Optionally enable soft deletes
   fieldDeleted: 'deleted',
 });
@@ -97,7 +68,7 @@ export const persistOptions = configureSynced({
  */
 export const user$: ObservableObject<UserState> = observable({
   id: null,
-  session: null as Session | null,
+  session: null as User | null,
   expoPushToken: '',
   devicePushToken: '',
   notificationStatus: 'undetermined',
@@ -123,36 +94,28 @@ syncObservable(
  *
  * @type {ObservableObject}
  */
-export const profiles$ = observable(
+export const profile$: ObservableObject<UserProfile> = observable(
   customSynced({
-    supabase,
-    collection: 'user_profiles',
-    select: (from) => from.select('id, user_id, names'),
-    // TODO: Filter only the users that we are sharing lists with
-    // filter: (select) => select.eq('user_id', user$.id.get() || ''),
-    // Don't allow delete
-    actions: ['create', 'read', 'update'],
-    // Realtime filter by user_id
-    // TODO: not just current user, but all users we are sharing lists with
-    // realtime: { filter: `user_id=eq.${user$.id.get()}` },
-    realtime: true,
-    // Persist data and pending changes locally
+    refPath: () => `/userNames/${user$.id.get() || 'default'}`,
+    waitForSet: () => user$.id.get(),
+    onSaved: (params) => {
+      console.log('profile$ saved', params);
+    },
     persist: { name: 'profiles', retrySync: true },
     retry: { infinite: true },
-    // Sync only diffs
     changesSince: 'last-sync',
   })
 );
 
 /**
- * Set the user id from the Supabase session
+ * Set the user id from the Firebase user object
  *
  * @param {Session | null} session
  * @returns {void}
  */
-export function setSession(session: Session | null) {
+export function setSession(session: User | null) {
   // set id - we are going to use this a lot
-  user$.id.set(session?.user.id || null);
+  user$.id.set(session?.uid || null);
   // the rest of the session we'll keep for the future
   user$.session.set(session);
 }
@@ -167,31 +130,12 @@ export function setSession(session: Session | null) {
  */
 export const lists$ = observable(
   customSynced({
-    supabase,
-    collection: 'lists',
-    select: (from) => from.select('*'),
-    // filter: (select) => select.contains('user_ids', [user$.id.get() || '']),
-    actions: ['create', 'read', 'update'],
-    // Realtime filter by user_id
-    // TODO: not just current user, but all users we are sharing lists with
-    // realtime: { filter: `user_ids=cs.[${user$.id?.get() || ''}]`, },
+    refPath: () => `/lists`,
+    waitForSet: () => profile$.lists.get(),
     realtime: true,
-    // Persist data and pending changes locally
+    query: () => query(ref(database, 'lists'), orderByChild('users/id'), equalTo(user$.id.get())),
     persist: { name: 'lists', retrySync: true },
     retry: { infinite: true },
-    // Sync only diffs
     changesSince: 'last-sync',
-    // transform: {
-    //   load(value, method) {
-    //     console.log('lists$ load user id', user$.id?.get());
-    //     console.log('load', value, method);
-    //     return value;
-    //   },
-    //   save(value) {
-    //     console.log('lists$ save user id', user$.id?.get());
-    //     console.log('save', value);
-    //     return value;
-    //   },
-    // },
   })
 );
