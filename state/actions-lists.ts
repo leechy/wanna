@@ -8,29 +8,26 @@ import { generateId, lists$ as _lists$, user$ as _user$ } from './state';
  * @returns
  */
 export async function addList(list: Partial<List>) {
-  const uid = _user$.id?.get();
+  const uid = _user$.uid?.get();
   if (!uid) {
     throw new Error('No user id');
   }
   const listId = generateId();
   const shareId = generateId();
   const now = new Date().toISOString();
-  const userId = new Array(uid);
-  // _lists$.assign({
-  _lists$[listId].set({
-    id: list.id || listId,
-    share_id: list.share_id || shareId,
+  _lists$[listId].assign({
+    listId: list.listId || listId,
+    shareId: list.shareId || shareId,
     name: list.name || 'New List',
     type: list.type || 'project',
-    deadline: list.deadline || null,
-    is_active: list.is_active || true,
-    hide_completed: list.hide_completed || true,
-    notify_on_list_items_update: list.notify_on_list_items_update || true,
-    notify_on_item_state_update: list.notify_on_item_state_update || true,
-    notify_on_user_at_location: list.notify_on_user_at_location || true,
-    user_ids: userId,
-    created_at: now,
-    updated_at: now,
+    deadline: list.deadline,
+    active: list.active || true,
+    hideCompleted: list.hideCompleted || true,
+    notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
+    notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
+    notifyOnListShared: list.notifyOnListShared || true,
+    createdAt: now,
+    updatedAt: now,
     deleted: false,
   });
   return listId;
@@ -44,9 +41,7 @@ export async function addList(list: Partial<List>) {
  * @returns {void}
  */
 export async function updateList(listId: string, update: Partial<List>) {
-  const list = _lists$[listId]?.get();
-  _lists$[listId].set({
-    ...list,
+  _lists$[listId]?.assign({
     ...update,
   });
 }

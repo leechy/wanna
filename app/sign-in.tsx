@@ -1,11 +1,9 @@
 // hooks and state
 import { useState } from 'react';
-import { addUserProfile } from '@/state/actions-user';
-import { auth } from '@/state/firebaseConfig';
-import { signInAnonymously } from 'firebase/auth';
+import { createUser } from '@/state/actions-user';
 
 // components
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -15,29 +13,11 @@ import { ThemedInput } from '@/components/ThemedInput';
 export default function SignInScreen() {
   const [name, setName] = useState('');
 
-  const signIn = async () => {
-    signInAnonymously(auth)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-
-        if (typeof user?.uid === 'string') {
-          addUserProfile(user.uid, name.trim());
-          router.replace('/');
-        }
-      })
-      .catch((error) => {
-        // TODO: handle errors here
-        // show some error message to the user
-        console.error('signInAnonymously error', error);
-      });
-  };
-
   const createAccount = () => {
     if (name.length === 0) {
       return;
     }
-    signIn();
+    createUser(name.trim());
   };
 
   return (

@@ -1,4 +1,21 @@
-import { User } from 'firebase/auth';
+export type User = {
+  uid: string;
+
+  // auth string;
+  auth: string;
+
+  // user name
+  names: string;
+
+  // notification tokens
+  expo_push_token?: string;
+  device_push_token?: string;
+
+  // settings
+  notifyOnListShared: boolean;
+  notifyOnListItemsUpdate: boolean;
+  notifyOnItemStateUpdate: boolean;
+};
 
 export type UserState = {
   session: User | null;

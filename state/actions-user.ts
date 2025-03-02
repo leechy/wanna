@@ -1,18 +1,22 @@
-import { profile$, user$ as _user$ } from '@/state/state';
+import { generateId, user$ as _user$ } from '@/state/state';
 import { clearLists } from '@/state/actions-lists';
-import { auth } from './firebaseConfig';
 
 /**
  * Creates a new user profile with the name provided in the login screen
  *
- * @param {string} user_id
- * @param {string} name
+ * @param {string} names
  */
-export async function addUserProfile(uid: string, name: string) {
+export async function createUser(names: string) {
+  const uid = generateId();
+  const auth = generateId();
   // Add the new user to the profiles collection
-  profile$.set({
+  _user$.set({
     uid,
-    names: name,
+    auth,
+    names,
+    notifyOnListShared: true,
+    notifyOnListItemsUpdate: true,
+    notifyOnItemStateUpdate: true,
   });
 
   // Create a new default list for the user
@@ -30,24 +34,12 @@ export async function addUserProfile(uid: string, name: string) {
 }
 
 /**
- * Returns the profile id for the given user id
- * if user id is not found, returns profile of the current user
- *
- * @returns {UserProfile | null}
- */
-export function getUserProfile(): any | null {
-  return profile$.get() || null;
-}
-
-/**
  * Clears all profiles from the state
  *
  * @returns {void}
  */
-export function clearProfile() {
-  for (const profile of Object.values(profile$)) {
-    profile.delete();
-  }
+export function clearUser() {
+  _user$.delete();
 }
 
 /**
@@ -57,7 +49,6 @@ export function clearProfile() {
  * @returns {void}
  */
 export function logout() {
-  clearProfile();
+  clearUser();
   clearLists();
-  auth.signOut();
 }

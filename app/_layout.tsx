@@ -10,7 +10,7 @@ import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from
 import { Colors } from '@/constants/Colors';
 
 // navigation
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 
 // state
 import '@/state/state';
@@ -84,32 +84,37 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log('user session', user.session);
+  console.log('user', user);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* TODO: improve the login system */}
       <Stack>
-        <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="settings"
-          options={{
-            headerShown: true,
-            headerBackTitle: 'Wishes',
-            title: '',
-            headerStyle: {
-              backgroundColor: toolbarBackgroundColor,
-            },
-            headerBackTitleStyle: {
-              fontFamily: 'Montserrat',
-            },
-            headerTintColor: backButtonColor,
-          }}
-        />
-        <Stack.Screen name="+not-found" />
+        {user === null ? (
+          // Only show sign-in when user is not authenticated
+          <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+        ) : (
+          // Show app screens when user is authenticated
+          <>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="settings"
+              options={{
+                headerShown: true,
+                headerBackTitle: 'Wishes',
+                title: '',
+                headerStyle: {
+                  backgroundColor: toolbarBackgroundColor,
+                },
+                headerBackTitleStyle: {
+                  fontFamily: 'Montserrat',
+                },
+                headerTintColor: backButtonColor,
+              }}
+            />
+            <Stack.Screen name="+not-found" />
+          </>
+        )}
       </Stack>
-      {(user?.session || null) === null ? <Redirect href="/sign-in" /> : <Redirect href="/(tabs)" />}
       <StatusBar style="auto" />
     </ThemeProvider>
   );
