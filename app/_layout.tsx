@@ -10,7 +10,7 @@ import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from
 import { Colors } from '@/constants/Colors';
 
 // navigation
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 
 // state
 import '@/state/state';
@@ -89,32 +89,26 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        {user === null ? (
-          // Only show sign-in when user is not authenticated
-          <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-        ) : (
-          // Show app screens when user is authenticated
-          <>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="settings"
-              options={{
-                headerShown: true,
-                headerBackTitle: 'Wishes',
-                title: '',
-                headerStyle: {
-                  backgroundColor: toolbarBackgroundColor,
-                },
-                headerBackTitleStyle: {
-                  fontFamily: 'Montserrat',
-                },
-                headerTintColor: backButtonColor,
-              }}
-            />
-            <Stack.Screen name="+not-found" />
-          </>
-        )}
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerShown: true,
+            headerBackTitle: 'Wishes',
+            title: '',
+            headerStyle: {
+              backgroundColor: toolbarBackgroundColor,
+            },
+            headerBackTitleStyle: {
+              fontFamily: 'Montserrat',
+            },
+            headerTintColor: backButtonColor,
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="sign-in" options={{ headerShown: false }} />{' '}
       </Stack>
+      {user ? <Redirect href="/(tabs)" /> : <Redirect href="/sign-in" />}
       <StatusBar style="auto" />
     </ThemeProvider>
   );
