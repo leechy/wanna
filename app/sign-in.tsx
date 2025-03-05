@@ -1,9 +1,11 @@
 // hooks and state
 import { useState } from 'react';
+import { useSelector } from '@legendapp/state/react';
 import { createUser } from '@/state/actions-user';
+import { user$ as _user$ } from '@/state/state';
 
 // components
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -19,6 +21,12 @@ export default function SignInScreen() {
     }
     createUser(name.trim());
   };
+
+  const user = useSelector(() => _user$.get());
+
+  if (user?.uid) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   return (
     <>
