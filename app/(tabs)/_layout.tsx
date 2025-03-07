@@ -1,9 +1,11 @@
 // hooks
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSelector } from '@legendapp/state/react';
+import { user$ as _user$ } from '@/state/state';
 
 // components
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { HapticTab } from '@/components/HapticTab';
 
 import WishesIcon from '@/assets/symbols/wishes-icon.svg';
@@ -17,6 +19,12 @@ export default function TabLayout() {
   const tabBarActiveTintColor = useThemeColor({}, 'primary');
   const tabBarBackgroundColor: string = useThemeColor({}, 'tabBarBackground');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
+
+  // in case there is no user, redirect to sign-in
+  const user = useSelector(_user$.get());
+  if (!user?.uid) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <Tabs
@@ -48,27 +56,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Wishes',
-          tabBarIcon: ({ color }) => (
-            <WishesIcon width={36} height={36} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <WishesIcon width={36} height={36} color={color} />,
         }}
       />
       <Tabs.Screen
         name="shopping"
         options={{
           title: 'Shopping',
-          tabBarIcon: ({ color }) => (
-            <ShoppingIcon width={36} height={36} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <ShoppingIcon width={36} height={36} color={color} />,
         }}
       />
       <Tabs.Screen
         name="projects"
         options={{
           title: 'Projects',
-          tabBarIcon: ({ color }) => (
-            <ProjectsIcon width={36} height={36} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <ProjectsIcon width={36} height={36} color={color} />,
         }}
       />
     </Tabs>

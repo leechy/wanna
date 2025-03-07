@@ -1,10 +1,11 @@
 // hooks and state
 import { useState } from 'react';
-import { supabase } from '@/state/state';
-import { addUserProfile } from '@/state/actions-user';
+import { useSelector } from '@legendapp/state/react';
+import { createUser } from '@/state/actions-user';
+import { user$ as _user$ } from '@/state/state';
 
 // components
-import { router, Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -14,26 +15,18 @@ import { ThemedInput } from '@/components/ThemedInput';
 export default function SignInScreen() {
   const [name, setName] = useState('');
 
-  const signInAnonymously = async () => {
-    const { data, error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      // TODO: handle errors here
-      // show some error message to the user
-      console.error('signInAnonymously error', error);
-    }
-    if (typeof data.user?.id === 'string') {
-      addUserProfile(data.user.id, name.trim());
-      router.replace('/');
-    }
-  };
-
   const createAccount = () => {
     if (name.length === 0) {
       return;
     }
-
-    signInAnonymously();
+    createUser(name.trim());
   };
+
+  const user = useSelector(() => _user$.get());
+
+  if (user?.uid) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   return (
     <>

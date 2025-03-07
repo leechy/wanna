@@ -1,16 +1,34 @@
+import { ListItem } from '@/types/listItem';
+
 export type List = {
-  id: string;
-  share_id: string;
+  listId: string;
+  shareId: string;
   name: string;
   type: 'project' | 'shopping-list';
-  deadline: string | null;
-  is_active: boolean;
-  hide_completed: boolean;
-  notify_on_list_items_update: boolean;
-  notify_on_item_state_update: boolean;
-  notify_on_user_at_location: boolean;
-  user_ids: string[];
-  created_at: string;
-  updated_at: string;
+  deadline?: string;
+
+  active: boolean;
+  completed: boolean;
+  completedAt?: string;
+  hideCompleted?: boolean;
+
+  notifyOnListShared?: boolean;
+  notifyOnListItemsUpdate?: boolean;
+  notifyOnItemStateUpdate?: boolean;
+
   deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+
+  users?: ListUser[];
+  listItems?: ListItem[];
+};
+
+export type ListUser = {
+  uid: string;
+  names: string;
+};
+
+export type ListState = {
+  [id: string]: List;
 };

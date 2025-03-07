@@ -24,13 +24,14 @@ import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import DateSelector from '@/components/DateSelector';
 import { updateList } from '@/state/actions-lists';
+import { List } from '@/types/list';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
   const touchableColor = useThemeColor({}, 'touchable');
 
   const params = useLocalSearchParams();
-  const listData = params?.list ? _lists$[params?.list as string]?.get() : null;
+  const listData = params?.list ? (_lists$[params?.list as string]?.get() as List) : null;
 
   function updateDeadline(date: string | number | undefined) {
     console.log('updateDeadline', date);

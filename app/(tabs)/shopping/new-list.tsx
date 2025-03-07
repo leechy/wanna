@@ -16,6 +16,7 @@ import DateSelector from '@/components/DateSelector';
 import { addList, updateList } from '@/state/actions-lists';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import HeaderButton from '@/components/HeaderButton';
+import { List } from '@/types/list';
 
 export default function NewListModal() {
   const [name, setName] = useState('');
@@ -25,7 +26,7 @@ export default function NewListModal() {
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
 
   const params = useLocalSearchParams();
-  const listData = params?.listId ? _lists$[params?.listId as string]?.get() : null;
+  const listData = params?.listId ? (_lists$[params?.listId as string]?.get() as List) : null;
 
   useEffect(() => {
     if (listData) {

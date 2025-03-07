@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import SmallButton from '@/components/SmallButton';
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import { ListItem } from '@/types/listItem';
+import { List } from '@/types/list';
 
 function ShoppingScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -27,7 +28,7 @@ function ShoppingScreen() {
     console.log('checkoutList', item);
   }
 
-  const lists = useSelector(_lists$);
+  const lists = useSelector(_lists$) as Record<string, List>;
 
   const blocks: AccordionBlockProps[] = [
     {

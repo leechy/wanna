@@ -1,10 +1,11 @@
-import { observer } from '@legendapp/state/react';
-import { user$ as _user$, profiles$ as _profiles$, lists$ as _lists$ } from '@/state/state';
-import { getUserProfile, logout } from '@/state/actions-user';
+import { observer, useSelector } from '@legendapp/state/react';
+import { user$ as _user$, lists$ as _lists$ } from '@/state/state';
+import { logout } from '@/state/actions-user';
 import { clearLists } from '@/state/actions-lists';
 
 // components
 import { Text, View } from 'react-native';
+import { Redirect } from 'expo-router';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
@@ -14,15 +15,18 @@ import { ThemedView } from '@/components/ThemedView';
 import { globalStyles } from '@/constants/GlobalStyles';
 
 function SettingsScreen() {
-  const userName = getUserProfile()?.names || 'Unknown';
-
-  const profiles = _profiles$.get();
-  function dumpProfiles() {
-    console.log('profiles', profiles);
-  }
-
   function dumpLists() {
     console.log('lists', _lists$.get());
+  }
+
+  function dumpUser() {
+    console.log('user', _user$.get());
+  }
+
+  // in case there is no user, redirect to sign-in
+  const user = useSelector(_user$.get());
+  if (!user?.uid) {
+    return <Redirect href="/sign-in" />;
   }
 
   return (
@@ -32,14 +36,13 @@ function SettingsScreen() {
         <SmallButton title="Log Out" onPress={logout} />
       </ThemedView>
       <View style={{ padding: 16, gap: 12 }}>
-        <Text>Current user id: {_user$.id.get()}</Text>
-        <Text>Current name: {userName}</Text>
+        <Text>Current user id: {_user$.uid.get()}</Text>
+        <Text>Current name: {_user$.names.get() as string}</Text>
       </View>
       <View style={{ padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <SmallButton title="Dump profiles" onPress={dumpProfiles} />
+          <SmallButton title="Dump user" onPress={dumpUser} />
         </View>
-        <Text>Profiles no: {Object.keys(_profiles$.get() || {}).length}</Text>
       </View>
       <View style={{ padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
