@@ -1,20 +1,20 @@
 import * as Crypto from 'expo-crypto';
 
 import { observable } from '@legendapp/state';
-import { configureSynced, synced, syncObservable } from '@legendapp/state/sync';
-import {
-  ObservablePersistAsyncStorage,
-  observablePersistAsyncStorage,
-} from '@legendapp/state/persist-plugins/async-storage';
+import { configureSynced, syncObservable } from '@legendapp/state/sync';
+import { observablePersistAsyncStorage } from '@legendapp/state/persist-plugins/async-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// types
 import { User } from '@/types/user';
 import { ListState } from '@/types/list';
+import { QueuedOperation } from '@/types/QueuedOperation';
 
 // provide a function to generate ids locally
 export const generateId = () => Crypto.randomUUID();
 
-const persistOptions = configureSynced({
+// configure the AsyncStorage as a persist plugin
+export const persistOptions = configureSynced({
   persist: {
     plugin: observablePersistAsyncStorage({
       AsyncStorage,
@@ -38,12 +38,26 @@ syncObservable(
   })
 );
 
-export const lists$ = observable<ListState>(
-  synced({
-    initial: {},
+// here are the lists
+export const lists$ = observable<ListState>({} as ListState);
+
+syncObservable(
+  lists$,
+  persistOptions({
     persist: {
       name: 'lists',
-      plugin: ObservablePersistAsyncStorage,
+    },
+  })
+);
+
+// an observable for the operation queue
+export const queue$ = observable<QueuedOperation[]>([]);
+
+syncObservable(
+  queue$,
+  persistOptions({
+    persist: {
+      name: 'offline_queue',
     },
   })
 );

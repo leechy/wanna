@@ -1,8 +1,8 @@
 export type User = {
-  uid: string;
+  uid: string | null;
 
   // auth string;
-  auth: string;
+  auth: string | null;
 
   // user name
   names: string;
@@ -12,10 +12,10 @@ export type User = {
   device_push_token?: string;
 
   // settings
-  notifyOnListShared: boolean;
-  notifyOnListItemsUpdate: boolean;
-  notifyOnItemStateUpdate: boolean;
-};
+  notifyOnListShared?: boolean;
+  notifyOnListItemsUpdate?: boolean;
+  notifyOnItemStateUpdate?: boolean;
+} | null;
 
 export type UserState = {
   session: User | null;

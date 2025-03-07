@@ -1,5 +1,6 @@
 import { generateId, user$ as _user$ } from '@/state/state';
 import { clearLists } from '@/state/actions-lists';
+import { socketService } from '@/services/socketService';
 
 /**
  * Creates a new user profile with the name provided in the login screen
@@ -18,6 +19,10 @@ export async function createUser(names: string) {
     notifyOnListItemsUpdate: true,
     notifyOnItemStateUpdate: true,
   });
+
+  // add the new user to the server
+  // it would be synced with the server later
+  socketService.emit('auth', { uid, auth, names });
 
   // Create a new default list for the user
   // const listId = await addList({ name: 'Tutorial', type: 'project' });
