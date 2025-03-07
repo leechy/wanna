@@ -10,7 +10,7 @@ import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from
 import { Colors } from '@/constants/Colors';
 
 // navigation
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 
 // state
 import '@/state/state';
