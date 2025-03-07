@@ -1,11 +1,11 @@
 // hooks
 import { useEffect, useRef, useState } from 'react';
-import 'react-native-reanimated';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { useFonts } from 'expo-font';
 
 // styles
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useFonts } from 'expo-font';
 import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { Colors } from '@/constants/Colors';
 
@@ -18,12 +18,12 @@ import { useSelector } from '@legendapp/state/react';
 import { user$ } from '@/state/state';
 
 // system
+import 'react-native-reanimated';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 // services
 import { socketService } from '@/services/socketService';

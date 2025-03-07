@@ -1,6 +1,7 @@
 import { generateId, user$ as _user$ } from '@/state/state';
 import { clearLists } from '@/state/actions-lists';
 import { socketService } from '@/services/socketService';
+import { User } from '@/types/user';
 
 /**
  * Creates a new user profile with the name provided in the login screen
@@ -36,6 +37,18 @@ export async function createUser(names: string) {
   //   'Create a new item by tapping on the “New Item” placeholder at the top'
   // );
   // addListItem(listId, 'Create a new list from the Lists screen');
+}
+
+/**
+ * Updates the user profile with the new data
+ *
+ * @param {Partial<User>} update
+ * @returns {void}
+ */
+export function updateUser(update: Partial<User>) {
+  _user$.assign({
+    ...update,
+  });
 }
 
 /**
