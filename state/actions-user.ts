@@ -1,6 +1,8 @@
 import { generateId, user$ as _user$ } from '@/state/state';
 import { clearLists } from '@/state/actions-lists';
-import { socketService } from '@/services/socketService';
+import { queueOperation } from '@/state/actions-queue';
+
+// types
 import { User } from '@/types/user';
 
 /**
@@ -23,7 +25,7 @@ export async function createUser(names: string) {
 
   // add the new user to the server
   // it would be synced with the server later
-  socketService.emit('auth', { uid, auth, names });
+  queueOperation('auth', { uid, auth, names });
 
   // Create a new default list for the user
   // const listId = await addList({ name: 'Tutorial', type: 'project' });

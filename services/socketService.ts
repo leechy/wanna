@@ -1,5 +1,6 @@
 // utils
 import { io, Socket } from 'socket.io-client';
+import NetInfo from '@react-native-community/netinfo';
 
 // state
 import { observable } from '@legendapp/state';
@@ -27,6 +28,7 @@ class SocketService {
   private socket: Socket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
+  private netInfoUnsubscribe: (() => void) | null = null;
 
   initialize() {
     if (this.socket) return;
@@ -40,9 +42,48 @@ class SocketService {
       },
       reconnection: true,
       reconnectionAttempts: this.maxReconnectAttempts,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
     });
 
     this.setupEventHandlers();
+    this.setupNetworkListener();
+  }
+
+  setupNetworkListener() {
+    // Clean up any existing listener
+    if (this.netInfoUnsubscribe) {
+      this.netInfoUnsubscribe();
+    }
+
+    // Subscribe to network state updates
+    this.netInfoUnsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isConnected) {
+        // Network is back - attempt reconnection if socket is disconnected
+        if (!this.socket?.connected) {
+          this.reconnect();
+        }
+      } else {
+        // Network is gone - update UI state
+        connectionStatus$.isConnected.set(false);
+      }
+    });
+  }
+
+  reconnect() {
+    // Cleanup existing socket if needed
+    if (this.socket) {
+      if (this.socket.connected) {
+        return; // Already connected
+      }
+
+      // If disconnected but exists, try to reconnect
+      this.socket.connect();
+    } else {
+      // Socket doesn't exist, reinitialize
+      this.initialize();
+    }
   }
 
   setupEventHandlers() {
@@ -77,7 +118,6 @@ class SocketService {
     this.reconnectAttempts = 0;
 
     // Sync data and process offline queue
-    // await this.syncFromServer();
     await processOfflineQueue();
   };
 
@@ -129,28 +169,6 @@ class SocketService {
     // Update local state with server changes
     _lists$[listId].assign(changes);
   };
-
-  async syncFromServer() {
-    // Request full state from server
-    return new Promise<void>((resolve, reject) => {
-      if (!this.socket) {
-        reject('No socket connection');
-        return;
-      }
-
-      this.socket.emit('sync:request', null, (response: any) => {
-        if (response.error) {
-          reject(response.error);
-          return;
-        }
-
-        // Update state with server data
-        const { lists } = response;
-        _lists$.set(lists);
-        resolve();
-      });
-    });
-  }
 
   subscribeToList(listId: string) {
     this.socket?.emit('subscribe', { listId });
