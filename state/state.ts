@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/types/user';
 import { ListState } from '@/types/list';
 import { QueuedOperation } from '@/types/QueuedOperation';
+import { ConnectionState } from '@/types/ConnectionState';
 
 // provide a function to generate ids locally
 export const generateId = () => Crypto.randomUUID();
@@ -49,6 +50,13 @@ syncObservable(
     },
   })
 );
+
+// Connection state observable
+export const connectionStatus$ = observable<ConnectionState>({
+  isConnected: false,
+  lastConnected: null,
+  errors: [],
+});
 
 // an observable for the operation queue
 export const queue$ = observable<QueuedOperation[]>([]);

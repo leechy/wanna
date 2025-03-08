@@ -1,5 +1,6 @@
 import { List } from '@/types/list';
 import { generateId, lists$ as _lists$, user$ as _user$ } from './state';
+import { queueOperation } from './actions-queue';
 
 /**
  * Add new list to the state
@@ -12,14 +13,17 @@ export async function addList(list: Partial<List>) {
   if (!uid) {
     throw new Error('No user id');
   }
-  const listId = generateId();
-  const shareId = generateId();
+  const listId = list.listId || generateId();
+  const shareId = list.shareId || generateId();
+  const name = list.name || 'New List';
+  const type = list.type || 'project';
   const now = new Date().toISOString();
+
   _lists$[listId].assign({
-    listId: list.listId || listId,
-    shareId: list.shareId || shareId,
-    name: list.name || 'New List',
-    type: list.type || 'project',
+    listId,
+    shareId,
+    name,
+    type,
     deadline: list.deadline,
     active: list.active || true,
     hideCompleted: list.hideCompleted || true,
@@ -30,6 +34,19 @@ export async function addList(list: Partial<List>) {
     updatedAt: now,
     deleted: false,
   });
+
+  // add the new list to the server
+  queueOperation('list:create', {
+    listId,
+    shareId,
+    name,
+    type,
+    deadline: list.deadline,
+    notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
+    notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
+    notifyOnListShared: list.notifyOnListShared || true,
+  });
+
   return listId;
 }
 

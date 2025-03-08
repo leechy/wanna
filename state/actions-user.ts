@@ -24,7 +24,6 @@ export async function createUser(names: string) {
   });
 
   // add the new user to the server
-  // it would be synced with the server later
   queueOperation('auth', { uid, auth, names });
 
   // Create a new default list for the user

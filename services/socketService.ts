@@ -3,32 +3,20 @@ import { io, Socket } from 'socket.io-client';
 import NetInfo from '@react-native-community/netinfo';
 
 // state
-import { observable } from '@legendapp/state';
-import { queue$ as _queue$, user$ as _user$, lists$ as _lists$ } from '@/state/state';
+import { observe } from '@legendapp/state';
+import { queue$ as _queue$, user$ as _user$, lists$ as _lists$, connectionStatus$ } from '@/state/state';
 import { queueOperation } from '@/state/actions-queue';
 
 // types
 import { QueuedOperation } from '@/types/QueuedOperation';
 import { updateUser } from '@/state/actions-user';
 
-type ConnectionState = {
-  isConnected: boolean;
-  lastConnected: string | null;
-  errors: string[];
-};
-
-// Connection state observable
-export const connectionStatus$ = observable<ConnectionState>({
-  isConnected: false,
-  lastConnected: null,
-  errors: [],
-});
-
 class SocketService {
   private socket: Socket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private netInfoUnsubscribe: (() => void) | null = null;
+  private queueObserver: any = null;
 
   initialize() {
     if (this.socket) return;
@@ -49,6 +37,7 @@ class SocketService {
 
     this.setupEventHandlers();
     this.setupNetworkListener();
+    this.setupQueueObserver();
   }
 
   setupNetworkListener() {
@@ -117,8 +106,8 @@ class SocketService {
     connectionStatus$.lastConnected.set(new Date().toISOString());
     this.reconnectAttempts = 0;
 
-    // Sync data and process offline queue
-    await processOfflineQueue();
+    // Sync data and process queue
+    await this.processQueue();
   };
 
   handleDisconnect = () => {
@@ -191,33 +180,61 @@ class SocketService {
     return true;
   }
 
-  dispose() {
-    this.socket?.disconnect();
-    this.socket = null;
-  }
-}
-
-export function processOfflineQueue() {
-  try {
-    const queue = _queue$.get();
-    if (queue.length === 0) return;
-
-    const remainingOperations: QueuedOperation[] = [];
-
-    // Process each operation
-    for (const operation of queue) {
-      // console.log('Processing operation:', operation);
-      const success = socketService.emit(operation.event, operation.data);
-
-      if (!success) {
-        remainingOperations.push(operation);
-      }
+  setupQueueObserver() {
+    // Clean up previous observer if it exists
+    if (this.queueObserver) {
+      this.queueObserver();
     }
 
-    // Update the queue with remaining operations
-    _queue$.set(remainingOperations);
-  } catch (error) {
-    console.error('Error processing offline queue:', error);
+    // Create a new observer that runs whenever the queue changes
+    this.queueObserver = observe(_queue$, (queue) => {
+      // Only process if there are items in the queue AND we're connected
+      if ((queue.value?.length || 0) > 0 && connectionStatus$.isConnected.get() && this.socket?.connected) {
+        console.log(`Queue changed - processing ${queue.value?.length || 0} operations`);
+        this.processQueue();
+      }
+    });
+  }
+
+  processQueue() {
+    try {
+      const queue = _queue$.get();
+      if (queue.length === 0) return;
+
+      const remainingOperations: QueuedOperation[] = [];
+
+      // Process each operation
+      for (const operation of queue) {
+        // console.log('Processing operation:', operation);
+        const success = socketService.emit(operation.event, operation.data);
+
+        if (!success) {
+          remainingOperations.push(operation);
+        }
+      }
+
+      // Update the queue with remaining operations
+      _queue$.set(remainingOperations);
+    } catch (error) {
+      console.error('Error processing offline queue:', error);
+    }
+  }
+
+  dispose() {
+    // Clean up the queue observer
+    if (this.queueObserver) {
+      this.queueObserver();
+      this.queueObserver = null;
+    }
+
+    // Clean up network observer
+    if (this.netInfoUnsubscribe) {
+      this.netInfoUnsubscribe();
+      this.netInfoUnsubscribe = null;
+    }
+
+    this.socket?.disconnect();
+    this.socket = null;
   }
 }
 
