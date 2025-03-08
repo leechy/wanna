@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSelector } from '@legendapp/state/react';
-import { connectionStatus$ } from '@/services/socketService';
+import { connectionStatus$ } from '@/state/state';
 
 export function ConnectionStatus() {
   const isConnected = useSelector(connectionStatus$.isConnected);

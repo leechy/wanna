@@ -33,9 +33,9 @@ export default function NewListModal() {
       console.log('listData', listData);
       setName(listData.name);
       setDeadline(listData.deadline ? new Date(listData.deadline).getTime() : undefined);
-      setSharedNewUser(listData.notify_on_user_at_location);
-      setListItemsUpdate(listData.notify_on_list_items_update);
-      setItemStateUpdate(listData.notify_on_item_state_update);
+      setListItemsUpdate(listData.notifyOnListItemsUpdate || true);
+      setItemStateUpdate(listData.notifyOnItemStateUpdate || true);
+      setSharedNewUser(listData.notifyOnListShared || true);
     }
   }, [listData]);
 
@@ -50,10 +50,10 @@ export default function NewListModal() {
   async function updateCurrentList() {
     updateList(params?.listId as string, {
       name,
-      deadline: deadline ? new Date(deadline).toISOString() : null,
-      notify_on_user_at_location: sharedNewUser,
-      notify_on_list_items_update: listItemsUpdate,
-      notify_on_item_state_update: itemStateUpdate,
+      deadline: deadline ? new Date(deadline).toISOString() : undefined,
+      notifyOnListItemsUpdate: listItemsUpdate,
+      notifyOnItemStateUpdate: itemStateUpdate,
+      notifyOnListShared: sharedNewUser,
     });
     router.dismissTo(`/shopping/${params?.listId}`);
   }
@@ -62,10 +62,10 @@ export default function NewListModal() {
     const newListId = await addList({
       name,
       type: 'shopping-list',
-      deadline: deadline ? new Date(deadline).toISOString() : null,
-      notify_on_user_at_location: sharedNewUser,
-      notify_on_list_items_update: listItemsUpdate,
-      notify_on_item_state_update: itemStateUpdate,
+      deadline: deadline ? new Date(deadline).toISOString() : undefined,
+      notifyOnListItemsUpdate: listItemsUpdate,
+      notifyOnItemStateUpdate: itemStateUpdate,
+      notifyOnListShared: sharedNewUser,
     });
 
     if (newListId) {

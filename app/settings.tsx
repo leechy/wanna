@@ -13,6 +13,7 @@ import { ThemedView } from '@/components/ThemedView';
 
 // styles
 import { globalStyles } from '@/constants/GlobalStyles';
+import { getHRID } from '@/utils/human-readable-ids';
 
 function SettingsScreen() {
   function dumpLists() {
@@ -21,6 +22,10 @@ function SettingsScreen() {
 
   function dumpUser() {
     console.log('user', _user$.get());
+  }
+
+  function getId() {
+    alert(getHRID());
   }
 
   // in case there is no user, redirect to sign-in
@@ -50,6 +55,12 @@ function SettingsScreen() {
           <SmallButton title="Clear lists" onPress={clearLists} />
         </View>
         <Text>Lists no: {Object.keys(_lists$.get() || {}).length}</Text>
+      </View>
+
+      <View style={{ padding: 16, gap: 12 }}>
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <SmallButton title="Get Human Readable ID" onPress={getId} />
+        </View>
       </View>
     </Page>
   );
