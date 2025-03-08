@@ -59,6 +59,7 @@ export function DropdownMenu({
 
   const backgroundColor = useThemeColor({}, 'smallButtonBackground');
   const textColor = useThemeColor({}, 'text');
+  const disabledColor = useThemeColor({}, 'disabled');
   const touchableColor = useThemeColor({}, 'touchable');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
   const tabBarBackground = useThemeColor({}, 'tabBarBackground');
@@ -194,6 +195,32 @@ export function DropdownMenu({
                     return (
                       <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
                         <Text style={[styles.menuHeaderLabel, { color: touchableColor }]}>{item.label}</Text>
+                      </View>
+                    );
+                  }
+                  if (item.disabled) {
+                    return (
+                      <View
+                        key={index}
+                        style={[
+                          styles.menuOption,
+                          index < items.length - 1
+                            ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
+                            : {},
+                        ]}
+                      >
+                        <Text
+                          style={[styles.menuLabel, { color: disabledColor }]}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {item.label}
+                        </Text>
+                        {item.selected ? (
+                          <CheckIcon width={24} height={24} color={disabledColor} />
+                        ) : (
+                          item.icon && <item.icon width={24} height={24} color={disabledColor} />
+                        )}
                       </View>
                     );
                   }

@@ -6,4 +6,5 @@ export type DropdownItem = {
   onPress?: (item?: DropdownItem) => void;
   icon?: React.FC<SvgProps>;
   color?: string;
+  disabled?: boolean;
 };
