@@ -1,6 +1,7 @@
 import { List } from '@/types/list';
 import { generateId, lists$ as _lists$, user$ as _user$ } from './state';
 import { queueOperation } from './actions-queue';
+import { getHRID } from '@/utils/human-readable-ids';
 
 /**
  * Add new list to the state
@@ -13,11 +14,14 @@ export async function addList(list: Partial<List>) {
   if (!uid) {
     throw new Error('No user id');
   }
+
   const listId = list.listId || generateId();
-  const shareId = list.shareId || generateId();
+  const shareId = list.shareId || getHRID();
   const name = list.name || 'New List';
   const type = list.type || 'project';
   const now = new Date().toISOString();
+
+  console.log('Creating new list', { listId, shareId, name, type });
 
   _lists$[listId].assign({
     listId,
