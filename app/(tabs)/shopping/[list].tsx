@@ -12,7 +12,7 @@ import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
-import { ListItem } from '@/types/listItem';
+import { convertItemsToListItems, ListItem } from '@/types/listItem';
 import { View } from 'react-native';
 import { DropdownMenu } from '@/components/DropdownMenu';
 
@@ -33,6 +33,7 @@ function ShoppingListScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? (_lists$[listId]?.get() as List) : null;
+  const listItems = listId ? _lists$[listId]?.listItems?.get() : null;
 
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
@@ -75,6 +76,10 @@ function ShoppingListScreen() {
     }
   }
 
+  const openitems = convertItemsToListItems(listItems).filter((item) => !item.completed && !item.ongoing);
+  const cartItems = convertItemsToListItems(listItems).filter((item) => !item.completed && item.ongoing);
+  const completedItems = convertItemsToListItems(listItems).filter((item) => item.completed);
+
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Still have to buy',
@@ -83,162 +88,19 @@ function ShoppingListScreen() {
       actionHandler: putInCart,
       checkboxHandler: checkoutList,
       emptyText: 'List is empty. Add some items!',
-      items: [
-        {
-          type: 'item',
-          id: '1',
-          label: 'Milk 3.5%',
-          quantity: 6,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '2',
-          label: 'Toast bread',
-          quantity: 1,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '3',
-          label: 'Mozarella',
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '4',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '5',
-          label: 'Baguette',
-          quantity: 2,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '6',
-          label: 'Milk 3.5%',
-          quantity: 6,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '7',
-          label: 'Toast bread',
-          quantity: 1,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '8',
-          label: 'Mozarella',
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '9',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '10',
-          label: 'Baguette',
-          quantity: 2,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '11',
-          label: 'Milk 3.5%',
-          quantity: 6,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '12',
-          label: 'Toast bread',
-          quantity: 1,
-          inProgress: false,
-        },
-        {
-          type: 'item',
-          id: '13',
-          label: 'Mozarella',
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '14',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '15',
-          label: 'Baguette',
-          quantity: 2,
-          inProgress: false,
-        },
-      ],
+      items: openitems,
     },
     {
       title: 'Cart',
       color: primaryColor,
       action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
       newItemLabel: 'Not planned item in the cart',
-      items: [
-        {
-          type: 'item',
-          id: '3',
-          label: 'Mozarella',
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'item',
-          id: '4',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          inProgress: true,
-        },
-      ],
+      items: cartItems,
       emptyText: 'Cart is still empty',
     },
     {
       title: 'Past purchases',
-      items: [
-        {
-          id: 'purchase1',
-          type: 'group',
-          label: '25 Decemeber 2024',
-        },
-        {
-          type: 'item',
-          id: 'beefbullion',
-          label: 'Beef bullion',
-          quantity: 1,
-          inProgress: false,
-          completed: true,
-        },
-        {
-          type: 'item',
-          id: 'crepeflour',
-          label: 'Crepe flour',
-          quantity: 2,
-          inProgress: false,
-          completed: true,
-        },
-      ],
+      items: completedItems,
       emptyText: 'No purchases yet',
     },
   ];

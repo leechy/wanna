@@ -3,7 +3,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { useEffect, useState } from 'react';
 
 // components
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DropdownMenu } from './DropdownMenu';
 import NewItem from './NewItem';
@@ -41,6 +41,7 @@ interface ItemsListProps {
   inverted?: boolean;
   actionIcon?: boolean;
   submenu?: boolean;
+  style?: ViewStyle;
 }
 
 export function ItemsList({
@@ -53,6 +54,7 @@ export function ItemsList({
   inverted = false,
   actionIcon = true,
   submenu = true,
+  style,
 }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
@@ -245,7 +247,7 @@ export function ItemsList({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <FlatList
         keyExtractor={(item) => item.id}
         data={listItems}

@@ -2,6 +2,7 @@ import { List } from '@/types/list';
 import { generateId, lists$ as _lists$, user$ as _user$ } from './state';
 import { queueOperation } from './actions-queue';
 import { getHRID } from '@/utils/human-readable-ids';
+import { Item } from '@/types/Item';
 
 /**
  * Add new list to the state
@@ -114,4 +115,36 @@ export function clearLists() {
   for (const list of Object.values(_lists$)) {
     list.delete();
   }
+}
+
+/**
+ * Adds a new item to the list
+ *
+ * @param {string} listId  list id
+ * @param {Partial<ListItem>} item  item props
+ * @returns {string}  item id
+ */
+export async function addItem(listId: string, item: Partial<Item>) {
+  const listItemId: string = item.listItemId || generateId();
+  const itemId: string = item.itemId || generateId();
+  const type: string = item.type || 'item';
+  const now = new Date().toISOString();
+
+  const newItem = {
+    listItemId,
+    itemId,
+    listId,
+    type,
+    name: item.name || 'New Item',
+    quantity: item.quantity || 1,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  _lists$[listId].listItems.push(newItem);
+
+  // add the new item to the server
+  queueOperation('item:create', newItem);
+
+  return itemId;
 }

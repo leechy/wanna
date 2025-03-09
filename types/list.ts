@@ -1,4 +1,4 @@
-import { ListItem } from '@/types/listItem';
+import { Item } from '@/types/Item';
 
 export type List = {
   listId: string;
@@ -22,7 +22,7 @@ export type List = {
   updatedAt: string;
 
   users?: ListUser[];
-  listItems?: ListItem[];
+  listItems?: Item[];
 };
 
 export type ListUser = {

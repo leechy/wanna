@@ -1,5 +1,17 @@
+import { Item } from '@/types/Item';
+
 export type ListItem = {
-  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'recipe' | 'contact' | 'group';
+  type: // item types
+  | 'new'
+    | 'item'
+    | 'task'
+    // list types
+    | 'shopping-list'
+    | 'project'
+    | 'recipe'
+    // other types
+    | 'contact'
+    | 'group';
   id: string;
   label: string;
   list?: string;
@@ -13,3 +25,24 @@ export type ListItem = {
   sortOrder?: number;
   completedAt?: string;
 };
+
+export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
+  if (!items) {
+    return [];
+  }
+
+  return items.map((item) => {
+    return {
+      type: 'item',
+      id: item.listItemId,
+      label: item.name,
+      listId: item.listId,
+      deadline: item.deadline,
+      quantity: item.quantity,
+      ongoing: item.ongoing,
+      completed: item.completed,
+      updatedAt: item.updatedAt,
+      sortOrder: item.sortOrder,
+    };
+  });
+}

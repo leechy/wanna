@@ -32,7 +32,7 @@ export default function SignInScreen() {
     <>
       <Stack.Screen options={{ title: 'Tell us your name' }} />
       <ThemedView style={styles.container}>
-        <KeyboardAvoidingView behavior={'padding'} style={styles.keyboardAV}>
+        <KeyboardAvoidingView behavior="padding" style={styles.keyboardAV}>
           <ThemedText
             type="title"
             style={{

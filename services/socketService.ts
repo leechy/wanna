@@ -209,7 +209,7 @@ class SocketService {
       // Process each operation
       for (const operation of queue) {
         if (!operation?.event || !operation?.data) {
-          console.error('Invalid operation:', operation);
+          console.warn('Invalid operation:', operation);
           continue;
         }
         console.log('Processing operation:', operation);
