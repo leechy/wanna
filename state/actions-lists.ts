@@ -76,15 +76,15 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
   // check that the incoming list data from the server is not older
   const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
   if (update.updatedAt && stateUpdatedAt && update.updatedAt <= stateUpdatedAt) {
-    console.log('Incoming list data is older', { listId, update });
     return;
-  } else {
-    console.log('stateUpdatedAt', stateUpdatedAt, 'update.updatedAt', update.updatedAt);
   }
 
   _lists$[listId]?.assign({
     ...update,
   });
+
+  // recreate lists to trigger reactivity
+  _lists$.set({ ..._lists$.get() });
 
   // and the updates should go to the server
   if (!fromServer) {

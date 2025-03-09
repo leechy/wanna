@@ -1,5 +1,5 @@
 export type ListItem = {
-  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'contact' | 'group';
+  type: 'new' | 'item' | 'task' | 'shopping-list' | 'project' | 'recipe' | 'contact' | 'group';
   id: string;
   label: string;
   list?: string;
@@ -9,4 +9,7 @@ export type ListItem = {
   inProgress?: boolean | number; // deprecated, use ongoing instead
   ongoing?: boolean | number; // replacement for the progress property
   completed?: boolean | number;
+  updatedAt?: string;
+  sortOrder?: number;
+  completedAt?: string;
 };

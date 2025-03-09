@@ -103,7 +103,7 @@ export function ItemsList({
     const itemBorderRadius =
       index === 0
         ? listItems?.length === 1
-          ? { borderRadius: 8 }
+          ? { borderRadius: 8, borderBottomWidth: 0 }
           : inverted
           ? { borderBottomLeftRadius: 8, borderBottomRightRadius: 8, borderBottomWidth: 0 }
           : { borderBottomColor, borderTopLeftRadius: 8, borderTopRightRadius: 8 }
@@ -126,6 +126,7 @@ export function ItemsList({
           item={item}
           itemBorderRadius={itemBorderRadius}
           actionHandler={(item) => onItemAction(item)}
+          checkboxHandler={(item) => onCheckboxToggled(item)}
         />
       );
     }

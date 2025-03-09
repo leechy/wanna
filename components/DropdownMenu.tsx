@@ -128,7 +128,6 @@ export function DropdownMenu({
         }
 
         setPosition({ x, y, width });
-        console.log('position trigger:', { px, py, buttonH }, 'menu:', { x, y, width });
         setIsOpen(true);
       });
     }
@@ -270,6 +269,7 @@ const styles = StyleSheet.create({
   menuOption: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 2,
     paddingHorizontal: 8,
     minHeight: 46,

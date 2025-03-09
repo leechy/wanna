@@ -1,21 +1,19 @@
 // hooks and state
-import { useThemeColor } from '@/hooks/useThemeColor';
-import { observer, useSelector } from '@legendapp/state/react';
+import { useMemo } from 'react';
+import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
+import { router } from 'expo-router';
 
 // components
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
-import { router } from 'expo-router';
-import SmallButton from '@/components/SmallButton';
-import BagFillIcon from '@/assets/symbols/bag-fill.svg';
+
+// types
 import { ListItem } from '@/types/listItem';
-import { List } from '@/types/list';
+import { updateList } from '@/state/actions-lists';
 
 function ShoppingScreen() {
-  const primaryColor = useThemeColor({}, 'primary');
-
   function newList() {
     router.navigate('/shopping/new-list');
   }
@@ -24,78 +22,94 @@ function ShoppingScreen() {
     router.navigate(`/shopping/${item.id}`);
   }
 
-  function checkoutList(item: ListItem) {
-    console.log('checkoutList', item);
+  function restoreList(item: ListItem) {
+    if (item.id) {
+      updateList(item.id, {
+        completed: false,
+        completedAt: undefined,
+        updatedAt: new Date().toISOString(),
+      });
+    }
   }
 
-  const lists = useSelector(_lists$) as Record<string, List>;
+  const lists = _lists$.get();
+
+  const recipes = useMemo(() => {
+    if (lists) {
+      return Object.keys(lists)
+        .filter((listId) => lists[listId].type === 'recipe')
+        .map((listId) => {
+          const list = lists[listId];
+          return {
+            id: listId,
+            type: list.type as ListItem['type'],
+            label: list.name,
+            deadline: list.deadline,
+          };
+        });
+    }
+    return [];
+  }, [lists]);
+
+  const [shoppingLists, completedLists] = useMemo(() => {
+    if (lists) {
+      const completedLists: ListItem[] = [];
+      const shoppingLists: ListItem[] = [];
+      Object.keys(lists)
+        .filter((listId) => lists[listId].type === 'shopping-list')
+        .map((listId) => {
+          const list = lists[listId];
+          const listItem: ListItem = {
+            id: listId,
+            type: list.type as ListItem['type'],
+            label: list.name,
+            deadline: list.deadline,
+            shared: list.users?.map((user) => user.names),
+            completed: list.completed,
+            updatedAt: list.updatedAt,
+            sortOrder: list.sortOrder,
+          };
+          if (list.completed) {
+            completedLists.push(listItem);
+          } else {
+            shoppingLists.push(listItem);
+          }
+        });
+      completedLists.sort((a, b) => ((a.updatedAt || 0) > (b.updatedAt || 0) ? -1 : 1));
+      shoppingLists.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      return [shoppingLists, completedLists];
+    }
+
+    return [[], []];
+  }, [lists]);
 
   const blocks: AccordionBlockProps[] = [
     {
-      title: 'Active lists',
+      title: 'Next Up',
       newItemLabel: 'New list',
       newItemHandler: newList,
       actionHandler: goToList,
-      checkboxHandler: checkoutList,
-      items:
-        (lists &&
-          Object.keys(lists).map((listId) => {
-            const list = lists[listId];
-            return {
-              id: listId,
-              type: list.type as ListItem['type'],
-              label: list.name,
-              deadline: list.deadline,
-            };
-          })) ||
-        [],
-      // [
-      //   {
-      //     type: 'shopping-list',
-      //     id: '1',
-      //     label: 'Home groceries',
-      //     quantity: 14,
-      //     inProgress: 3,
-      //   },
-      //   {
-      //     type: 'shopping-list',
-      //     id: '2',
-      //     label: 'Materials for the bathroom renovation',
-      //     deadline: 1740441600000,
-      //     shared: ['John', 'Letitia'],
-      //     quantity: 8,
-      //     inProgress: false,
-      //   },
-      // ],
+      items: shoppingLists,
       emptyText: 'No Lists here! Create a new one to start shopping!',
     },
     {
-      title: 'Cart',
-      color: primaryColor,
-      action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
-      newItemLabel: 'Not planned item in the cart',
-      items: [
-        {
-          type: 'shopping-list',
-          id: '3',
-          label: 'Mozarella',
-          quantity: 2,
-          inProgress: true,
-        },
-        {
-          type: 'shopping-list',
-          id: '4',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          inProgress: true,
-        },
-      ],
-      emptyText: 'Cart is still empty',
+      title: 'Recipes',
+      // color: primaryColor,
+      // action: <SmallButton title="Join Another List" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
+      newItemLabel: 'Create from shopping list',
+      newItemHandler: () => {
+        console.log('Create recipe from shopping list');
+      },
+      actionHandler: goToList,
+      items: recipes,
+      emptyText: "No saved lists yet.\nYou can create one from any list's action menu!",
     },
     {
-      title: 'Past purchases',
-      items: [],
-      emptyText: 'No purchases yet',
+      title: 'Completed',
+      actionHandler: goToList,
+      checkboxHandler: restoreList,
+      items: completedLists,
+      emptyText: 'Any lists with all items checked off will move here!',
     },
   ];
 

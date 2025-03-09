@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 // components
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { AccordionBlock, AccordionBlockProps } from './AccordionBlock';
@@ -16,10 +16,18 @@ interface AccordionProps {
   title?: string;
   titleIcon?: React.FC<SvgProps>;
   titleAction?: () => void;
+  titleLongPressAction?: () => void;
   openBlock?: number;
 }
 
-export function Accordion({ title, blocks, titleIcon, titleAction, openBlock = 0 }: AccordionProps) {
+export function Accordion({
+  title,
+  blocks,
+  titleIcon,
+  titleAction,
+  titleLongPressAction,
+  openBlock = 0,
+}: AccordionProps) {
   const [prevBlock, setPrevBlock] = useState(Math.abs(openBlock - 1));
   const [currentBlock, setCurrentBlock] = useState(openBlock);
   const textColor = useThemeColor({}, 'text');
@@ -29,7 +37,20 @@ export function Accordion({ title, blocks, titleIcon, titleAction, openBlock = 0
   return (
     <View style={styles.container}>
       <ThemedView style={globalStyles.titleContainer}>
-        <ThemedText type="title">{title}</ThemedText>
+        {titleLongPressAction ? (
+          <Pressable
+            onLongPress={titleLongPressAction}
+            style={{ padding: 8 }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
+            accessibilityHint="Press and hold to open settings"
+          >
+            <ThemedText type="title">{title}</ThemedText>
+          </Pressable>
+        ) : (
+          <ThemedText type="title">{title}</ThemedText>
+        )}
         {titleIcon && titleAction && (
           <PressableArea
             onPress={titleAction}

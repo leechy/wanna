@@ -63,6 +63,18 @@ function ShoppingListScreen() {
     console.log('checkoutList', item);
   }
 
+  function editList() {
+    if (listData) {
+      router.navigate({
+        pathname: '/shopping/new-list',
+        params: {
+          listId: listData.listId,
+          back: `/shopping/${listData.listId}`,
+        },
+      });
+    }
+  }
+
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Still have to buy',
@@ -306,7 +318,12 @@ function ShoppingListScreen() {
           <SmallButton icon={PersonPlusIcon} title="Not shared" />
         </DropdownMenu>
       </View>
-      <Accordion title={listData?.name || 'Shopping list'} blocks={blocks} openBlock={0} />
+      <Accordion
+        title={listData?.name + ' ' || 'Shopping list '}
+        titleLongPressAction={editList}
+        blocks={blocks}
+        openBlock={0}
+      />
     </Page>
   );
 }

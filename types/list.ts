@@ -4,7 +4,7 @@ export type List = {
   listId: string;
   shareId: string;
   name: string;
-  type: 'project' | 'shopping-list';
+  type: 'project' | 'shopping-list' | 'recipe';
   deadline?: string;
 
   active: boolean;
@@ -12,6 +12,7 @@ export type List = {
   completedAt?: string;
   hideCompleted?: boolean;
 
+  sortOrder?: number;
   notifyOnListShared?: boolean;
   notifyOnListItemsUpdate?: boolean;
   notifyOnItemStateUpdate?: boolean;
