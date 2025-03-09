@@ -9,7 +9,7 @@ import { getHRID } from '@/utils/human-readable-ids';
  * @param {Partial<List>} list  list props
  * @returns
  */
-export async function addList(list: Partial<List>) {
+export async function addList(list: Partial<List>, updateServer = true) {
   const uid = _user$.uid?.get();
   if (!uid) {
     throw new Error('No user id');
@@ -40,16 +40,18 @@ export async function addList(list: Partial<List>) {
   });
 
   // add the new list to the server
-  queueOperation('list:create', {
-    listId,
-    shareId,
-    name,
-    type,
-    deadline: list.deadline,
-    notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
-    notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
-    notifyOnListShared: list.notifyOnListShared || true,
-  });
+  if (updateServer) {
+    queueOperation('list:create', {
+      listId,
+      shareId,
+      name,
+      type,
+      deadline: list.deadline,
+      notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
+      notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
+      notifyOnListShared: list.notifyOnListShared || true,
+    });
+  }
 
   return listId;
 }
@@ -62,6 +64,20 @@ export async function addList(list: Partial<List>) {
  * @returns {void}
  */
 export async function updateList(listId: string, update: Partial<List>) {
+  // check that the list exists in the state
+  // and if not, create one instead
+  if (!_lists$[listId]) {
+    console.error('List not found', { listId, update });
+    addList({ listId, ...update }, false);
+    return;
+  }
+  // check that the incoming list data from the server is not older
+  const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
+  if (update.updatedAt && stateUpdatedAt && update.updatedAt < stateUpdatedAt) {
+    console.log('Incoming list data is older', { listId, update });
+    return;
+  }
+
   _lists$[listId]?.assign({
     ...update,
   });

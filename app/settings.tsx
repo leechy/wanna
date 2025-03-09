@@ -1,7 +1,8 @@
-import { observer, useSelector } from '@legendapp/state/react';
+import { useSelector } from '@legendapp/state/react';
 import { user$ as _user$, lists$ as _lists$ } from '@/state/state';
 import { logout } from '@/state/actions-user';
 import { clearLists } from '@/state/actions-lists';
+import { getHRID } from '@/utils/human-readable-ids';
 
 // components
 import { Text, View } from 'react-native';
@@ -13,15 +14,17 @@ import { ThemedView } from '@/components/ThemedView';
 
 // styles
 import { globalStyles } from '@/constants/GlobalStyles';
-import { getHRID } from '@/utils/human-readable-ids';
 
 function SettingsScreen() {
+  const lists = useSelector(_lists$);
+  const user = useSelector(_user$);
+
   function dumpLists() {
-    console.log('lists', _lists$.get());
+    console.log('lists', lists);
   }
 
   function dumpUser() {
-    console.log('user', _user$.get());
+    console.log('user', user);
   }
 
   function getId() {
@@ -29,7 +32,6 @@ function SettingsScreen() {
   }
 
   // in case there is no user, redirect to sign-in
-  const user = useSelector(_user$.get());
   if (!user?.uid) {
     return <Redirect href="/sign-in" />;
   }
@@ -41,8 +43,8 @@ function SettingsScreen() {
         <SmallButton title="Log Out" onPress={logout} />
       </ThemedView>
       <View style={{ padding: 16, gap: 12 }}>
-        <Text>Current user id: {_user$.uid.get()}</Text>
-        <Text>Current name: {_user$.names.get() as string}</Text>
+        <Text>Current user id: {user.uid}</Text>
+        <Text>Current name: {user.names}</Text>
       </View>
       <View style={{ padding: 16, gap: 12 }}>
         <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -54,7 +56,7 @@ function SettingsScreen() {
           <SmallButton title="Dump lists" onPress={dumpLists} />
           <SmallButton title="Clear lists" onPress={clearLists} />
         </View>
-        <Text>Lists no: {Object.keys(_lists$.get() || {}).length}</Text>
+        <Text>Lists no: {Object.keys(lists).length}</Text>
       </View>
 
       <View style={{ padding: 16, gap: 12 }}>
@@ -66,4 +68,4 @@ function SettingsScreen() {
   );
 }
 
-export default observer(SettingsScreen);
+export default SettingsScreen;

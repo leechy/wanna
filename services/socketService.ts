@@ -6,10 +6,11 @@ import NetInfo from '@react-native-community/netinfo';
 import { observe } from '@legendapp/state';
 import { queue$ as _queue$, user$ as _user$, lists$ as _lists$, connectionStatus$ } from '@/state/state';
 import { queueOperation } from '@/state/actions-queue';
+import { updateUser } from '@/state/actions-user';
+import { updateList } from '@/state/actions-lists';
 
 // types
 import { QueuedOperation } from '@/types/QueuedOperation';
-import { updateUser } from '@/state/actions-user';
 
 class SocketService {
   private socket: Socket | null = null;
@@ -147,16 +148,15 @@ class SocketService {
     });
 
     if (lists?.length) {
-      // WIP: update list state
-      // TODO: do that properly
-      _lists$.set(lists);
+      lists.forEach((list: any) => {
+        updateList(list.listId, list);
+      });
     }
   };
 
   handleListUpdate = (data: any) => {
     const { listId, changes } = data;
-    // Update local state with server changes
-    _lists$[listId].assign(changes);
+    updateList(listId, changes);
   };
 
   subscribeToList(listId: string) {
@@ -205,7 +205,7 @@ class SocketService {
 
       // Process each operation
       for (const operation of queue) {
-        // console.log('Processing operation:', operation);
+        console.log('Processing operation:', operation);
         const success = socketService.emit(operation.event, operation.data);
 
         if (!success) {
