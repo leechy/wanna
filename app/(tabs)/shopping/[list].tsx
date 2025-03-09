@@ -31,11 +31,16 @@ function ShoppingListScreen() {
   const touchableColor = useThemeColor({}, 'touchable');
 
   const params = useLocalSearchParams();
-  const listData = params?.list ? (_lists$[params?.list as string]?.get() as List) : null;
+  const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
+  const listData = listId ? (_lists$[listId]?.get() as List) : null;
 
   function updateDeadline(date: string | number | undefined) {
-    console.log('updateDeadline', date);
-    updateList(params?.list as string, { deadline: date ? new Date(date).toISOString() : undefined });
+    if (listId) {
+      updateList(listId, {
+        deadline: date ? new Date(date).toISOString() : undefined,
+        updatedAt: new Date().toISOString(),
+      });
+    }
   }
 
   function newItem() {

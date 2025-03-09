@@ -61,9 +61,11 @@ export async function addList(list: Partial<List>, updateServer = true) {
  *
  * @param {string} listId  list id
  * @param {Partial<List>} update  props to update
+ * @param {boolean} fromServer  whether the update is coming from the server (will not be sent back)
  * @returns {void}
  */
-export async function updateList(listId: string, update: Partial<List>) {
+export async function updateList(listId: string, update: Partial<List>, fromServer = false) {
+  const { users, listItems, ...updatedData } = update;
   // check that the list exists in the state
   // and if not, create one instead
   if (!_lists$[listId]) {
@@ -73,14 +75,24 @@ export async function updateList(listId: string, update: Partial<List>) {
   }
   // check that the incoming list data from the server is not older
   const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
-  if (update.updatedAt && stateUpdatedAt && update.updatedAt < stateUpdatedAt) {
+  if (update.updatedAt && stateUpdatedAt && update.updatedAt <= stateUpdatedAt) {
     console.log('Incoming list data is older', { listId, update });
     return;
+  } else {
+    console.log('stateUpdatedAt', stateUpdatedAt, 'update.updatedAt', update.updatedAt);
   }
 
   _lists$[listId]?.assign({
     ...update,
   });
+
+  // and the updates should go to the server
+  if (!fromServer) {
+    queueOperation('list:update', {
+      listId,
+      ...updatedData,
+    });
+  }
 }
 
 /**

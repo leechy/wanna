@@ -89,9 +89,6 @@ class SocketService {
 
     // Set up list update listeners
     this.setupListListeners();
-
-    // load up the user's data
-    this.emit('auth', { auth: _user$.auth.get() });
   }
 
   setupListListeners() {
@@ -107,7 +104,10 @@ class SocketService {
     connectionStatus$.lastConnected.set(new Date().toISOString());
     this.reconnectAttempts = 0;
 
-    // Sync data and process queue
+    // Sync data
+    this.emit('auth', { auth: _user$.auth.get() });
+
+    // and process queue
     await this.processQueue();
   };
 
@@ -149,14 +149,17 @@ class SocketService {
 
     if (lists?.length) {
       lists.forEach((list: any) => {
-        updateList(list.listId, list);
+        updateList(list.listId, list, true);
       });
     }
   };
 
   handleListUpdate = (data: any) => {
-    const { listId, changes } = data;
-    updateList(listId, changes);
+    const {
+      data: { listId, ...changes },
+    } = data;
+    console.log('List update:', listId, changes);
+    updateList(listId, changes, true);
   };
 
   subscribeToList(listId: string) {
@@ -205,10 +208,15 @@ class SocketService {
 
       // Process each operation
       for (const operation of queue) {
+        if (!operation?.event || !operation?.data) {
+          console.error('Invalid operation:', operation);
+          continue;
+        }
         console.log('Processing operation:', operation);
         const success = socketService.emit(operation.event, operation.data);
 
         if (!success) {
+          console.log('Operation failed:', operation);
           remainingOperations.push(operation);
         }
       }

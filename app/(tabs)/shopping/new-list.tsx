@@ -1,6 +1,8 @@
-// hooks
+// hooks and state
 import { useEffect, useState } from 'react';
 import { lists$ as _lists$ } from '@/state/state';
+import { addList, updateList } from '@/state/actions-lists';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 
 // components
 import { KeyboardAvoidingView, Platform, StyleSheet, View, Text } from 'react-native';
@@ -9,14 +11,11 @@ import TitleInput from '@/components/TitleInput';
 import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
 import Checkbox from '@/components/Checkbox';
+import HeaderButton from '@/components/HeaderButton';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import DateSelector from '@/components/DateSelector';
-import { addList, updateList } from '@/state/actions-lists';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import HeaderButton from '@/components/HeaderButton';
-import { List } from '@/types/list';
 
 export default function NewListModal() {
   const [name, setName] = useState('');
@@ -26,11 +25,12 @@ export default function NewListModal() {
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
 
   const params = useLocalSearchParams();
-  const listData = params?.listId ? (_lists$[params?.listId as string]?.get() as List) : null;
+  const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
+  const listData = listId ? _lists$[listId]?.get() : null;
 
   useEffect(() => {
     if (listData) {
-      console.log('listData', listData);
+      // console.log('listData', listData);
       setName(listData.name);
       setDeadline(listData.deadline ? new Date(listData.deadline).getTime() : undefined);
       setListItemsUpdate(listData.notifyOnListItemsUpdate || true);
@@ -40,7 +40,7 @@ export default function NewListModal() {
   }, [listData]);
 
   function submitData() {
-    if (params?.listId) {
+    if (listId) {
       updateCurrentList();
     } else {
       createNewList();
@@ -48,14 +48,15 @@ export default function NewListModal() {
   }
 
   async function updateCurrentList() {
-    updateList(params?.listId as string, {
+    updateList(listId as string, {
       name,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
       notifyOnListItemsUpdate: listItemsUpdate,
       notifyOnItemStateUpdate: itemStateUpdate,
       notifyOnListShared: sharedNewUser,
+      updatedAt: new Date().toISOString(),
     });
-    router.dismissTo(`/shopping/${params?.listId}`);
+    router.dismissTo(`/shopping/${listId}`);
   }
 
   async function createNewList() {
@@ -77,7 +78,7 @@ export default function NewListModal() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <Stack.Screen
         options={{
-          headerRight: () => <HeaderButton title={params?.listId ? 'Update' : 'Create'} onPress={submitData} />,
+          headerRight: () => <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />,
         }}
       />
       <View style={styles.container}>
