@@ -35,7 +35,7 @@ function ShoppingListScreen() {
 
   function updateDeadline(date: string | number | undefined) {
     console.log('updateDeadline', date);
-    updateList(params?.list as string, { deadline: date ? new Date(date).toISOString() : null });
+    updateList(params?.list as string, { deadline: date ? new Date(date).toISOString() : undefined });
   }
 
   function newItem() {
@@ -43,7 +43,7 @@ function ShoppingListScreen() {
       router.navigate({
         pathname: '/shopping/new-item',
         params: {
-          listId: listData.id,
+          listId: listData.listId,
           listName: listData.name,
         },
       });
@@ -237,17 +237,23 @@ function ShoppingListScreen() {
             {
               label: 'Share link',
               onPress: () => {
-                setTimeout(() => {
-                  shareList('123');
-                }, 600);
+                if (listData?.shareId) {
+                  setTimeout(() => {
+                    shareList(listData.shareId);
+                  }, 600);
+                }
               },
+              disabled: !listData?.shareId,
               icon: ShareIcon,
             },
             {
               label: 'Copy link',
               onPress: () => {
-                copyListLinkToClipboard('123');
+                if (listData?.shareId) {
+                  copyListLinkToClipboard(listData.shareId);
+                }
               },
+              disabled: !listData?.shareId,
               icon: CopyLinkIcon,
             },
             {
@@ -281,11 +287,12 @@ function ShoppingListScreen() {
                 router.push({
                   pathname: '/shopping/choose-contact',
                   params: {
-                    listId: '123',
+                    listId: listData?.listId,
                     listName: 'Home groceries',
                   },
                 });
               },
+              disabled: !listData?.listId,
               icon: ChevronRightIcon,
               color: touchableColor,
             },

@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { copyListLinkToClipboard } from '@/utils/share';
+import { lists$ as _lists$ } from '@/state/state';
 
 // components
 import Page from '@/components/Page';
@@ -14,17 +15,21 @@ import { View } from 'react-native';
 // icons
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 
+// types
+import { List } from '@/types/list';
+
 export default function ChooseContactScreen() {
   const { listId } = useLocalSearchParams();
+  const listData = (_lists$[listId as string]?.get() as List) || null;
 
   useEffect(() => {
     if (listId) {
-      console.log('ChooseContactScreen', listId);
+      console.log('ChooseContactScreen', listId, listData);
     }
-  }, [listId]);
+  }, [listId, listData]);
 
   function onCopyLink() {
-    copyListLinkToClipboard(listId as string);
+    copyListLinkToClipboard(listData?.shareId);
   }
 
   function selectContact(item: any) {
