@@ -239,12 +239,12 @@ export function ItemsList({
                   },
                   !item.completed && {
                     label: 'Edit',
-                    onPress: onEditItem,
+                    onPress: () => onEditItem(item),
                     icon: EditIcon,
                   },
                   {
                     label: 'Delete',
-                    onPress: onDeleteItem,
+                    onPress: () => onDeleteItem(item),
                     color: dangerColor,
                     icon: SquareMinusIcon,
                   },

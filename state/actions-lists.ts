@@ -277,3 +277,38 @@ export async function putItemInCart(listId: string, listItemId: string, ongoing:
     updatedAt,
   });
 }
+
+/**
+ * Mark item as deleted
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @returns {void}
+ */
+export async function markItemAsDeleted(listId: string, listItemId: string) {
+  const listItems = _lists$[listId].listItems.get();
+  if (!listItems) {
+    console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
+    return;
+  }
+
+  const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const updatedAt = new Date().toISOString();
+  _lists$[listId].listItems[itemIndex].assign({
+    deleted: true,
+    updatedAt,
+  });
+
+  // update the item on the server
+  queueOperation('listItem:update', {
+    listId,
+    listItemId,
+    deleted: true,
+    updatedAt,
+  });
+}

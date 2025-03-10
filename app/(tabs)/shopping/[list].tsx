@@ -23,7 +23,7 @@ import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import DateSelector from '@/components/DateSelector';
-import { markItemAsCompleted, putItemInCart, updateList } from '@/state/actions-lists';
+import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -71,7 +71,7 @@ function ShoppingListScreen() {
   }
 
   function deleteItem(item: ListItem) {
-    console.log('Delete item', item);
+    markItemAsDeleted(listId, item.id);
   }
 
   function editList() {

@@ -32,19 +32,22 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
     return [];
   }
 
-  return items.map((item) => ({
-    type: 'item',
-    id: item.listItemId,
-    label: item.name,
-    listId: item.listId,
-    deadline: item.deadline,
-    quantity: item.quantity,
-    ongoing: item.ongoing,
-    assignee: item.assignee,
-    assigneeId: item.assigneeId,
-    completed: item.completed,
-    completedAt: item.completedAt,
-    updatedAt: item.updatedAt,
-    sortOrder: item.sortOrder,
-  }));
+  return items
+    .filter((item) => item.listItemId && !item.deleted)
+    .sort((a, b) => ((a.updatedAt || '') > (b.updatedAt || '') ? -1 : 1))
+    .map((item) => ({
+      type: 'item',
+      id: item.listItemId,
+      label: item.name,
+      listId: item.listId,
+      deadline: item.deadline,
+      quantity: item.quantity,
+      ongoing: item.ongoing,
+      assignee: item.assignee,
+      assigneeId: item.assigneeId,
+      completed: item.completed,
+      completedAt: item.completedAt,
+      updatedAt: item.updatedAt,
+      sortOrder: item.sortOrder,
+    }));
 }
