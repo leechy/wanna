@@ -18,9 +18,10 @@ export type Item = {
   public?: boolean;
 
   ongoing?: boolean;
-  assignee?: ItemUser;
-  assigneeId?: string;
+  assignee?: string | null;
+  assigneeId?: string | null;
   completed?: boolean;
+  completedAt?: string | null;
 
   sortOrder?: number;
 

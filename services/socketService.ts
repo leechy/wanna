@@ -117,7 +117,7 @@ class SocketService {
   };
 
   handleError = (error: Error) => {
-    console.error('WebSocket connection error:', error);
+    console.warn('WebSocket connection error:', error);
 
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.warn('Max reconnect attempts reached');
@@ -129,13 +129,13 @@ class SocketService {
     connectionStatus$.errors.push(data.message);
   };
 
-  handleAuthUpdate = (data: any) => {
-    console.log('Auth update:', data);
+  handleAuthUpdate = (message: any) => {
+    // console.log('Auth update:', JSON.stringify(message, null, 2));
 
     const { uid, names, notifyOnItemStateUpdate, notifyOnListItemsUpdate, notifyOnListShared, lists } =
-      data?.userData || data?.newUser || {};
+      message?.userData || message?.newUser || {};
     if (!uid || !names) {
-      console.error('Invalid user data:', data);
+      console.error('Invalid user data:', message);
       return;
     }
 
@@ -154,11 +154,10 @@ class SocketService {
     }
   };
 
-  handleListUpdate = (data: any) => {
+  handleListUpdate = (message: any) => {
     const {
       data: { listId, ...changes },
-    } = data;
-    console.log('List update:', listId, changes);
+    } = message;
     updateList(listId, changes, true);
   };
 

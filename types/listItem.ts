@@ -18,12 +18,13 @@ export type ListItem = {
   shared?: string[];
   deadline?: string | number | null;
   quantity?: number;
-  inProgress?: boolean | number; // deprecated, use ongoing instead
   ongoing?: boolean | number; // replacement for the progress property
   completed?: boolean | number;
   updatedAt?: string;
   sortOrder?: number;
-  completedAt?: string;
+  completedAt?: string | null;
+  assignee?: string | null;
+  assigneeId?: string | null;
 };
 
 export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
@@ -31,18 +32,19 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
     return [];
   }
 
-  return items.map((item) => {
-    return {
-      type: 'item',
-      id: item.listItemId,
-      label: item.name,
-      listId: item.listId,
-      deadline: item.deadline,
-      quantity: item.quantity,
-      ongoing: item.ongoing,
-      completed: item.completed,
-      updatedAt: item.updatedAt,
-      sortOrder: item.sortOrder,
-    };
-  });
+  return items.map((item) => ({
+    type: 'item',
+    id: item.listItemId,
+    label: item.name,
+    listId: item.listId,
+    deadline: item.deadline,
+    quantity: item.quantity,
+    ongoing: item.ongoing,
+    assignee: item.assignee,
+    assigneeId: item.assigneeId,
+    completed: item.completed,
+    completedAt: item.completedAt,
+    updatedAt: item.updatedAt,
+    sortOrder: item.sortOrder,
+  }));
 }

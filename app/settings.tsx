@@ -20,7 +20,7 @@ function SettingsScreen() {
   const user = useSelector(_user$);
 
   function dumpLists() {
-    console.log('lists', lists);
+    console.log('lists', JSON.stringify(lists, null, 2));
   }
 
   function dumpUser() {

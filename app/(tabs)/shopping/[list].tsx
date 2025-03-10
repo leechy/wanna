@@ -23,8 +23,7 @@ import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import DateSelector from '@/components/DateSelector';
-import { updateList } from '@/state/actions-lists';
-import { List } from '@/types/list';
+import { markItemAsCompleted, putItemInCart, updateList } from '@/state/actions-lists';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -32,8 +31,7 @@ function ShoppingListScreen() {
 
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
-  const listData = listId ? (_lists$[listId]?.get() as List) : null;
-  const listItems = listId ? _lists$[listId]?.listItems?.get() : null;
+  const listData = listId ? _lists$[listId]?.get() : null;
 
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
@@ -56,12 +54,24 @@ function ShoppingListScreen() {
     }
   }
 
-  function putInCart(item: ListItem) {
-    console.log('putInCart', item);
+  function toggleCart(item: ListItem) {
+    putItemInCart(listId, item.id, item.ongoing ? false : true);
   }
 
-  function checkoutList(item: ListItem) {
-    console.log('checkoutList', item);
+  function checkoutItem(item: ListItem) {
+    markItemAsCompleted(listId, item.id);
+  }
+
+  function restoreItem(item: ListItem) {
+    markItemAsCompleted(listId, item.id, false);
+  }
+
+  function editItem(item: ListItem) {
+    console.log('Edit item', item);
+  }
+
+  function deleteItem(item: ListItem) {
+    console.log('Delete item', item);
   }
 
   function editList() {
@@ -76,17 +86,23 @@ function ShoppingListScreen() {
     }
   }
 
-  const openitems = convertItemsToListItems(listItems).filter((item) => !item.completed && !item.ongoing);
-  const cartItems = convertItemsToListItems(listItems).filter((item) => !item.completed && item.ongoing);
-  const completedItems = convertItemsToListItems(listItems).filter((item) => item.completed);
+  const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
+
+  const openitems = items.filter((item) => !item.completed);
+  const cartItems = items.filter((item) => !item.completed && item.ongoing);
+  const completedItems = items.filter((item) => item.completed);
+
+  console.log('listItems', JSON.stringify(items, null, 2));
 
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Still have to buy',
       newItemLabel: 'New item',
       newItemHandler: newItem,
-      actionHandler: putInCart,
-      checkboxHandler: checkoutList,
+      actionHandler: toggleCart,
+      checkboxHandler: checkoutItem,
+      editHandler: editItem,
+      deleteHandler: deleteItem,
       emptyText: 'List is empty. Add some items!',
       items: openitems,
     },
@@ -95,11 +111,18 @@ function ShoppingListScreen() {
       color: primaryColor,
       action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
       newItemLabel: 'Not planned item in the cart',
+      actionHandler: toggleCart,
+      checkboxHandler: checkoutItem,
+      editHandler: editItem,
+      deleteHandler: deleteItem,
       items: cartItems,
-      emptyText: 'Cart is still empty',
+      emptyText: 'The cart is empty',
     },
     {
       title: 'Past purchases',
+      actionHandler: restoreItem,
+      checkboxHandler: restoreItem,
+      deleteHandler: deleteItem,
       items: completedItems,
       emptyText: 'No purchases yet',
     },

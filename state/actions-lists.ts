@@ -70,30 +70,37 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
   // check that the list exists in the state
   // and if not, create one instead
   if (!_lists$[listId]) {
-    console.error('List not found', { listId, update });
+    console.warn('List not found, creating new one', { listId, update });
     addList({ listId, ...update }, false);
     return;
   }
   // check that the incoming list data from the server is not older
   const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
-  if (update.updatedAt && stateUpdatedAt && update.updatedAt <= stateUpdatedAt) {
-    return;
+  if (update.updatedAt && stateUpdatedAt && update.updatedAt > stateUpdatedAt) {
+    _lists$[listId]?.assign({
+      ...update,
+    });
+
+    // and the updates should go to the server
+    if (!fromServer) {
+      queueOperation('list:update', {
+        listId,
+        ...updatedData,
+      });
+    }
+
+    // recreate lists to trigger reactivity
+    _lists$.set({ ..._lists$.get() });
+  } else {
+    console.warn('Incoming list data is older', listId + ':', update.updatedAt, '<=', stateUpdatedAt);
   }
 
-  _lists$[listId]?.assign({
-    ...update,
+  // update the items in the list
+  listItems?.forEach((item) => {
+    updateItem(listId, item.listItemId, item, fromServer);
   });
 
-  // recreate lists to trigger reactivity
-  _lists$.set({ ..._lists$.get() });
-
-  // and the updates should go to the server
-  if (!fromServer) {
-    queueOperation('list:update', {
-      listId,
-      ...updatedData,
-    });
-  }
+  return listId;
 }
 
 /**
@@ -147,4 +154,126 @@ export async function addItem(listId: string, item: Partial<Item>) {
   queueOperation('item:create', newItem);
 
   return itemId;
+}
+
+/**
+ * Update an item in the list
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @param {Partial<Item>} update  item props to update
+ * @returns {void}
+ */
+export async function updateItem(listId: string, listItemId: string, update: Partial<Item>, fromServer = false) {
+  const listItems = _lists$[listId]?.listItems.get();
+  if (!listItems) {
+    console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
+    return;
+  }
+
+  const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const stateUpdatedAt = _lists$[listId]?.listItems[itemIndex].updatedAt?.get();
+  if (stateUpdatedAt && update.updatedAt && stateUpdatedAt > update.updatedAt) {
+    console.warn('Incoming item data is older', listItemId + ':', update.updatedAt, '<=', stateUpdatedAt);
+    return;
+  }
+
+  // update the item in the state
+  _lists$[listId].listItems[itemIndex].assign({
+    ...update,
+  });
+
+  if (!fromServer) {
+    // update the item on the server
+    queueOperation('item:update', {
+      listId,
+      listItemId,
+      ...update,
+    });
+  }
+}
+
+/**
+ * Mark an item as completed
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @param {boolean} completed  whether the item is completed
+ * @returns {void}
+ */
+export async function markItemAsCompleted(listId: string, listItemId: string, completed: boolean = true) {
+  const listItems = _lists$[listId].listItems.get();
+  if (!listItems) {
+    console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
+    return;
+  }
+
+  const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const updatedItem = {
+    completed,
+    ongoing: false,
+    completedAt: completed ? new Date().toISOString() : null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  _lists$[listId].listItems[itemIndex].assign(updatedItem);
+
+  // update the item on the server
+  queueOperation('listItem:update', {
+    listId,
+    listItemId,
+    ...updatedItem,
+  });
+}
+
+/**
+ * Puts item in cart
+ * and sets the current user as an asignee
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @param {boolean} ongoing  whether the item is in progress
+ * @returns {void}
+ */
+export async function putItemInCart(listId: string, listItemId: string, ongoing: boolean = true) {
+  const listItems = _lists$[listId].listItems.get();
+  if (!listItems) {
+    console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
+    return;
+  }
+
+  const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const assigneeId = _user$.uid?.get();
+  const assignee = _user$.names?.get();
+  const updatedAt = new Date().toISOString();
+  _lists$[listId].listItems[itemIndex].assign({
+    ongoing,
+    assigneeId,
+    assignee,
+    updatedAt,
+  });
+
+  // update the item on the server
+  queueOperation('listItem:update', {
+    listId,
+    listItemId,
+    assigneeId,
+    ongoing,
+    updatedAt,
+  });
 }
