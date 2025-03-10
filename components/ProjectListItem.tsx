@@ -37,7 +37,7 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
       <LinearGradient
         // Item In Progress Linear Gradient
-        colors={[backgroundColor + '00', item.inProgress || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
+        colors={[backgroundColor + '00', item.ongoing || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
         start={[0, 0]}
         end={[1, 0]}
         style={[globalStyles.listItemGradient, itemBorderRadius]}
@@ -53,7 +53,7 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
           accessibilityHint={`Press to open ${item.label}`}
         >
           <View style={globalStyles.listItemLeadButton}>
-            {item.inProgress || 0 > 0 ? (
+            {item.ongoing || 0 > 0 ? (
               <PlayIcon width={28} height={28} color={primaryColor} />
             ) : item.completed || 0 > 0 ? (
               <PauseIcon width={28} height={28} color={textColor} />
@@ -65,7 +65,7 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
           <ListItemLabel item={item} />
           {item.quantity && (
             <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${
-              (item.inProgress ? (item.inProgress === true ? 1 : item.inProgress) : 0) +
+              (item.ongoing ? (item.ongoing === true ? 1 : item.ongoing) : 0) +
               (item.completed === true ? 1 : item.completed || 0)
             }/${item.quantity}`}</Text>
           )}

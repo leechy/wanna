@@ -136,7 +136,7 @@ function NewItemModal() {
                 id: 'beefbullion2',
                 label: 'Beef bullion',
                 quantity: 1,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -144,7 +144,7 @@ function NewItemModal() {
                 id: 'crepeflour2',
                 label: 'Crepe flour',
                 quantity: 2,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -152,7 +152,7 @@ function NewItemModal() {
                 id: 'beefbullion',
                 label: 'Beef bullion',
                 quantity: 1,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -160,7 +160,7 @@ function NewItemModal() {
                 id: 'crepeflour',
                 label: 'Crepe flour',
                 quantity: 2,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -168,7 +168,7 @@ function NewItemModal() {
                 id: 'beefbullion3',
                 label: 'Beef bullion',
                 quantity: 1,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -176,7 +176,7 @@ function NewItemModal() {
                 id: 'crepeflour3',
                 label: 'Crepe flour',
                 quantity: 2,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -184,7 +184,7 @@ function NewItemModal() {
                 id: 'beefbullion4',
                 label: 'Beef bullion',
                 quantity: 1,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
               {
@@ -192,7 +192,7 @@ function NewItemModal() {
                 id: 'crepeflour4',
                 label: 'Crepe flour',
                 quantity: 2,
-                inProgress: false,
+                ongoing: false,
                 completed: true,
               },
             ]}

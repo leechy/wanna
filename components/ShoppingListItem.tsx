@@ -44,7 +44,7 @@ export default function ShoppingListItem({
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
       <LinearGradient
         // Item In Progress Linear Gradient
-        colors={[backgroundColor + '00', item.inProgress || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
+        colors={[backgroundColor + '00', item.ongoing || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
         start={[0, 0]}
         end={[1, 0]}
         style={[globalStyles.listItemGradient, itemBorderRadius]}
@@ -65,7 +65,7 @@ export default function ShoppingListItem({
             <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
               <ListItemLabel item={item} />
               {item.quantity && (
-                <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.inProgress || 0}/${
+                <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.ongoing || 0}/${
                   item.quantity
                 }`}</Text>
               )}
@@ -74,7 +74,7 @@ export default function ShoppingListItem({
         ) : (
           <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
             <View style={globalStyles.listItemLeadButton}>
-              {item.inProgress || 0 > 0 ? (
+              {item.ongoing || 0 > 0 ? (
                 <CartNotEmptyIcon width={28} height={28} color={primaryColor} />
               ) : (
                 <CartIcon width={28} height={28} color={textColor} />
@@ -83,7 +83,7 @@ export default function ShoppingListItem({
 
             <ListItemLabel item={item} />
             {item.quantity && (
-              <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.inProgress || 0}/${
+              <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.ongoing || 0}/${
                 item.quantity
               }`}</Text>
             )}

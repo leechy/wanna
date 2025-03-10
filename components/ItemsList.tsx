@@ -150,7 +150,7 @@ export function ItemsList({
       <View style={[styles.item, { backgroundColor }, itemBorderRadius]}>
         <LinearGradient
           // Item In Progress Linear Gradient
-          colors={[backgroundColor + '00', item.inProgress ? primaryColor + '1d' : backgroundColor + '00']}
+          colors={[backgroundColor + '00', item.ongoing ? primaryColor + '1d' : backgroundColor + '00']}
           start={[0, 0]}
           end={[1, 0]}
           style={[styles.gradient, itemBorderRadius]}
@@ -181,19 +181,19 @@ export function ItemsList({
             accessibilityRole="button"
             accessibilityLabel={
               item.type === 'item'
-                ? item.inProgress
+                ? item.ongoing
                   ? `Remove ${item.label} from the cart`
                   : `Put ${item.label} in the cart`
-                : item.inProgress
+                : item.ongoing
                 ? `Pause ${item.label}`
                 : `Start ${item.label}`
             }
             accessibilityHint={
               item.type === 'item'
-                ? item.inProgress
+                ? item.ongoing
                   ? 'Press to remove from the cart'
                   : 'Press to put in the cart'
-                : item.inProgress
+                : item.ongoing
                 ? 'Press to put on pause'
                 : 'Press to start'
             }
@@ -202,13 +202,13 @@ export function ItemsList({
             {!actionIcon ? null : item.completed ? (
               <RestoreIcon width={28} height={28} color={touchableColor} />
             ) : item.type === 'item' ? (
-              item.inProgress ? (
+              item.ongoing ? (
                 <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
               )
             ) : item.type === 'task' ? (
-              item.inProgress ? (
+              item.ongoing ? (
                 <PlayFillIcon width={28} height={28} color={primaryColor + '99'} />
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
@@ -223,15 +223,16 @@ export function ItemsList({
                     label: 'Rearrange',
                     onPress: () => {},
                     icon: RearrangeIcon,
+                    disabled: true,
                   },
                   !item.completed && {
                     label: 'Edit',
-                    onPress: () => {},
+                    onPress: onEditItem,
                     icon: EditIcon,
                   },
                   {
                     label: 'Delete',
-                    onPress: () => {},
+                    onPress: onDeleteItem,
                     color: dangerColor,
                     icon: SquareMinusIcon,
                   },
