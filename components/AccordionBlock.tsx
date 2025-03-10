@@ -24,6 +24,8 @@ export interface AccordionBlockProps {
   newItemIcon?: React.FC<SvgProps>;
   actionHandler?: (item: ListItem) => void;
   checkboxHandler?: (item: ListItem) => void;
+  editHandler?: (item: ListItem) => void;
+  deleteHandler?: (item: ListItem) => void;
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;
@@ -92,6 +94,8 @@ export function AccordionBlock(block: AccordionBlockProps) {
             newItemHandler={block.newItemHandler}
             actionHandler={block.actionHandler}
             checkboxHandler={block.checkboxHandler}
+            editHandler={block.editHandler}
+            deleteHandler={block.deleteHandler}
             items={block.items}
           />
         ) : block.newItemHandler ? (

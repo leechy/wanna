@@ -37,6 +37,8 @@ interface ItemsListProps {
   newItemIcon?: React.FC<SvgProps>;
   actionHandler?: (item: ListItem) => void;
   checkboxHandler?: (item: ListItem) => void;
+  editHandler?: (item: ListItem) => void;
+  deleteHandler?: (item: ListItem) => void;
   items?: ListItem[];
   inverted?: boolean;
   actionIcon?: boolean;
@@ -50,6 +52,8 @@ export function ItemsList({
   newItemIcon,
   actionHandler,
   checkboxHandler,
+  editHandler,
+  deleteHandler,
   items,
   inverted = false,
   actionIcon = true,
@@ -79,6 +83,14 @@ export function ItemsList({
 
   function onCheckboxToggled(item: ListItem) {
     checkboxHandler?.(item);
+  }
+
+  function onEditItem(item: ListItem) {
+    editHandler?.(item);
+  }
+
+  function onDeleteItem(item: ListItem) {
+    deleteHandler?.(item);
   }
 
   const getListItems = (incomingItems?: ListItem[]) => {
