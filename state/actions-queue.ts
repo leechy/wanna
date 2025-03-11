@@ -18,7 +18,7 @@ export async function queueOperation(event: string, data: any) {
     };
 
     // Add to queue using Legend State (this is synchronous and avoids race conditions)
-    _queue$.push(operation);
+    _queue$.set((value) => [...value, operation]);
     return operation.id;
   } catch (error) {
     console.error('Error queueing operation:', error);

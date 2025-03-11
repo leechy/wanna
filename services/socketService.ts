@@ -104,8 +104,10 @@ class SocketService {
     connectionStatus$.lastConnected.set(new Date().toISOString());
     this.reconnectAttempts = 0;
 
-    // Sync data
-    this.emit('auth', { auth: _user$.auth.get() });
+    if (_user$.auth.get()) {
+      // Sync user data if there is user already
+      queueOperation('auth', { auth: _user$.auth.get() });
+    }
 
     // and process queue
     await this.processQueue();
@@ -192,7 +194,7 @@ class SocketService {
     this.queueObserver = observe(_queue$, (queue) => {
       // Only process if there are items in the queue AND we're connected
       if ((queue.value?.length || 0) > 0 && connectionStatus$.isConnected.get() && this.socket?.connected) {
-        console.log(`Queue changed - processing ${queue.value?.length || 0} operations`);
+        // console.log(`Queue changed - processing ${queue.value?.length || 0} operations`);
         this.processQueue();
       }
     });
@@ -211,8 +213,11 @@ class SocketService {
           console.warn('Invalid operation:', operation);
           continue;
         }
-        console.log('Processing operation:', operation);
-        const success = socketService.emit(operation.event, operation.data);
+        if (!this.socket) {
+          console.warn('Socket not initialized:', operation);
+          break;
+        }
+        const success = this.socket.emit(operation.event, operation.data);
 
         if (!success) {
           console.log('Operation failed:', operation);

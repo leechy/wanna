@@ -74,9 +74,11 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
     addList({ listId, ...update }, false);
     return;
   }
-  // check that the incoming list data from the server is not older
+  // check that the incoming list data from the server is not older to update
   const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
-  if (update.updatedAt && stateUpdatedAt && update.updatedAt > stateUpdatedAt) {
+  if (update.updatedAt && stateUpdatedAt && update.updatedAt < stateUpdatedAt) {
+    console.warn('Incoming list data is older', listId + ':', update.updatedAt, '<=', stateUpdatedAt);
+  } else {
     _lists$[listId]?.assign({
       ...update,
     });
@@ -91,8 +93,6 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
 
     // recreate lists to trigger reactivity
     _lists$.set({ ..._lists$.get() });
-  } else {
-    console.warn('Incoming list data is older', listId + ':', update.updatedAt, '<=', stateUpdatedAt);
   }
 
   // update the items in the list
