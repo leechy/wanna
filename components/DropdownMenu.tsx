@@ -78,7 +78,8 @@ export function DropdownMenu({
 
   function calculatePosition() {
     if (isHeaderMenu) {
-      setPosition({ x: winW - width - 12, y: safeT + 32, width });
+      const topFix = Platform.OS === 'ios' ? 32 : 0;
+      setPosition({ x: winW - width - 12, y: safeT + topFix, width });
       setIsOpen(true);
     } else if (triggerRef.current) {
       triggerRef.current.measure((fx, fy, buttonW, buttonH, px, py) => {
