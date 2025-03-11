@@ -24,6 +24,7 @@ import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import DateSelector from '@/components/DateSelector';
 import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
+import { useMemo } from 'react';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -32,6 +33,12 @@ function ShoppingListScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? _lists$[listId]?.get() : null;
+
+  const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
+
+  const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
+  const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
+  const completedItems = useMemo(() => items.filter((item) => item.completed), [items]);
 
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
@@ -54,6 +61,19 @@ function ShoppingListScreen() {
     }
   }
 
+  function editItem(item: ListItem) {
+    if (listData) {
+      router.navigate({
+        pathname: '/shopping/new-item',
+        params: {
+          listId: listData.listId,
+          listName: listData.name,
+          listItemId: item.id,
+        },
+      });
+    }
+  }
+
   function toggleCart(item: ListItem) {
     putItemInCart(listId, item.id, item.ongoing ? false : true);
   }
@@ -62,12 +82,12 @@ function ShoppingListScreen() {
     markItemAsCompleted(listId, item.id);
   }
 
-  function restoreItem(item: ListItem) {
-    markItemAsCompleted(listId, item.id, false);
+  function checkoutBasket() {
+    cartItems?.forEach((item) => markItemAsCompleted(listId, item.id, true));
   }
 
-  function editItem(item: ListItem) {
-    console.log('Edit item', item);
+  function restoreItem(item: ListItem) {
+    markItemAsCompleted(listId, item.id, false);
   }
 
   function deleteItem(item: ListItem) {
@@ -86,14 +106,6 @@ function ShoppingListScreen() {
     }
   }
 
-  const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
-
-  const openitems = items.filter((item) => !item.completed);
-  const cartItems = items.filter((item) => !item.completed && item.ongoing);
-  const completedItems = items.filter((item) => item.completed);
-
-  console.log('listItems', JSON.stringify(items, null, 2));
-
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Still have to buy',
@@ -109,8 +121,17 @@ function ShoppingListScreen() {
     {
       title: 'Cart',
       color: primaryColor,
-      action: <SmallButton title="Checkout" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
+      action: (
+        <SmallButton
+          title="Checkout"
+          icon={BagFillIcon}
+          onPress={checkoutBasket}
+          color={primaryColor}
+          disabled={cartItems.length === 0}
+        />
+      ),
       newItemLabel: 'Not planned item in the cart',
+      newItemHandler: newItem,
       actionHandler: toggleCart,
       checkboxHandler: checkoutItem,
       editHandler: editItem,
