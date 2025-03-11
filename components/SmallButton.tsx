@@ -15,10 +15,11 @@ export type SmallButtonProps = {
   icon?: React.FC<SvgProps>;
   onPress?: () => void;
   color?: string;
+  disabled?: boolean;
   children?: ReactNode;
 };
 
-export default function SmallButton({ title, icon, style, onPress, color, children }: SmallButtonProps) {
+export default function SmallButton({ title, icon, style, onPress, color, disabled, children }: SmallButtonProps) {
   const smallButtonText = useThemeColor({}, 'touchable');
   const smallButtonBackground = useThemeColor({}, 'smallButtonBackground');
 
@@ -52,9 +53,10 @@ export default function SmallButton({ title, icon, style, onPress, color, childr
         styles.container,
         style,
         { backgroundColor: smallButtonBackground, borderColor: color ? color + '80' : smallButtonText + '55' },
+        disabled && { opacity: 0.4 },
       ]}
     >
-      {onPress ? (
+      {onPress && !disabled ? (
         <PressableArea
           style={styles.button}
           onPress={onPress}

@@ -41,7 +41,7 @@ export function PressableArea({
           ios: { opacity: pressed ? 0.4 : 1 },
         }),
       ]}
-      onPress={onPress}
+      onPress={() => Platform.OS !== 'android' && onPress()}
       onPressOut={() => Platform.OS === 'android' && onPress()}
       testID={testID}
       accessible={accessible}
