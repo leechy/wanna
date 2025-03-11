@@ -32,22 +32,26 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
     return [];
   }
 
-  return items
-    .filter((item) => item.listItemId && !item.deleted)
-    .sort((a, b) => ((a.updatedAt || '') > (b.updatedAt || '') ? -1 : 1))
-    .map((item) => ({
-      type: 'item',
-      id: item.listItemId,
-      label: item.name,
-      listId: item.listId,
-      deadline: item.deadline,
-      quantity: item.quantity,
-      ongoing: item.ongoing,
-      assignee: item.assignee,
-      assigneeId: item.assigneeId,
-      completed: item.completed,
-      completedAt: item.completedAt,
-      updatedAt: item.updatedAt,
-      sortOrder: item.sortOrder,
-    }));
+  return (
+    items
+      .filter((item) => item.listItemId && !item.deleted)
+      // WIP: sort by sortOrder when it's available and how to mix it with the createdAt
+      .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? -1 : 1))
+      .map((item) => ({
+        type: 'item',
+        id: item.listItemId,
+        label: item.name,
+        listId: item.listId,
+        deadline: item.deadline,
+        quantity: item.quantity,
+        ongoing: item.ongoing,
+        assignee: item.assignee,
+        assigneeId: item.assigneeId,
+        completed: item.completed,
+        completedAt: item.completedAt,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        sortOrder: item.sortOrder,
+      }))
+  );
 }
