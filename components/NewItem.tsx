@@ -26,7 +26,6 @@ export default function NewItem({ item, icon, itemBorderRadius, actionHandler }:
   const Icon = icon;
 
   function onItemAction() {
-    console.log('ItemsList Action item', item, actionHandler);
     actionHandler?.(item);
   }
 

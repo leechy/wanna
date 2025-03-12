@@ -29,7 +29,7 @@ function ListMenu({ listId }: ListMenuProps) {
   }
 
   function editList() {
-    router.navigate(`/shopping/new-list?listId=${listId}`);
+    router.navigate(`/shopping/new-modal?listId=${listId}`);
   }
 
   function markListAsCompleted() {
@@ -68,8 +68,8 @@ function ListMenu({ listId }: ListMenuProps) {
           icon: EditIcon,
         },
         {
-          label: list.completed ? 'Restore list' : 'Mark as completed',
-          onPress: list.completed ? restoreList : markListAsCompleted,
+          label: list?.completed ? 'Restore list' : 'Mark as completed',
+          onPress: list?.completed ? restoreList : markListAsCompleted,
           icon: SquareCheckIcon,
         },
         {

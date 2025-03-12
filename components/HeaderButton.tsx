@@ -18,6 +18,7 @@ export default function HeaderButton({ title, onPress, color }: HeaderButtonProp
       accessibilityRole="button"
       accessibilityLabel="Go back"
       accessibilityHint="Press to go to the previous screen"
+      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
     >
       <Text
         style={[

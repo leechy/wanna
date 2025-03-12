@@ -48,6 +48,7 @@ export function PressableArea({
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
+      hitSlop={{ top: 10, bottom: 10, left: 5, right: 5 }}
     >
       {children}
     </Pressable>
