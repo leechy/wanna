@@ -39,7 +39,7 @@ export default function ShoppingLayout() {
         })}
       />
       <Stack.Screen
-        name="new-list"
+        name="list-modal"
         options={{
           title: 'New shopping list',
           presentation: 'modal',
@@ -58,7 +58,7 @@ export default function ShoppingLayout() {
         }}
       />
       <Stack.Screen
-        name="new-item"
+        name="item-modal"
         options={({ route }) => ({
           title: 'New item',
           presentation: 'modal',

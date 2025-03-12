@@ -15,7 +15,7 @@ import { updateList } from '@/state/actions-lists';
 
 function ShoppingScreen() {
   function newList() {
-    router.navigate('/shopping/new-list');
+    router.navigate('/shopping/list-modal');
   }
 
   function goToList(item: ListItem) {
@@ -34,22 +34,22 @@ function ShoppingScreen() {
 
   const lists = _lists$.get();
 
-  const recipes = useMemo(() => {
-    if (lists) {
-      return Object.keys(lists)
-        .filter((listId) => lists[listId].type === 'recipe')
-        .map((listId) => {
-          const list = lists[listId];
-          return {
-            id: listId,
-            type: list.type as ListItem['type'],
-            label: list.name,
-            deadline: list.deadline,
-          };
-        });
-    }
-    return [];
-  }, [lists]);
+  // const recipes = useMemo(() => {
+  //   if (lists) {
+  //     return Object.keys(lists)
+  //       .filter((listId) => lists[listId].type === 'recipe')
+  //       .map((listId) => {
+  //         const list = lists[listId];
+  //         return {
+  //           id: listId,
+  //           type: list.type as ListItem['type'],
+  //           label: list.name,
+  //           deadline: list.deadline,
+  //         };
+  //       });
+  //   }
+  //   return [];
+  // }, [lists]);
 
   const [shoppingLists, completedLists] = useMemo(() => {
     if (lists) {
@@ -92,18 +92,19 @@ function ShoppingScreen() {
       items: shoppingLists,
       emptyText: 'No Lists here! Create a new one to start shopping!',
     },
-    {
-      title: 'Recipes',
-      // color: primaryColor,
-      // action: <SmallButton title="Join Another List" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
-      newItemLabel: 'Create from shopping list',
-      newItemHandler: () => {
-        console.log('Create recipe from shopping list');
-      },
-      actionHandler: goToList,
-      items: recipes,
-      emptyText: "No saved lists yet.\nYou can create one from any list's action menu!",
-    },
+    // TODO: Recipes
+    // {
+    //   title: 'Recipes',
+    //   // color: primaryColor,
+    //   // action: <SmallButton title="Join Another List" icon={BagFillIcon} onPress={() => {}} color={primaryColor} />,
+    //   newItemLabel: 'Create from shopping list',
+    //   newItemHandler: () => {
+    //     console.log('Create recipe from shopping list');
+    //   },
+    //   actionHandler: goToList,
+    //   items: recipes,
+    //   emptyText: "No saved lists yet.\nYou can create one from any list's action menu!",
+    // },
     {
       title: 'Completed',
       actionHandler: goToList,

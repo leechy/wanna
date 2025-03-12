@@ -1,13 +1,18 @@
-// hooks
-import { useState } from 'react';
+// hooks and state
+import { useEffect, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$, generateId } from '@/state/state';
+import { addItem, updateItem } from '@/state/actions-lists';
+
+// utils
+import { convertItemsToListItems } from '@/utils/lists';
 
 // components
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import HeaderButton from '@/components/HeaderButton';
 import { ThemedInput } from '@/components/ThemedInput';
 import DateSelector from '@/components/DateSelector';
 import WheelPicker from '@quidone/react-native-wheel-picker';
@@ -15,8 +20,7 @@ import { ItemsList } from '@/components/ItemsList';
 import { ThemedText } from '@/components/ThemedText';
 
 // types
-import { convertItemsToListItems, ListItem } from '@/types/listItem';
-import { addItem } from '@/state/actions-lists';
+import { ListItem } from '@/types/listItem';
 
 const qtyItems = [...Array(100).keys()]
   .map((index) => ({
@@ -38,10 +42,25 @@ function NewItemModal() {
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
   const listItems = listId ? _lists$[listId]?.listItems?.get() : null;
 
+  const listItemId = params?.listItemId
+    ? Array.isArray(params?.listItemId)
+      ? params.listItemId[0]
+      : params.listItemId
+    : '';
+  const item = listItems?.find((item) => item.listItemId === listItemId);
+
+  useEffect(() => {
+    if (item) {
+      console.log('Item', item);
+      setName(item.name);
+      setQuantity(parseInt(item.quantity.toString() || '1', 10) || 1);
+      setDeadline(item.deadline);
+    }
+  }, [item]);
+
   function updateName(value: string) {
     setName(value);
     // TODO: filter the completed items
-    console.log('Update name', listId, value);
   }
 
   function updateDeadline(date: string | number | undefined) {
@@ -50,6 +69,29 @@ function NewItemModal() {
 
   function restoreItem(item: ListItem) {
     console.log('Restore item', item);
+  }
+
+  function submitData() {
+    if (listItemId) {
+      updateEditedItem();
+    } else {
+      addNewItem();
+    }
+  }
+
+  function updateEditedItem() {
+    if (!listItemId) {
+      return;
+    }
+
+    const updatedItem = {
+      name,
+      quantity,
+      deadline: deadline ? new Date(deadline).toISOString() : undefined,
+    };
+    console.log('Update item', updatedItem);
+    updateItem(listId, listItemId, updatedItem);
+    router.dismissTo(`/shopping/${listId}`);
   }
 
   function addNewItem() {
@@ -71,6 +113,13 @@ function NewItemModal() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <Stack.Screen
+        options={{
+          title: listItemId ? 'Update list item' : 'New list item',
+          headerRight: () => <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={submitData} />,
+        }}
+      />
+
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       <View style={styles.container}>
         <View style={{}}>
@@ -92,7 +141,7 @@ function NewItemModal() {
                 containerStyle={{ marginVertical: 8 }}
                 keyboardType="default"
                 enterKeyHint="next"
-                onSubmit={addNewItem}
+                onSubmit={submitData}
               />
               <View style={styles.properties}>
                 <DateSelector placeholder="Buy before" value={deadline} onChange={updateDeadline} />

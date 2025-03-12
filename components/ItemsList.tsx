@@ -37,6 +37,7 @@ interface ItemsListProps {
   newItemIcon?: React.FC<SvgProps>;
   actionHandler?: (item: ListItem) => void;
   checkboxHandler?: (item: ListItem) => void;
+  longPressHandler?: (item: ListItem) => void;
   editHandler?: (item: ListItem) => void;
   deleteHandler?: (item: ListItem) => void;
   items?: ListItem[];
@@ -52,6 +53,7 @@ export function ItemsList({
   newItemIcon,
   actionHandler,
   checkboxHandler,
+  longPressHandler,
   editHandler,
   deleteHandler,
   items,
@@ -68,17 +70,15 @@ export function ItemsList({
   const dangerColor = useThemeColor({}, 'danger');
 
   function onNewItem() {
-    console.log('onNewItem');
     newItemHandler?.();
   }
 
   function onItemAction(item: ListItem) {
-    console.log('ItemsList Action item', item, actionHandler);
     actionHandler?.(item);
   }
 
-  function onItemEdit(item: ListItem) {
-    console.log('Edit item', item);
+  function onItemLongPress(item: ListItem) {
+    longPressHandler?.(item);
   }
 
   function onCheckboxToggled(item: ListItem) {
@@ -167,11 +167,7 @@ export function ItemsList({
           end={[1, 0]}
           style={[styles.gradient, itemBorderRadius]}
         >
-          {item.completed ? (
-            <View style={styles.button}>
-              <SquareCheckIcon width={28} height={28} color={disabledColor} />
-            </View>
-          ) : (
+          {checkboxHandler ? (
             <TouchableOpacity
               style={styles.button}
               onPress={() => onCheckboxToggled(item)}
@@ -181,12 +177,20 @@ export function ItemsList({
               accessibilityLabel={`Check out ${item.label}`}
               accessibilityHint={`Press to check out ${item.label}`}
             >
-              <SquareIcon width={28} height={28} color={touchableColor} />
+              {item.completed ? (
+                <SquareCheckIcon width={28} height={28} color={touchableColor} />
+              ) : (
+                <SquareIcon width={28} height={28} color={touchableColor} />
+              )}
             </TouchableOpacity>
+          ) : (
+            <View style={styles.button}>
+              <SquareIcon width={28} height={28} color={disabledColor} />
+            </View>
           )}
           <TouchableOpacity
             onPress={() => onItemAction(item)}
-            onLongPress={() => onItemEdit(item)}
+            onLongPress={() => onItemLongPress(item)}
             activeOpacity={0.4}
             style={styles.labelButton}
             accessible={true}

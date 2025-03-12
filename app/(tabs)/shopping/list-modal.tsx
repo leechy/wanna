@@ -5,7 +5,7 @@ import { addList, updateList } from '@/state/actions-lists';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 
 // components
-import { KeyboardAvoidingView, Platform, StyleSheet, View, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import TitleInput from '@/components/TitleInput';
 import SmallButton from '@/components/SmallButton';
@@ -78,13 +78,12 @@ export default function NewListModal() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <Stack.Screen
         options={{
+          title: listId ? 'Update shopping list' : 'New shopping list',
           headerRight: () => <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />,
         }}
       />
       <View style={styles.container}>
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-
-        <Text></Text>
         <View style={styles.properties}>
           <DateSelector
             placeholder="No deadline"

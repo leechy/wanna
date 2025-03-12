@@ -1,8 +1,10 @@
 // hooks and state
+import { useMemo } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
+import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
 
 // utils
 import { copyListLinkToClipboard, shareList } from '@/utils/share';
@@ -13,10 +15,10 @@ import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
-import { convertItemsToListItems, ListItem } from '@/types/listItem';
 import { ListItem } from '@/types/listItem';
 import { View } from 'react-native';
 import { DropdownMenu } from '@/components/DropdownMenu';
+import DateSelector from '@/components/DateSelector';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
@@ -24,9 +26,6 @@ import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
-import DateSelector from '@/components/DateSelector';
-import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
-import { useMemo } from 'react';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -40,7 +39,6 @@ function ShoppingListScreen() {
 
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
   const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
-  const completedItems = useMemo(() => items.filter((item) => item.completed), [items]);
   const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
   function updateDeadline(date: string | number | undefined) {
@@ -55,7 +53,7 @@ function ShoppingListScreen() {
   function newItem() {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/new-item',
+        pathname: '/shopping/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -67,7 +65,7 @@ function ShoppingListScreen() {
   function editItem(item: ListItem) {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/new-item',
+        pathname: '/shopping/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -100,7 +98,7 @@ function ShoppingListScreen() {
   function editList() {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/new-list',
+        pathname: '/shopping/list-modal',
         params: {
           listId: listData.listId,
           back: `/shopping/${listData.listId}`,
@@ -116,6 +114,7 @@ function ShoppingListScreen() {
       newItemHandler: newItem,
       actionHandler: toggleCart,
       checkboxHandler: checkoutItem,
+      longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
       emptyText: 'List is empty. Add some items!',
@@ -137,6 +136,7 @@ function ShoppingListScreen() {
       newItemHandler: newItem,
       actionHandler: toggleCart,
       checkboxHandler: checkoutItem,
+      longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
       items: cartItems,
