@@ -6,6 +6,7 @@ import { lists$ as _lists$ } from '@/state/state';
 
 // utils
 import { copyListLinkToClipboard, shareList } from '@/utils/share';
+import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
 import { AccordionBlockProps } from '@/components/AccordionBlock';
@@ -13,6 +14,7 @@ import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 import { convertItemsToListItems, ListItem } from '@/types/listItem';
+import { ListItem } from '@/types/listItem';
 import { View } from 'react-native';
 import { DropdownMenu } from '@/components/DropdownMenu';
 
@@ -39,6 +41,7 @@ function ShoppingListScreen() {
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
   const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
   const completedItems = useMemo(() => items.filter((item) => item.completed), [items]);
+  const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
   function updateDeadline(date: string | number | undefined) {
     if (listId) {

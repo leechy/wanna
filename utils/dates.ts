@@ -12,12 +12,18 @@
  * @param {number} date - date in milliseconds since epoch
  * @returns {string} - human readable date
  */
-export function humanDate(date: number): string {
+export function humanDate(date: number, showTime = false): string {
   const todayStart = new Date().setHours(0, 0, 0, 0);
   const todayEnd = todayStart + 1000 * 60 * 60 * 24;
 
+  const newDate = new Date(date);
+  let time = '';
+  if (showTime) {
+    time = ' at ' + newDate.toLocaleTimeString('en-GB', { hour: 'numeric', minute: 'numeric' });
+  }
+
   if (date >= todayStart && date < todayEnd) {
-    return 'Today';
+    return 'Today' + time;
   }
 
   // TODO: when localized, use toLocaleString() call
@@ -27,30 +33,30 @@ export function humanDate(date: number): string {
     // past branch
     const daysDiff = Math.ceil((todayStart - date) / (1000 * 60 * 60 * 24));
     if (daysDiff === 1) {
-      return 'Yesterday';
+      return 'Yesterday' + time;
     } else if (daysDiff > 1 && daysDiff < 4) {
-      return `${daysDiff} days ago`;
+      return `${daysDiff} days ago${time}`;
     } else if (daysDiff >= 4 && daysDiff < 7) {
-      return `Last ${dayNames[new Date(date).getDay()]}`;
+      return `Last ${dayNames[newDate.getDay()]}${time}`;
     }
   } else {
     // future branch
     const daysDiff = Math.ceil((date - todayEnd) / (1000 * 60 * 60 * 24));
     if (daysDiff === 1) {
-      return 'Tomorrow';
+      return 'Tomorrow' + time;
     } else if (daysDiff > 1 && daysDiff < 4) {
-      return `In ${daysDiff} days`;
+      return `In ${daysDiff} days${time}`;
     } else if (daysDiff >= 4 && daysDiff < 7) {
-      return `Next ${dayNames[new Date(date).getDay()]}`;
+      return `Next ${dayNames[newDate.getDay()]}${time}`;
     }
   }
 
   const diff = date < todayStart ? todayStart - date : date - todayEnd;
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  const day = new Date(date).getDate();
-  const month = new Date(date).getMonth();
-  const year = new Date(date).getFullYear();
+  const day = newDate.getDate();
+  const month = newDate.getMonth();
+  const year = newDate.getFullYear();
   const monthNames = [
     'January',
     'February',
@@ -67,8 +73,8 @@ export function humanDate(date: number): string {
   ];
 
   if (days < 183 && days > -183 && new Date().getFullYear() === year) {
-    return `${day} ${monthNames[month]}`;
+    return `${day} ${monthNames[month]}${time}`;
   } else {
-    return `${day} ${monthNames[month]} ${year}`;
+    return `${day} ${monthNames[month]} ${year}${time}`;
   }
 }
