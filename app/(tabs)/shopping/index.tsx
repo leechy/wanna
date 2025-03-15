@@ -53,10 +53,10 @@ function ShoppingScreen() {
 
   const [shoppingLists, completedLists] = useMemo(() => {
     if (lists) {
-      const completedLists: ListItem[] = [];
-      const shoppingLists: ListItem[] = [];
+      const newCompletedLists: ListItem[] = [];
+      const newShoppingLists: ListItem[] = [];
       Object.keys(lists)
-        .filter((listId) => lists[listId].type === 'shopping-list')
+        .filter((listId) => lists[listId].type === 'shopping-list' && !lists[listId].deleted)
         .map((listId) => {
           const list = lists[listId];
           const listItem: ListItem = {
@@ -70,14 +70,14 @@ function ShoppingScreen() {
             sortOrder: list.sortOrder,
           };
           if (list.completed) {
-            completedLists.push(listItem);
+            newCompletedLists.push(listItem);
           } else {
-            shoppingLists.push(listItem);
+            newShoppingLists.push(listItem);
           }
         });
-      completedLists.sort((a, b) => ((a.updatedAt || 0) > (b.updatedAt || 0) ? -1 : 1));
-      shoppingLists.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-      return [shoppingLists, completedLists];
+      newCompletedLists.sort((a, b) => ((a.updatedAt || 0) > (b.updatedAt || 0) ? -1 : 1));
+      newShoppingLists.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      return [newShoppingLists, newCompletedLists];
     }
 
     return [[], []];

@@ -110,7 +110,14 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
  * @returns {void}
  */
 export async function deleteList(listId: string) {
-  _lists$[listId].delete();
+  updateList(
+    listId,
+    {
+      deleted: true,
+      updatedAt: new Date().toISOString(),
+    },
+    false
+  );
 }
 
 /**
