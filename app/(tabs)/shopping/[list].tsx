@@ -30,6 +30,10 @@ import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
+import CartNotEmptyIcon from '@/assets/symbols/cart-not-empty.svg';
+import CartIcon from '@/assets/symbols/cart.svg';
+import SquareCheckIcon from '@/assets/symbols/square-check.svg';
+
 import { globalStyles } from '@/constants/GlobalStyles';
 
 function ShoppingListScreen() {
@@ -164,21 +168,31 @@ function ShoppingListScreen() {
         <ListMenu listId={listId} isHeaderMenu={false} />
       </View>
       <ThemedView style={globalStyles.titleContainer}>
-        <Pressable
-          onLongPress={editList}
-          style={{ paddingHorizontal: 8 }}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Settings"
-          accessibilityHint="Press and hold to open settings"
-          hitSlop={8}
-        >
-          <ThemedText type="title">{listData?.name + ' ' || 'Shopping list '}</ThemedText>
-        </Pressable>
+        <View style={globalStyles.listTitleContainer}>
+          {cartItems.length < 1 && completedItems.length < 1 && !listData?.completed ? (
+            <CartIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
+          ) : listData?.completed ? (
+            <SquareCheckIcon width={18} height={18} color={touchableColor} style={globalStyles.listTitleIcon} />
+          ) : (
+            <CartNotEmptyIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
+          )}
+
+          <Pressable
+            onLongPress={editList}
+            style={{ flex: 1 }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
+            accessibilityHint="Press and hold to open settings"
+            hitSlop={8}
+          >
+            <ThemedText type={listData?.completed ? 'completed-title' : 'title'}>
+              {listData?.name + ' ' || 'Shopping list '}
+            </ThemedText>
+          </Pressable>
+        </View>
       </ThemedView>
-      <View
-        style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, gap: 12 }}
-      >
+      <View style={globalStyles.listProperties}>
         <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
         <DropdownMenu
           items={[

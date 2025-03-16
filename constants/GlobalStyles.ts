@@ -1,6 +1,22 @@
 import { Platform, StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
+  listTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  listTitleIcon: {
+    marginTop: 8,
+    marginLeft: 4,
+  },
+  listProperties: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+    gap: 12,
+  },
   listItem: {
     flexDirection: 'row',
     alignItems: 'center',
