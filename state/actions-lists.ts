@@ -241,6 +241,15 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
     listItemId,
     ...updatedItem,
   });
+
+  // check if the all the items in the list are completed, then mark the list as completed
+  const allItemsCompleted = _lists$[listId].listItems.get()?.every((item) => item.completed);
+  if (allItemsCompleted) {
+    updateList(listId, {
+      completed: true,
+      completedAt: new Date().toISOString(),
+    });
+  }
 }
 
 /**

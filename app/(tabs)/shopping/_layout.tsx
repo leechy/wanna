@@ -2,14 +2,11 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import HeaderButton from '@/components/HeaderButton';
-import { router, Stack } from 'expo-router';
-import { Platform } from 'react-native';
+import { Stack } from 'expo-router';
 import ListMenu from '@/components/ListMenu';
 
 export default function ShoppingLayout() {
   const primaryColor = useThemeColor({}, 'primary');
-  const backgroundColor = useThemeColor({}, 'background');
   const toolbarBackgroundColor = useThemeColor({}, 'tabBarBackground');
   const backButtonColor = primaryColor + '80';
 
