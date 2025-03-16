@@ -1,25 +1,39 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-import { Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, Platform, StyleProp, ViewStyle } from 'react-native';
+import { SvgProps } from 'react-native-svg';
 
 interface HeaderButtonProps {
   title: string;
+  icon?: React.FC<SvgProps>;
+  iconPosition?: 'start' | 'end';
   onPress: () => void;
   color?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export default function HeaderButton({ title, onPress, color }: HeaderButtonProps) {
+export default function HeaderButton({
+  title,
+  icon: Icon,
+  iconPosition = 'start',
+  onPress,
+  color,
+  style,
+}: HeaderButtonProps) {
   const primaryColor = useThemeColor({}, 'primary');
+
+  // const Icon = icon;
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, style || {}]}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel="Go back"
       accessibilityHint="Press to go to the previous screen"
       hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
     >
+      {Icon && iconPosition === 'start' && <Icon width={24} height={24} color={color || primaryColor} />}
       <Text
         style={[
           styles.label,
@@ -39,6 +53,8 @@ const styles = StyleSheet.create({
   container: {
     margin: 0,
     padding: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   label: {
     fontFamily: 'Montserrat',
