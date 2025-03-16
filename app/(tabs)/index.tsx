@@ -123,14 +123,14 @@ export default function HomeScreen() {
           ongoing: true,
         },
         {
-          type: 'item',
+          type: 'task',
           id: '9',
           label: 'Coca Cola Zero',
           quantity: 1,
           ongoing: true,
         },
         {
-          type: 'item',
+          type: 'task',
           id: '10',
           label: 'Baguette',
           quantity: 2,

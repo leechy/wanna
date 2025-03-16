@@ -9,7 +9,7 @@ export type Item = {
   listId: string;
 
   name: string;
-  type: string;
+  type: 'item' | 'task';
   units?: string;
   quantity: number;
   deadline?: string;

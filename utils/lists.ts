@@ -20,7 +20,7 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
       // WIP: sort by sortOrder when it's available and how to mix it with the createdAt
       .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? -1 : 1))
       .map((item) => ({
-        type: 'item',
+        type: item.type || 'item',
         id: item.listItemId,
         label: item.name,
         listId: item.listId,

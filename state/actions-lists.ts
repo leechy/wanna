@@ -141,10 +141,10 @@ export function clearLists() {
 export async function addItem(listId: string, item: Partial<Item>) {
   const listItemId: string = item.listItemId || generateId();
   const itemId: string = item.itemId || generateId();
-  const type: string = item.type || 'item';
+  const type: 'item' | 'task' = item.type || 'item';
   const now = new Date().toISOString();
 
-  const newItem = {
+  const newItem: Item = {
     listItemId,
     itemId,
     listId,

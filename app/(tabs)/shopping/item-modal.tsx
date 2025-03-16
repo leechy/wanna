@@ -24,6 +24,7 @@ import { BackLink } from '@/components/BackLink';
 // types
 import { ListItem } from '@/types/listItem';
 import { globalStyles } from '@/constants/GlobalStyles';
+import { Item } from '@/types/Item';
 
 const qtyItems = [...Array(100).keys()]
   .map((index) => ({
@@ -115,7 +116,7 @@ function ItemModal() {
 
   function addNewItem(close = false) {
     const itemId = generateId();
-    const newItem = {
+    const newItem: Partial<Item> = {
       itemId,
       listId,
       type: 'item',
