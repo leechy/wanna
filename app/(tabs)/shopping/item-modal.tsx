@@ -32,7 +32,7 @@ const qtyItems = [...Array(100).keys()]
   }))
   .reverse();
 
-function NewItemModal() {
+function ItemModal() {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [deadline, setDeadline] = useState<number | string | undefined>();
@@ -45,12 +45,12 @@ function NewItemModal() {
 
   const params = useLocalSearchParams();
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
-  const listItems = listId ? _lists$[listId]?.listItems?.get() : null;
+  const listItems = _lists$[listId]?.listItems?.get() || null;
 
   const inputRef = useRef<TextInput>(null);
 
   const openitems = useMemo(
-    () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || []).reverse(),
+    () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || []),
     [listItems]
   );
   const completedItems = useMemo(
@@ -87,11 +87,11 @@ function NewItemModal() {
     markItemAsCompleted(listId, item.id, false);
   }
 
-  function submitData() {
+  function submitData(close = false) {
     if (listItemId) {
       updateEditedItem();
     } else {
-      addNewItem();
+      addNewItem(close);
     }
   }
 
@@ -105,12 +105,15 @@ function NewItemModal() {
       quantity,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
     };
-    console.log('Update item', updatedItem);
+
     updateItem(listId, listItemId, updatedItem);
-    router.dismissTo(`/shopping/${listId}`);
+
+    if (router.canDismiss()) {
+      router.dismissTo(`/shopping/${listId}`);
+    }
   }
 
-  function addNewItem() {
+  function addNewItem(close = false) {
     const itemId = generateId();
     const newItem = {
       itemId,
@@ -125,12 +128,14 @@ function NewItemModal() {
     setName('');
     setQuantity(1);
     setDeadline(undefined);
-    // set focus to the input back
-    // so the new item can be added quickly
-    // in case submitBehavior="submit" is not working
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 1);
+    if (close && router.canDismiss()) {
+      router.dismissTo(`/shopping/${listId}`);
+    } else {
+      // set focus to the input back in case submitBehavior="submit" is not working
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 1);
+    }
   }
 
   return (
@@ -143,7 +148,7 @@ function NewItemModal() {
         ]}
       >
         {router.canGoBack() && <BackLink parentTitle="Cancel" />}
-        <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={submitData} />
+        <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={() => submitData(true)} />
       </View>
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
@@ -237,4 +242,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(NewItemModal);
+export default observer(ItemModal);
