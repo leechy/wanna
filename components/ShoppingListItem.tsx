@@ -82,11 +82,9 @@ export default function ShoppingListItem({
             </View>
 
             <ListItemLabel item={item} />
-            {item.quantity && (
-              <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.ongoing || 0}/${
-                item.quantity
-              }`}</Text>
-            )}
+            <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>
+              {item.quantity ? `${item.ongoing || 0}/${item.quantity || 0}` : '0'}
+            </Text>
           </ItemAction>
         )}
       </LinearGradient>
@@ -110,7 +108,7 @@ function ItemAction({ onItemAction, itemLabel, children, chevronColor }: ItemAct
       activeOpacity={0.4}
       accessible={true}
       accessibilityRole="button"
-      accessibilityLabel={`Open shopping list ${itemLabel}`}
+      accessibilityLabel={`Open list ${itemLabel}`}
       accessibilityHint={`Press to open ${itemLabel}`}
     >
       {children}
