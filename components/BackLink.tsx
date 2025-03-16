@@ -14,16 +14,17 @@ import { Platform } from 'react-native';
 
 const routeTitles: { [segment: string]: string } = {
   home: 'Current Wishes',
-  shopping: 'Shopping lists',
-  projects: 'Projects',
+  shopping: 'All shopping lists',
+  projects: 'All projects',
 };
 
 interface BackLinkProps {
   parentTitle?: string;
   listId?: string;
+  noTitle?: boolean;
 }
 
-export function BackLink({ parentTitle, listId }: BackLinkProps) {
+export function BackLink({ parentTitle, listId, noTitle = false }: BackLinkProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const backButtonColor = primaryColor + '80';
 
@@ -49,7 +50,7 @@ export function BackLink({ parentTitle, listId }: BackLinkProps) {
 
   return (
     <HeaderButton
-      title={title}
+      title={noTitle ? '' : title}
       color={backButtonColor}
       icon={Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
       style={Platform.OS === 'android' ? { gap: 8 } : {}}

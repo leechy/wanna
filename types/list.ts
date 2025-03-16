@@ -5,7 +5,7 @@ export type List = {
   shareId: string;
   name: string;
   type: 'project' | 'shopping-list' | 'recipe';
-  deadline?: string;
+  deadline?: string | null;
 
   active: boolean;
   completed: boolean;

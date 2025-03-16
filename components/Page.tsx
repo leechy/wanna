@@ -9,5 +9,5 @@ interface PageProps {
 export default function Page({ hasHeader, children }: PageProps) {
   const { top } = useSafeAreaInsets();
 
-  return <View style={{ marginTop: hasHeader ? 0 : top, paddingTop: 18, flex: 1 }}>{children}</View>;
+  return <View style={{ marginTop: hasHeader ? 0 : top, flex: 1 }}>{children}</View>;
 }

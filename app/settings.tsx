@@ -3,18 +3,19 @@ import { user$ as _user$, lists$ as _lists$, queue$ as _queue$ } from '@/state/s
 import { logout } from '@/state/actions-user';
 import { clearLists } from '@/state/actions-lists';
 import { getHRID } from '@/utils/human-readable-ids';
+import { clearQueue } from '@/state/actions-queue';
 
 // components
 import { Text, View } from 'react-native';
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { BackLink } from '@/components/BackLink';
 
 // styles
 import { globalStyles } from '@/constants/GlobalStyles';
-import { clearQueue } from '@/state/actions-queue';
 
 function SettingsScreen() {
   const lists = useSelector(_lists$);
@@ -44,7 +45,8 @@ function SettingsScreen() {
   }
 
   return (
-    <Page hasHeader={true}>
+    <Page hasHeader={false}>
+      <View style={globalStyles.customHeader}>{router.canGoBack() && <BackLink />}</View>
       <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">Settings </ThemedText>
         <SmallButton title="Log Out" onPress={logout} />

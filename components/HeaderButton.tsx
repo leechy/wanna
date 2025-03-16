@@ -36,17 +36,20 @@ export default function HeaderButton({
       hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
     >
       {Icon && iconPosition === 'start' && <Icon width={24} height={24} color={color || primaryColor} />}
-      <Text
-        style={[
-          styles.label,
-          {
-            color: color || primaryColor,
-            fontSize: Platform.OS === 'ios' ? 16 : 18,
-          },
-        ]}
-      >
-        {title}
-      </Text>
+      {title !== '' && (
+        <Text
+          style={[
+            styles.label,
+            {
+              color: color || primaryColor,
+              fontSize: Platform.OS === 'ios' ? 16 : 18,
+            },
+          ]}
+        >
+          {title}
+        </Text>
+      )}
+      {Icon && iconPosition === 'end' && <Icon width={24} height={24} color={color || primaryColor} />}
     </TouchableOpacity>
   );
 }

@@ -60,10 +60,20 @@ export const globalStyles = StyleSheet.create({
     textAlign: 'center',
     minWidth: 40,
   },
+  customHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 8,
+    paddingRight: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
+    marginBottom: -12,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
+    paddingTop: 18,
     paddingHorizontal: 16,
   },
   modalOverlay: {

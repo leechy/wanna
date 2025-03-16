@@ -1,16 +1,17 @@
 // hooks and state
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$, generateId } from '@/state/state';
-import { addItem, updateItem } from '@/state/actions-lists';
+import { addItem, markItemAsCompleted, updateItem } from '@/state/actions-lists';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // utils
-import { convertItemsToListItems } from '@/utils/lists';
+import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import HeaderButton from '@/components/HeaderButton';
 import { ThemedInput } from '@/components/ThemedInput';
@@ -18,9 +19,11 @@ import DateSelector from '@/components/DateSelector';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { ItemsList } from '@/components/ItemsList';
 import { ThemedText } from '@/components/ThemedText';
+import { BackLink } from '@/components/BackLink';
 
 // types
 import { ListItem } from '@/types/listItem';
+import { globalStyles } from '@/constants/GlobalStyles';
 
 const qtyItems = [...Array(100).keys()]
   .map((index) => ({
@@ -34,6 +37,8 @@ function NewItemModal() {
   const [quantity, setQuantity] = useState(1);
   const [deadline, setDeadline] = useState<number | string | undefined>();
 
+  const { top: safeT } = useSafeAreaInsets();
+
   const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'wheelPickerBackground');
   const headerColor = useThemeColor({}, 'touchable');
@@ -41,6 +46,17 @@ function NewItemModal() {
   const params = useLocalSearchParams();
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
   const listItems = listId ? _lists$[listId]?.listItems?.get() : null;
+
+  const inputRef = useRef<TextInput>(null);
+
+  const openitems = useMemo(
+    () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || []).reverse(),
+    [listItems]
+  );
+  const completedItems = useMemo(
+    () => groupItemsByCompletedAt(convertItemsToListItems(listItems?.filter((item) => item.completed)) || []),
+    [listItems]
+  );
 
   const listItemId = params?.listItemId
     ? Array.isArray(params?.listItemId)
@@ -68,7 +84,7 @@ function NewItemModal() {
   }
 
   function restoreItem(item: ListItem) {
-    console.log('Restore item', item);
+    markItemAsCompleted(listId, item.id, false);
   }
 
   function submitData() {
@@ -109,27 +125,37 @@ function NewItemModal() {
     setName('');
     setQuantity(1);
     setDeadline(undefined);
+    // set focus to the input back
+    // so the new item can be added quickly
+    // in case submitBehavior="submit" is not working
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 1);
   }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <Stack.Screen
-        options={{
-          title: listItemId ? 'Update list item' : 'New list item',
-          headerRight: () => <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={submitData} />,
-        }}
-      />
+      <View
+        style={[
+          globalStyles.customHeader,
+          { marginBottom: 0 },
+          Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {},
+        ]}
+      >
+        {router.canGoBack() && <BackLink parentTitle="Cancel" />}
+        <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={submitData} />
+      </View>
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       <View style={styles.container}>
-        <View style={{}}>
+        <View>
           <View style={{ height: 82, opacity: 0.5 }}>
             <ItemsList
               actionHandler={restoreItem}
               inverted={true}
               actionIcon={false}
               submenu={false}
-              items={convertItemsToListItems(listItems).reverse()}
+              items={openitems}
             />
           </View>
           <View style={{ flexDirection: 'row', width: '100%', height: 116, paddingHorizontal: 16 }}>
@@ -142,6 +168,7 @@ function NewItemModal() {
                 keyboardType="default"
                 enterKeyHint="next"
                 onSubmit={submitData}
+                inputRef={inputRef}
               />
               <View style={styles.properties}>
                 <DateSelector placeholder="Buy before" value={deadline} onChange={updateDeadline} />
@@ -167,85 +194,29 @@ function NewItemModal() {
               />
             </View>
           </View>
-          <ThemedText style={{ paddingHorizontal: 24, marginBottom: 8, color: headerColor }}>Suggestions:</ThemedText>
+          {completedItems.length > 0 && (
+            <ThemedText
+              style={{
+                paddingHorizontal: 24,
+                marginVertical: 8,
+                color: headerColor,
+                fontSize: 14,
+                fontWeight: '600',
+              }}
+            >
+              Completed items to restore:
+            </ThemedText>
+          )}
         </View>
         <View style={{ flex: 2 }}>
-          <ItemsList
-            actionHandler={restoreItem}
-            submenu={false}
-            style={{ paddingBottom: 126 }}
-            items={[
-              {
-                id: 'purchase1',
-                type: 'group',
-                label: '25 Decemeber 2024',
-              },
-              {
-                type: 'item',
-                id: 'beefbullion2',
-                label: 'Beef bullion',
-                quantity: 1,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'crepeflour2',
-                label: 'Crepe flour',
-                quantity: 2,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'beefbullion',
-                label: 'Beef bullion',
-                quantity: 1,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'crepeflour',
-                label: 'Crepe flour',
-                quantity: 2,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'beefbullion3',
-                label: 'Beef bullion',
-                quantity: 1,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'crepeflour3',
-                label: 'Crepe flour',
-                quantity: 2,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'beefbullion4',
-                label: 'Beef bullion',
-                quantity: 1,
-                ongoing: false,
-                completed: true,
-              },
-              {
-                type: 'item',
-                id: 'crepeflour4',
-                label: 'Crepe flour',
-                quantity: 2,
-                ongoing: false,
-                completed: true,
-              },
-            ]}
-          />
+          {completedItems.length > 0 && (
+            <ItemsList
+              actionHandler={restoreItem}
+              submenu={false}
+              style={Platform.OS === 'ios' ? { paddingBottom: 66 } : {}}
+              items={completedItems}
+            />
+          )}
         </View>
       </View>
     </KeyboardAvoidingView>

@@ -16,9 +16,10 @@ import SquareCheckIcon from '@/assets/symbols/square-check.svg';
 
 interface ListMenuProps {
   listId?: string;
+  isHeaderMenu?: boolean;
 }
 
-function ListMenu({ listId }: ListMenuProps) {
+function ListMenu({ listId, isHeaderMenu = true }: ListMenuProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const dangerColor = useThemeColor({}, 'danger');
 
@@ -29,7 +30,7 @@ function ListMenu({ listId }: ListMenuProps) {
   }
 
   function editList() {
-    router.navigate(`/shopping/new-modal?listId=${listId}`);
+    router.navigate(`/shopping/list-modal?listId=${listId}`);
   }
 
   function markListAsCompleted() {
@@ -80,7 +81,7 @@ function ListMenu({ listId }: ListMenuProps) {
         },
       ]}
       width={250}
-      isHeaderMenu={true}
+      isHeaderMenu={isHeaderMenu}
     >
       <SubmenuIcon width={24} height={24} color={primaryColor} />
     </DropdownMenu>

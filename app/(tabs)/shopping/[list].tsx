@@ -16,9 +16,13 @@ import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
 import SmallButton from '@/components/SmallButton';
 import { ListItem } from '@/types/listItem';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { DropdownMenu } from '@/components/DropdownMenu';
 import DateSelector from '@/components/DateSelector';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import ListMenu from '@/components/ListMenu';
+import { BackLink } from '@/components/BackLink';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
@@ -26,6 +30,7 @@ import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
+import { globalStyles } from '@/constants/GlobalStyles';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
@@ -44,7 +49,7 @@ function ShoppingListScreen() {
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
       updateList(listId, {
-        deadline: date ? new Date(date).toISOString() : undefined,
+        deadline: date ? new Date(date).toISOString() : null,
         updatedAt: new Date().toISOString(),
       });
     }
@@ -153,7 +158,24 @@ function ShoppingListScreen() {
   ];
 
   return (
-    <Page hasHeader={true}>
+    <Page hasHeader={false}>
+      <View style={globalStyles.customHeader}>
+        {router.canGoBack() && <BackLink />}
+        <ListMenu listId={listId} isHeaderMenu={false} />
+      </View>
+      <ThemedView style={globalStyles.titleContainer}>
+        <Pressable
+          onLongPress={editList}
+          style={{ paddingHorizontal: 8 }}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Settings"
+          accessibilityHint="Press and hold to open settings"
+          hitSlop={8}
+        >
+          <ThemedText type="title">{listData?.name + ' ' || 'Shopping list '}</ThemedText>
+        </Pressable>
+      </ThemedView>
       <View
         style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, gap: 12 }}
       >
@@ -227,12 +249,7 @@ function ShoppingListScreen() {
           <SmallButton icon={PersonPlusIcon} title="Not shared" />
         </DropdownMenu>
       </View>
-      <Accordion
-        title={listData?.name + ' ' || 'Shopping list '}
-        titleLongPressAction={editList}
-        blocks={blocks}
-        openBlock={0}
-      />
+      <Accordion blocks={blocks} openBlock={0} />
     </Page>
   );
 }

@@ -106,7 +106,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="settings"
           options={{
-            headerShown: true,
+            headerShown: false,
             headerBackTitle: 'Wishes',
             title: '',
             headerStyle: {

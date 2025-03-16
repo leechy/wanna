@@ -36,35 +36,37 @@ export function Accordion({
 
   return (
     <View style={styles.container}>
-      <ThemedView style={globalStyles.titleContainer}>
-        {titleLongPressAction ? (
-          <Pressable
-            onLongPress={titleLongPressAction}
-            style={{ padding: 8 }}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel="Settings"
-            accessibilityHint="Press and hold to open settings"
-          >
+      {title && (
+        <ThemedView style={globalStyles.titleContainer}>
+          {titleLongPressAction ? (
+            <Pressable
+              onLongPress={titleLongPressAction}
+              style={{ padding: 8 }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Settings"
+              accessibilityHint="Press and hold to open settings"
+            >
+              <ThemedText type="title">{title}</ThemedText>
+            </Pressable>
+          ) : (
             <ThemedText type="title">{title}</ThemedText>
-          </Pressable>
-        ) : (
-          <ThemedText type="title">{title}</ThemedText>
-        )}
-        {titleIcon && titleAction && (
-          <PressableArea
-            onPress={titleAction}
-            style={{ padding: 8 }}
-            accessible={true}
-            accessibilityRole="button"
-            // TODO: update when there is more than one button in the title
-            accessibilityLabel="Settings"
-            accessibilityHint="Press to open settings"
-          >
-            <TitleIcon width={24} height={24} color={textColor} />
-          </PressableArea>
-        )}
-      </ThemedView>
+          )}
+          {titleIcon && titleAction && (
+            <PressableArea
+              onPress={titleAction}
+              style={{ padding: 8 }}
+              accessible={true}
+              accessibilityRole="button"
+              // TODO: update when there is more than one button in the title
+              accessibilityLabel="Settings"
+              accessibilityHint="Press to open settings"
+            >
+              <TitleIcon width={24} height={24} color={textColor} />
+            </PressableArea>
+          )}
+        </ThemedView>
+      )}
       {blocks.map((block, index) => (
         <AccordionBlock
           {...block}

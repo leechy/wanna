@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { lists$ as _lists$ } from '@/state/state';
 import { addList, updateList } from '@/state/actions-lists';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // components
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
@@ -12,10 +13,12 @@ import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
 import Checkbox from '@/components/Checkbox';
 import HeaderButton from '@/components/HeaderButton';
+import DateSelector from '@/components/DateSelector';
+import { BackLink } from '@/components/BackLink';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
-import DateSelector from '@/components/DateSelector';
+import { globalStyles } from '@/constants/GlobalStyles';
 
 export default function NewListModal() {
   const [name, setName] = useState('');
@@ -23,6 +26,8 @@ export default function NewListModal() {
   const [sharedNewUser, setSharedNewUser] = useState(true);
   const [listItemsUpdate, setListItemsUpdate] = useState(true);
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
+
+  const { top: safeT } = useSafeAreaInsets();
 
   const params = useLocalSearchParams();
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
@@ -76,14 +81,13 @@ export default function NewListModal() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <Stack.Screen
-        options={{
-          title: listId ? 'Update shopping list' : 'New shopping list',
-          headerRight: () => <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />,
-        }}
-      />
+      <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
+        {router.canGoBack() && <BackLink parentTitle="Cancel" />}
+        <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />
+      </View>
       <View style={styles.container}>
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+        <TitleInput placeholder="Shopping list" value={name} onChange={setName} onSubmit={submitData} />
         <View style={styles.properties}>
           <DateSelector
             placeholder="No deadline"
@@ -94,7 +98,6 @@ export default function NewListModal() {
           />
           <SmallButton title="Not yet shared" icon={PersonPlusIcon} onPress={() => {}} />
         </View>
-        <TitleInput placeholder="Shopping list" value={name} onChange={setName} onSubmit={submitData} />
 
         <View style={{ width: '100%', marginTop: 16, marginBottom: 8 }}>
           <ThemedText type="defaultSemiBold">Send push notifications when:</ThemedText>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 12,
-    marginBottom: 16,
+    marginTop: 8,
     width: '100%',
   },
 });

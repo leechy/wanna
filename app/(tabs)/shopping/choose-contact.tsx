@@ -17,6 +17,7 @@ import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
 
 // types
 import { List } from '@/types/list';
+import { BackLink } from '@/components/BackLink';
 
 export default function ChooseContactScreen() {
   const { listId } = useLocalSearchParams();
@@ -38,7 +39,8 @@ export default function ChooseContactScreen() {
   }
 
   return (
-    <Page hasHeader={true}>
+    <Page hasHeader={false}>
+      <View style={globalStyles.customHeader}>{router.canGoBack() && <BackLink listId={listId as string} />}</View>
       <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">Who to share with? </ThemedText>
       </ThemedView>
