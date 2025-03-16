@@ -39,6 +39,7 @@ export default function ShoppingLayout() {
         name="list-modal"
         options={{
           headerShown: false,
+          presentation: 'modal',
         }}
       />
       <Stack.Screen
