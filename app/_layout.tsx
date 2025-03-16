@@ -1,6 +1,9 @@
 // hooks
-import { useEffect, useRef, useState } from 'react';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import {
+  useEffect,
+  // useRef,
+  // useState
+} from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
 
@@ -19,7 +22,7 @@ import { user$ } from '@/state/state';
 
 // system
 import 'react-native-reanimated';
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
@@ -33,28 +36,29 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   // Register for push notifications
-  const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
-  const notificationListener = useRef<Notifications.EventSubscription>();
-  const responseListener = useRef<Notifications.EventSubscription>();
+  // const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
+  // const notificationListener = useRef<Notifications.EventSubscription>();
+  // const responseListener = useRef<Notifications.EventSubscription>();
 
-  useEffect(() => {
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      setNotification(notification);
-      console.log('Notification received while in the foreground', notification);
-    });
+  // useEffect(() => {
+  //   console.log('Notification in the state', notification);
+  //   // This listener is fired whenever a notification is received while the app is foregrounded
+  //   notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+  //     setNotification(notification);
+  //     console.log('Notification received while in the foreground', notification);
+  //   });
 
-    // This listener is fired whenever a user taps on or interacts with a notification
-    // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('Notification tapped', response);
-    });
+  //   // This listener is fired whenever a user taps on or interacts with a notification
+  //   // (works when app is foregrounded, backgrounded, or killed)
+  //   responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+  //     console.log('Notification tapped', response);
+  //   });
 
-    return () => {
-      notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+  //   return () => {
+  //     notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
+  //     responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -91,9 +95,7 @@ export default function RootLayout() {
     }
   }, [user]);
 
-  const primaryColor = useThemeColor({}, 'primary');
-  const toolbarBackgroundColor = useThemeColor({}, 'tabBarBackground');
-  const backButtonColor = primaryColor + '80';
+  console.log('Usrer', user);
 
   if (!loaded) {
     return null;
@@ -101,25 +103,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="settings"
-          options={{
-            headerShown: false,
-            headerBackTitle: 'Wishes',
-            title: '',
-            headerStyle: {
-              backgroundColor: toolbarBackgroundColor,
-            },
-            headerBackTitleStyle: {
-              fontFamily: 'Montserrat',
-            },
-            headerTintColor: backButtonColor,
-          }}
-        />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="settings" />
         <Stack.Screen name="+not-found" />
-        <Stack.Screen name="sign-in" options={{ headerShown: false }} />{' '}
+        <Stack.Screen name="sign-in" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
