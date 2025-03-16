@@ -10,6 +10,8 @@ interface HeaderButtonProps {
   onPress: () => void;
   color?: string;
   style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export default function HeaderButton({
@@ -19,18 +21,18 @@ export default function HeaderButton({
   onPress,
   color,
   style,
+  accessibilityLabel = 'Go back',
+  accessibilityHint = 'Press to go to the previous screen',
 }: HeaderButtonProps) {
   const primaryColor = useThemeColor({}, 'primary');
-
-  // const Icon = icon;
 
   return (
     <TouchableOpacity
       style={[styles.container, style || {}]}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel="Go back"
-      accessibilityHint="Press to go to the previous screen"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
     >
       {Icon && iconPosition === 'start' && <Icon width={24} height={24} color={color || primaryColor} />}
