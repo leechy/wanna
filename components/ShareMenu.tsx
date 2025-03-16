@@ -7,6 +7,7 @@ import SmallButton from '@/components/SmallButton';
 
 // utilities
 import { copyListLinkToClipboard, shareList } from '@/utils/share';
+import { router } from 'expo-router';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
