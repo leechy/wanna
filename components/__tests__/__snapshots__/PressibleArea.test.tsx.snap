@@ -25,6 +25,14 @@ exports[`PressableArea matches snapshot 1`] = `
   accessible={true}
   collapsable={false}
   focusable={true}
+  hitSlop={
+    {
+      "bottom": 10,
+      "left": 5,
+      "right": 5,
+      "top": 10,
+    }
+  }
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}

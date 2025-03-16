@@ -22,6 +22,7 @@ exports[`ThemedText renders correctly 1`] = `
       undefined,
       undefined,
       undefined,
+      undefined,
     ]
   }
 >
@@ -38,6 +39,7 @@ exports[`ThemedText subtitle renders correctly 1`] = `
       {
         "color": "#333333",
       },
+      undefined,
       undefined,
       undefined,
       undefined,
@@ -76,6 +78,7 @@ exports[`ThemedText title renders correctly 1`] = `
         ],
         "transformOrigin": "top middle",
       },
+      undefined,
       undefined,
       undefined,
       undefined,

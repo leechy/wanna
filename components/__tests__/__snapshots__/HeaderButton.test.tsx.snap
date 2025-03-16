@@ -25,6 +25,14 @@ exports[`HeaderButton matches snapshot 1`] = `
   accessible={true}
   collapsable={false}
   focusable={true}
+  hitSlop={
+    {
+      "bottom": 15,
+      "left": 15,
+      "right": 15,
+      "top": 15,
+    }
+  }
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -34,6 +42,8 @@ exports[`HeaderButton matches snapshot 1`] = `
   onStartShouldSetResponder={[Function]}
   style={
     {
+      "alignItems": "center",
+      "flexDirection": "row",
       "margin": 0,
       "opacity": 1,
       "padding": 0,

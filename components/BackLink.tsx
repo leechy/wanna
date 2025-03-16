@@ -53,7 +53,7 @@ export function BackLink({ parentTitle, listId, noTitle = false }: BackLinkProps
       title={noTitle ? '' : title}
       color={backButtonColor}
       icon={Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
-      style={Platform.OS === 'android' ? { gap: 8 } : {}}
+      style={Platform.OS === 'android' ? { gap: 8, paddingLeft: 8 } : {}}
       // @ts-ignore
       onPress={() => router.dismiss()}
     />
