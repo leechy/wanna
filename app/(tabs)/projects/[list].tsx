@@ -21,17 +21,16 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
-import ShareMenu from '@/components/ShareMenu';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-import CartNotEmptyIcon from '@/assets/symbols/cart-not-empty.svg';
-import CartIcon from '@/assets/symbols/cart.svg';
+import SquareIcon from '@/assets/symbols/square.svg';
 import SquareCheckIcon from '@/assets/symbols/square-check.svg';
+import SquarePlayIcon from '@/assets/symbols/square-play.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
-function ShoppingListScreen() {
+function ProjectScreen() {
   const primaryColor = useThemeColor({}, 'primary');
   const touchableColor = useThemeColor({}, 'touchable');
 
@@ -45,6 +44,8 @@ function ShoppingListScreen() {
   const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
   const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
+  console.log('openitems', openitems);
+
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
       updateList(listId, {
@@ -57,7 +58,7 @@ function ShoppingListScreen() {
   function newItem() {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/item-modal',
+        pathname: '/projects/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -69,7 +70,7 @@ function ShoppingListScreen() {
   function editItem(item: ListItem) {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/item-modal',
+        pathname: '/projects/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -102,10 +103,10 @@ function ShoppingListScreen() {
   function editList() {
     if (listData) {
       router.navigate({
-        pathname: '/shopping/list-modal',
+        pathname: '/projects/list-modal',
         params: {
           listId: listData.listId,
-          back: `/shopping/${listData.listId}`,
+          back: `/projects/${listData.listId}`,
         },
       });
     }
@@ -113,7 +114,7 @@ function ShoppingListScreen() {
 
   const blocks: AccordionBlockProps[] = [
     {
-      title: 'Still have to buy',
+      title: "What's next",
       newItemLabel: 'New item',
       newItemHandler: newItem,
       actionHandler: toggleCart,
@@ -121,8 +122,13 @@ function ShoppingListScreen() {
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
-      emptyText: 'List is empty. Add some items!',
+      emptyText: 'List is empty. Add some tasks to do!',
       items: openitems,
+    },
+    {
+      title: 'In progress',
+      items: [],
+      emptyText: 'Hurry up to finish the list!',
     },
     {
       title: 'Cart',
@@ -147,12 +153,12 @@ function ShoppingListScreen() {
       emptyText: 'The cart is empty',
     },
     {
-      title: 'Past purchases',
+      title: 'Already done',
       actionHandler: restoreItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
       items: completedItems,
-      emptyText: 'No purchases yet',
+      emptyText: 'Nothing done yet :-((',
     },
   ];
 
@@ -165,11 +171,11 @@ function ShoppingListScreen() {
       <ThemedView style={globalStyles.titleContainer}>
         <View style={globalStyles.listTitleContainer}>
           {cartItems.length < 1 && completedItems.length < 1 && !listData?.completed ? (
-            <CartIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
+            <SquareIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
           ) : listData?.completed ? (
             <SquareCheckIcon width={18} height={18} color={touchableColor} style={globalStyles.listTitleIcon} />
           ) : (
-            <CartNotEmptyIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
+            <SquarePlayIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
           )}
 
           <Pressable
@@ -182,18 +188,18 @@ function ShoppingListScreen() {
             hitSlop={8}
           >
             <ThemedText type={listData?.completed ? 'completed-title' : 'title'}>
-              {listData?.name + ' ' || 'Shopping list '}
+              {listData?.name + ' ' || 'Project '}
             </ThemedText>
           </Pressable>
         </View>
       </ThemedView>
       <View style={globalStyles.listProperties}>
         <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
-        <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} />
+        {/* <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} /> */}
       </View>
       <Accordion blocks={blocks} openBlock={0} />
     </Page>
   );
 }
 
-export default observer(ShoppingListScreen);
+export default observer(ProjectScreen);
