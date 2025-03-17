@@ -27,6 +27,7 @@ export interface AccordionBlockProps {
   longPressHandler?: (item: ListItem) => void;
   editHandler?: (item: ListItem) => void;
   deleteHandler?: (item: ListItem) => void;
+  resetHandler?: (item: ListItem) => void;
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;
@@ -99,6 +100,7 @@ export function AccordionBlock(block: AccordionBlockProps) {
             longPressHandler={block.longPressHandler}
             editHandler={block.editHandler}
             deleteHandler={block.deleteHandler}
+            resetHandler={block.resetHandler}
             items={block.items}
           />
         ) : block.newItemHandler ? (

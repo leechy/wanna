@@ -226,12 +226,16 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
     return;
   }
 
-  const updatedItem = {
+  const updatedItem: Partial<Item> = {
     completed,
     ongoing: false,
     completedAt: completed ? new Date().toISOString() : null,
     updatedAt: new Date().toISOString(),
   };
+  if (completed === false) {
+    updatedItem.assigneeId = null;
+    updatedItem.assignee = null;
+  }
 
   _lists$[listId].listItems[itemIndex].assign(updatedItem);
 
@@ -244,7 +248,7 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
 
   // check if the all the items in the list are completed, then mark the list as completed
   const allItemsCompleted = _lists$[listId].listItems.get()?.every((item) => item.completed);
-  if (allItemsCompleted) {
+  if (allItemsCompleted && !_lists$[listId].completed.get()) {
     updateList(listId, {
       completed: true,
       completedAt: new Date().toISOString(),
@@ -261,7 +265,7 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
  * @param {boolean} ongoing  whether the item is in progress
  * @returns {void}
  */
-export async function putItemInCart(listId: string, listItemId: string, ongoing: boolean = true) {
+export async function updateItemOngoingStatus(listId: string, listItemId: string, ongoing: boolean = true) {
   const listItems = _lists$[listId].listItems.get();
   if (!listItems) {
     console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
@@ -277,6 +281,7 @@ export async function putItemInCart(listId: string, listItemId: string, ongoing:
   const assigneeId = _user$.uid?.get();
   const assignee = _user$.names?.get();
   const updatedAt = new Date().toISOString();
+  console.log('Updating item ongoing status', { listId, listItemId, ongoing, assigneeId, assignee, updatedAt });
   _lists$[listId].listItems[itemIndex].assign({
     ongoing,
     assigneeId,

@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
-import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
+import { markItemAsCompleted, markItemAsDeleted, updateItemOngoingStatus, updateList } from '@/state/actions-lists';
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
@@ -80,7 +80,7 @@ function ShoppingListScreen() {
   }
 
   function toggleCart(item: ListItem) {
-    putItemInCart(listId, item.id, item.ongoing ? false : true);
+    updateItemOngoingStatus(listId, item.id, item.ongoing ? false : true);
   }
 
   function checkoutItem(item: ListItem) {

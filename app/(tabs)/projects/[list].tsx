@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
-import { markItemAsCompleted, markItemAsDeleted, putItemInCart, updateList } from '@/state/actions-lists';
+import { markItemAsCompleted, markItemAsDeleted, updateItemOngoingStatus, updateList } from '@/state/actions-lists';
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
@@ -42,7 +42,7 @@ function ProjectScreen() {
 
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
   const ongoingItems = useMemo(
-    () => items.filter((item) => item.type === 'task' && !item.completed && item.ongoing),
+    () => items.filter((item) => item.type === 'task' && !item.completed && item.assignee),
     [items]
   );
   const cartItems = useMemo(
@@ -86,7 +86,7 @@ function ProjectScreen() {
   }
 
   function toggleOngoing(item: ListItem) {
-    putItemInCart(listId, item.id, item.ongoing ? false : true);
+    updateItemOngoingStatus(listId, item.id, item.ongoing ? false : true);
   }
 
   function checkoutItem(item: ListItem) {
@@ -98,6 +98,7 @@ function ProjectScreen() {
   }
 
   function restoreItem(item: ListItem) {
+    console.log('restoreItem', item);
     markItemAsCompleted(listId, item.id, false);
   }
 
@@ -127,6 +128,7 @@ function ProjectScreen() {
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
+      resetHandler: restoreItem,
       emptyText: 'List is empty. Add some tasks to do!',
       items: openitems,
       showEmpty: true,
@@ -139,6 +141,7 @@ function ProjectScreen() {
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
+      resetHandler: restoreItem,
       items: ongoingItems,
       emptyText: 'Hurry up to finish the list!',
       showEmpty: false,
@@ -160,6 +163,7 @@ function ProjectScreen() {
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
+      resetHandler: restoreItem,
       items: cartItems,
       emptyText: 'The cart is empty',
       showEmpty: false,
@@ -169,6 +173,7 @@ function ProjectScreen() {
       actionHandler: restoreItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
+      resetHandler: restoreItem,
       items: completedItems,
       emptyText: 'Nothing done yet :-((',
       showEmpty: true,

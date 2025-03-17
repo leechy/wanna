@@ -17,11 +17,12 @@ import GroupItem from './GroupItem';
 import SquareIcon from '../assets/symbols/square.svg';
 import PlayIcon from '../assets/symbols/square-play.svg';
 import PlayFillIcon from '../assets/symbols/square-play-fill.svg';
+import PauseIcon from '../assets/symbols/square-pause.svg';
 import CartIcon from '../assets/symbols/cart-arr-down.svg';
 import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
 import SquareMinusIcon from '../assets/symbols/square-minus.svg';
 import EditIcon from '../assets/symbols/edit.svg';
-import RearrangeIcon from '../assets/symbols/rearrange.svg';
+// import RearrangeIcon from '../assets/symbols/rearrange.svg';
 import SubmenuIcon from './SubmenuIcon';
 import SquareCheckIcon from '../assets/symbols/square-check.svg';
 import RestoreIcon from '../assets/symbols/restore.svg';
@@ -40,6 +41,7 @@ interface ItemsListProps {
   longPressHandler?: (item: ListItem) => void;
   editHandler?: (item: ListItem) => void;
   deleteHandler?: (item: ListItem) => void;
+  resetHandler?: (item: ListItem) => void;
   items?: ListItem[];
   inverted?: boolean;
   actionIcon?: boolean;
@@ -56,6 +58,7 @@ export function ItemsList({
   longPressHandler,
   editHandler,
   deleteHandler,
+  resetHandler,
   items,
   inverted = false,
   actionIcon = true,
@@ -91,6 +94,10 @@ export function ItemsList({
 
   function onDeleteItem(item: ListItem) {
     deleteHandler?.(item);
+  }
+
+  function onResetItem(item: ListItem) {
+    resetHandler?.(item);
   }
 
   const getListItems = (incomingItems?: ListItem[]) => {
@@ -226,6 +233,8 @@ export function ItemsList({
             ) : item.type === 'task' ? (
               item.ongoing ? (
                 <PlayFillIcon width={28} height={28} color={primaryColor + '99'} />
+              ) : item.assignee ? (
+                <PauseIcon width={28} height={28} color={touchableColor} />
               ) : (
                 <PlayIcon width={28} height={28} color={touchableColor} />
               )
@@ -235,12 +244,19 @@ export function ItemsList({
             <DropdownMenu
               items={
                 [
-                  !item.completed && {
-                    label: 'Rearrange',
-                    onPress: () => {},
-                    icon: RearrangeIcon,
-                    disabled: true,
-                  },
+                  // !item.completed && {
+                  //   label: 'Rearrange',
+                  //   onPress: () => {},
+                  //   icon: RearrangeIcon,
+                  //   disabled: true,
+                  // },
+                  item.type === 'task' &&
+                    item.assignee &&
+                    !item.completed && {
+                      label: 'Reset',
+                      onPress: () => onResetItem(item),
+                      icon: RestoreIcon,
+                    },
                   !item.completed && {
                     label: 'Edit',
                     onPress: () => onEditItem(item),

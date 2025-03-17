@@ -34,6 +34,11 @@ export function Accordion({
 
   const TitleIcon = titleIcon || (() => null);
 
+  // In case the currently opened block is getting out of items, we need to switch to the previous one
+  if (blocks[currentBlock].items.length < 1 && blocks[currentBlock].showEmpty === false) {
+    setCurrentBlock(prevBlock);
+  }
+
   return (
     <View style={styles.container}>
       {title && (

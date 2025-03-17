@@ -52,9 +52,12 @@ function ProjectsScreen() {
             updatedAt: list.updatedAt,
             sortOrder: list.sortOrder,
             // count of items in the list that are in the cart or complated
-            ongoing: (list.listItems || []).reduce((acc, item) => acc + (item.completed || item.ongoing ? 1 : 0), 0),
+            ongoing: (list.listItems || []).reduce(
+              (acc, item) => acc + (!item.deleted && (item.completed || item.ongoing) ? 1 : 0),
+              0
+            ),
             // count of items in the list that are not completed
-            quantity: list.listItems?.length || 0,
+            quantity: list.listItems?.filter((item) => !item.deleted).length || 0,
           };
           if (list.completed) {
             newCompletedLists.push(listItem);
