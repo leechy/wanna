@@ -95,11 +95,11 @@ function ItemModal() {
     markItemAsCompleted(listId, item.id, false);
   }
 
-  function submitData(close = false) {
+  function submitData(closeModal = false) {
     if (listItemId) {
       updateEditedItem();
     } else {
-      addNewItem(close);
+      addNewItem(closeModal);
     }
   }
 
@@ -121,7 +121,8 @@ function ItemModal() {
     }
   }
 
-  function addNewItem(close = false) {
+  function addNewItem(closeModal = false) {
+    console.log('adding new item', closeModal);
     const itemId = generateId();
     const newItem: Partial<Item> = {
       itemId,
@@ -136,7 +137,10 @@ function ItemModal() {
     setName('');
     setQuantity(1);
     setDeadline(undefined);
-    if (close && router.canDismiss()) {
+
+    console.log('Should close', closeModal, router.canDismiss());
+
+    if (closeModal && router.canDismiss()) {
       router.dismissTo(`/shopping/${listId}`);
     } else {
       // set focus to the input back in case submitBehavior="submit" is not working

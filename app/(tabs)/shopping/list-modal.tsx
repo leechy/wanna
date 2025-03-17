@@ -35,7 +35,6 @@ export default function NewListModal() {
 
   useEffect(() => {
     if (listData) {
-      // console.log('listData', listData);
       setName(listData.name);
       setDeadline(listData.deadline ? new Date(listData.deadline).getTime() : undefined);
       setListItemsUpdate(listData.notifyOnListItemsUpdate || true);

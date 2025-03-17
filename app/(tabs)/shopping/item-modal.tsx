@@ -68,7 +68,6 @@ function ItemModal() {
 
   useEffect(() => {
     if (item) {
-      console.log('Item', item);
       setName(item.name);
       setQuantity(parseInt(item.quantity.toString() || '1', 10) || 1);
       setDeadline(item.deadline);
@@ -88,11 +87,11 @@ function ItemModal() {
     markItemAsCompleted(listId, item.id, false);
   }
 
-  function submitData(close = false) {
+  function submitData(closeModal = false) {
     if (listItemId) {
       updateEditedItem();
     } else {
-      addNewItem(close);
+      addNewItem(closeModal);
     }
   }
 
@@ -114,7 +113,7 @@ function ItemModal() {
     }
   }
 
-  function addNewItem(close = false) {
+  function addNewItem(closeModal = false) {
     const itemId = generateId();
     const newItem: Partial<Item> = {
       itemId,
@@ -124,12 +123,12 @@ function ItemModal() {
       quantity,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
     };
-    console.log('Add new item', newItem);
     addItem(listId, newItem);
     setName('');
     setQuantity(1);
     setDeadline(undefined);
-    if (close && router.canDismiss()) {
+
+    if (closeModal && router.canDismiss()) {
       router.dismissTo(`/shopping/${listId}`);
     } else {
       // set focus to the input back in case submitBehavior="submit" is not working

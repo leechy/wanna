@@ -25,8 +25,8 @@ export function ThemedText({ style, lightColor, darkColor, type = 'default', ...
         type === 'link' ? styles.link : undefined,
         style,
       ]}
-      numberOfLines={type === 'title' ? 1 : 0}
-      adjustsFontSizeToFit={type === 'title'}
+      numberOfLines={type === 'title' || type === 'completed-title' ? 1 : 0}
+      adjustsFontSizeToFit={type === 'title' || type === 'completed-title'}
       {...rest}
     />
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'GreatVibes-Regular',
     fontSize: 60,
-    lineHeight: 76,
+    // lineHeight: 76,
     transformOrigin: 'top middle',
     transform: [{ rotate: '-1deg' }],
   },

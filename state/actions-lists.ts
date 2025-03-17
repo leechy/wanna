@@ -22,8 +22,6 @@ export async function addList(list: Partial<List>, updateServer = true) {
   const type = list.type || 'project';
   const now = new Date().toISOString();
 
-  console.log('Creating new list', { listId, shareId, name, type });
-
   _lists$[listId].assign({
     listId,
     shareId,
@@ -247,8 +245,10 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
   });
 
   // check if the all the items in the list are completed, then mark the list as completed
-  const allItemsCompleted = _lists$[listId].listItems.get()?.every((item) => item.completed);
-  if (allItemsCompleted && !_lists$[listId].completed.get()) {
+  const allItemsCompleted = _lists$[listId].listItems.get()?.every((item) => item.deleted || item.completed);
+  const listData = _lists$[listId].get();
+
+  if (allItemsCompleted && !listData.completed) {
     updateList(listId, {
       completed: true,
       completedAt: new Date().toISOString(),
@@ -281,7 +281,7 @@ export async function updateItemOngoingStatus(listId: string, listItemId: string
   const assigneeId = _user$.uid?.get();
   const assignee = _user$.names?.get();
   const updatedAt = new Date().toISOString();
-  console.log('Updating item ongoing status', { listId, listItemId, ongoing, assigneeId, assignee, updatedAt });
+
   _lists$[listId].listItems[itemIndex].assign({
     ongoing,
     assigneeId,
