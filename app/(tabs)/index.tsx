@@ -49,6 +49,7 @@ export default function HomeScreen() {
         },
       ],
       emptyText: 'Great, no overdue tasks!',
+      showEmpty: true,
     },
     {
       title: 'Open items',
@@ -173,11 +174,13 @@ export default function HomeScreen() {
         },
       ],
       emptyText: 'Hm, nothing to do here, add some wishes!',
+      showEmpty: true,
     },
     {
       title: 'Recently completed',
       items: [],
       emptyText: 'No completed tasks, no worries!',
+      showEmpty: false,
     },
   ];
 

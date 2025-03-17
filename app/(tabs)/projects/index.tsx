@@ -78,6 +78,7 @@ function ProjectsScreen() {
       actionHandler: goToList,
       items: projects,
       emptyText: 'No Projects yet! Create a new one to start.',
+      showEmpty: true,
     },
     {
       title: 'Past Perfect',
@@ -85,6 +86,7 @@ function ProjectsScreen() {
       checkboxHandler: restoreList,
       items: completedLists,
       emptyText: 'Any projects with all items checked off will move here!',
+      showEmpty: false,
     },
   ];
 

@@ -123,6 +123,7 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       emptyText: 'List is empty. Add some items!',
       items: openitems,
+      showEmpty: true,
     },
     {
       title: 'Cart',
@@ -145,6 +146,7 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       items: cartItems,
       emptyText: 'The cart is empty',
+      showEmpty: true,
     },
     {
       title: 'Past purchases',
@@ -153,6 +155,7 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       items: completedItems,
       emptyText: 'No purchases yet',
+      showEmpty: true,
     },
   ];
 

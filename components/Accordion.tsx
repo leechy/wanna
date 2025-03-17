@@ -67,22 +67,27 @@ export function Accordion({
           )}
         </ThemedView>
       )}
-      {blocks.map((block, index) => (
-        <AccordionBlock
-          {...block}
-          isOpen={currentBlock === index}
-          key={'block' + index}
-          onToggle={() => {
-            if (currentBlock === index) {
-              setCurrentBlock(prevBlock);
-              setPrevBlock(index);
-            } else {
-              setPrevBlock(currentBlock);
-              setCurrentBlock(index);
-            }
-          }}
-        />
-      ))}
+      {blocks.map((block, index) => {
+        if (block.items.length < 1 && block.showEmpty === false) {
+          return null;
+        }
+        return (
+          <AccordionBlock
+            {...block}
+            isOpen={currentBlock === index}
+            key={'block' + index}
+            onToggle={() => {
+              if (currentBlock === index) {
+                setCurrentBlock(prevBlock);
+                setPrevBlock(index);
+              } else {
+                setPrevBlock(currentBlock);
+                setCurrentBlock(index);
+              }
+            }}
+          />
+        );
+      })}
     </View>
   );
 }

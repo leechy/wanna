@@ -30,6 +30,7 @@ export interface AccordionBlockProps {
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;
+  showEmpty?: boolean;
   emptyText?: string;
   onNew?: () => void;
 }

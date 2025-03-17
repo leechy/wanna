@@ -95,6 +95,7 @@ function ShoppingScreen() {
       actionHandler: goToList,
       items: shoppingLists,
       emptyText: 'No Lists here! Create a new one to start shopping!',
+      showEmpty: true,
     },
     // TODO: Recipes
     // {
@@ -108,6 +109,7 @@ function ShoppingScreen() {
     //   actionHandler: goToList,
     //   items: recipes,
     //   emptyText: "No saved lists yet.\nYou can create one from any list's action menu!",
+    //   showEmpty: true,
     // },
     {
       title: 'Completed',
@@ -115,6 +117,7 @@ function ShoppingScreen() {
       checkboxHandler: restoreList,
       items: completedLists,
       emptyText: 'Any lists with all items checked off will move here!',
+      showEmpty: true,
     },
   ];
 

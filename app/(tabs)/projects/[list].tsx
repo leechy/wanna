@@ -41,7 +41,14 @@ function ProjectScreen() {
   const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
 
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
-  const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
+  const ongoingItems = useMemo(
+    () => items.filter((item) => item.type === 'task' && !item.completed && item.ongoing),
+    [items]
+  );
+  const cartItems = useMemo(
+    () => items.filter((item) => item.type === 'item' && !item.completed && item.ongoing),
+    [items]
+  );
   const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
   function updateDeadline(date: string | number | undefined) {
@@ -78,7 +85,7 @@ function ProjectScreen() {
     }
   }
 
-  function toggleCart(item: ListItem) {
+  function toggleOngoing(item: ListItem) {
     putItemInCart(listId, item.id, item.ongoing ? false : true);
   }
 
@@ -115,18 +122,26 @@ function ProjectScreen() {
       title: "What's next",
       newItemLabel: 'New item',
       newItemHandler: newItem,
-      actionHandler: toggleCart,
+      actionHandler: toggleOngoing,
       checkboxHandler: checkoutItem,
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
       emptyText: 'List is empty. Add some tasks to do!',
       items: openitems,
+      showEmpty: true,
     },
     {
       title: 'In progress',
-      items: [],
+      color: primaryColor,
+      actionHandler: toggleOngoing,
+      checkboxHandler: checkoutItem,
+      longPressHandler: editItem,
+      editHandler: editItem,
+      deleteHandler: deleteItem,
+      items: ongoingItems,
       emptyText: 'Hurry up to finish the list!',
+      showEmpty: false,
     },
     {
       title: 'Cart',
@@ -140,15 +155,14 @@ function ProjectScreen() {
           disabled={cartItems.length === 0}
         />
       ),
-      newItemLabel: 'Not planned item in the cart',
-      newItemHandler: newItem,
-      actionHandler: toggleCart,
+      actionHandler: toggleOngoing,
       checkboxHandler: checkoutItem,
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
       items: cartItems,
       emptyText: 'The cart is empty',
+      showEmpty: false,
     },
     {
       title: 'Already done',
@@ -157,6 +171,7 @@ function ProjectScreen() {
       deleteHandler: deleteItem,
       items: completedItems,
       emptyText: 'Nothing done yet :-((',
+      showEmpty: true,
     },
   ];
 
