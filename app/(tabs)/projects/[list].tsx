@@ -44,8 +44,6 @@ function ProjectScreen() {
   const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
   const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
-  console.log('openitems', openitems);
-
   function updateDeadline(date: string | number | undefined) {
     if (listId) {
       updateList(listId, {

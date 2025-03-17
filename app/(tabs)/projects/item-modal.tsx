@@ -20,6 +20,12 @@ import WheelPicker from '@quidone/react-native-wheel-picker';
 import { ItemsList } from '@/components/ItemsList';
 import { ThemedText } from '@/components/ThemedText';
 import { BackLink } from '@/components/BackLink';
+import { DropdownMenu } from '@/components/DropdownMenu';
+import SmallButton from '@/components/SmallButton';
+
+// icons
+import SquarePlayIcon from '@/assets/symbols/square-play.svg';
+import CartIcon from '@/assets/symbols/cart.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
@@ -37,6 +43,7 @@ function ItemModal() {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [deadline, setDeadline] = useState<number | string | undefined>();
+  const [type, setType] = useState<'task' | 'item'>('task');
 
   const { top: safeT } = useSafeAreaInsets();
 
@@ -119,7 +126,7 @@ function ItemModal() {
     const newItem: Partial<Item> = {
       itemId,
       listId,
-      type: 'task',
+      type,
       name,
       quantity,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
@@ -177,7 +184,22 @@ function ItemModal() {
                 inputRef={inputRef}
               />
               <View style={styles.properties}>
-                <DateSelector placeholder="Buy before" value={deadline} onChange={updateDeadline} />
+                <DateSelector placeholder="Deadline" value={deadline} onChange={updateDeadline} />
+                <DropdownMenu
+                  items={[
+                    { label: 'Project task', selected: type === 'task', onPress: () => setType('task') },
+                    { label: 'Shopping item', selected: type === 'item', onPress: () => setType('item') },
+                  ]}
+                  align="start"
+                  side="bottom"
+                  isModal={true}
+                >
+                  {type === 'task' ? (
+                    <SmallButton icon={SquarePlayIcon} title="Project task" />
+                  ) : (
+                    <SmallButton icon={CartIcon} title="Shopping item" />
+                  )}
+                </DropdownMenu>
               </View>
             </View>
             <Text style={{ width: 32, textAlign: 'center', fontSize: 24, lineHeight: 68, color: textColor }}>
@@ -240,6 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    gap: 12,
   },
 });
 

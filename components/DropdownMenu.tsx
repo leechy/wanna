@@ -37,6 +37,7 @@ interface DropdownMenuProps {
   onClose?: () => void;
   width?: number;
   isHeaderMenu?: boolean;
+  isModal?: boolean;
   children: ReactNode;
 }
 
@@ -50,6 +51,7 @@ export function DropdownMenu({
   children,
   width = 200,
   isHeaderMenu = false,
+  isModal = false,
 }: DropdownMenuProps) {
   const triggerRef = useRef<View>(null);
   const { height: winH, width: winW } = useWindowDimensions();
@@ -86,7 +88,7 @@ export function DropdownMenu({
         let { x, y } = position;
         let height = items.length * 46 + 3;
 
-        const topFix = Platform.OS === 'android' ? safeT : 0;
+        const topFix = Platform.OS === 'android' ? safeT : isModal ? -(safeT + 12) : 0;
 
         if (side === 'bottom' || side === 'top') {
           if (side === 'bottom' && py + buttonH + height < winH - safeB - TAB_BAR_HEIGHT) {
