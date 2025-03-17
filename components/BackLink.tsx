@@ -22,9 +22,10 @@ interface BackLinkProps {
   parentTitle?: string;
   listId?: string;
   noTitle?: boolean;
+  path?: '/' | '/shopping' | '/projects';
 }
 
-export function BackLink({ parentTitle, listId, noTitle = false }: BackLinkProps) {
+export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLinkProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const backButtonColor = primaryColor + '80';
 
@@ -44,6 +45,8 @@ export function BackLink({ parentTitle, listId, noTitle = false }: BackLinkProps
     return routeTitles.home;
   }, [parentTitle, parent, listId]);
 
+  console.log('path', path);
+
   if (!router.canGoBack()) {
     return null;
   }
@@ -55,7 +58,19 @@ export function BackLink({ parentTitle, listId, noTitle = false }: BackLinkProps
       icon={Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
       style={Platform.OS === 'android' ? { gap: 8, paddingLeft: 8 } : {}}
       // @ts-ignore
-      onPress={() => router.dismiss()}
+      onPress={() => {
+        if (path) {
+          if (router.canDismiss()) {
+            router.dismissTo(path);
+          } else {
+            router.navigate(path);
+          }
+        } else if (router.canGoBack()) {
+          router.back();
+        } else if (router.canDismiss()) {
+          router.dismiss();
+        }
+      }}
     />
   );
 }

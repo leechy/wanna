@@ -193,6 +193,9 @@ export async function updateItem(listId: string, listItemId: string, update: Par
     ...update,
   });
 
+  // recreate items to trigger reactivity
+  _lists$[listId].listItems.set([...(_lists$[listId].listItems.get() || [])]);
+
   if (!fromServer) {
     // update the item on the server
     queueOperation('item:update', {
@@ -236,6 +239,9 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
   }
 
   _lists$[listId].listItems[itemIndex].assign(updatedItem);
+
+  // recreate items to trigger reactivity
+  _lists$[listId].listItems.set([...(_lists$[listId].listItems.get() || [])]);
 
   // update the item on the server
   queueOperation('listItem:update', {
@@ -288,6 +294,9 @@ export async function updateItemOngoingStatus(listId: string, listItemId: string
     assignee,
     updatedAt,
   });
+
+  // recreate items to trigger reactivity
+  _lists$[listId].listItems.set([...(_lists$[listId].listItems.get() || [])]);
 
   // update the item on the server
   queueOperation('listItem:update', {

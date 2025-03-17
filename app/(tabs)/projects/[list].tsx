@@ -98,7 +98,6 @@ function ProjectScreen() {
   }
 
   function restoreItem(item: ListItem) {
-    console.log('restoreItem', item);
     markItemAsCompleted(listId, item.id, false);
   }
 

@@ -75,7 +75,6 @@ function ItemModal() {
 
   useEffect(() => {
     if (item) {
-      console.log('Item', item);
       setName(item.name);
       setQuantity(parseInt(item.quantity.toString() || '1', 10) || 1);
       setDeadline(item.deadline);
@@ -122,7 +121,6 @@ function ItemModal() {
   }
 
   function addNewItem(closeModal = false) {
-    console.log('adding new item', closeModal);
     const itemId = generateId();
     const newItem: Partial<Item> = {
       itemId,
@@ -132,13 +130,10 @@ function ItemModal() {
       quantity,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
     };
-    console.log('Add new item', newItem);
     addItem(listId, newItem);
     setName('');
     setQuantity(1);
     setDeadline(undefined);
-
-    console.log('Should close', closeModal, router.canDismiss());
 
     if (closeModal && router.canDismiss()) {
       router.dismissTo(`/shopping/${listId}`);

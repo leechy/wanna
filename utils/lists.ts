@@ -19,23 +19,41 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
       .filter((item) => item.listItemId && !item.deleted)
       // WIP: sort by sortOrder when it's available and how to mix it with the createdAt
       .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? -1 : 1))
-      .map((item) => ({
-        type: item.type || 'item',
-        id: item.listItemId,
-        label: item.name,
-        listId: item.listId,
-        deadline: item.deadline,
-        quantity: item.quantity,
-        ongoing: item.ongoing,
-        assignee: item.assignee,
-        assigneeId: item.assigneeId,
-        completed: item.completed,
-        completedAt: item.completedAt,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        sortOrder: item.sortOrder,
-      }))
+      .map((item) => convertItemToListItem(item))
   );
+}
+
+export function convertItemToListItem(
+  item: Item,
+  options?: {
+    list?: string;
+    listId?: string;
+    listType?: 'shopping-list' | 'project' | 'recipe';
+  }
+): ListItem {
+  const result: Partial<ListItem> = {
+    type: item.type || 'item',
+    id: item.listItemId,
+    label: item.name,
+    listId: options?.listId || item.listId,
+    deadline: item.deadline,
+    quantity: item.quantity,
+    ongoing: item.ongoing,
+    assignee: item.assignee,
+    assigneeId: item.assigneeId,
+    completed: item.completed,
+    completedAt: item.completedAt,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    sortOrder: item.sortOrder,
+  };
+  if (options?.list) {
+    result.list = options.list;
+  }
+  if (options?.listType) {
+    result.listType = options.listType;
+  }
+  return result as ListItem;
 }
 
 /**

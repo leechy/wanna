@@ -162,7 +162,7 @@ function ShoppingListScreen() {
   return (
     <Page hasHeader={false}>
       <View style={globalStyles.customHeader}>
-        {router.canGoBack() && <BackLink />}
+        {router.canGoBack() && <BackLink path="/shopping" />}
         <ListMenu listId={listId} isHeaderMenu={false} />
       </View>
       <ThemedView style={globalStyles.titleContainer}>

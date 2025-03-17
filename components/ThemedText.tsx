@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'GreatVibes-Regular',
-    fontSize: 60,
+    fontSize: 46,
     // lineHeight: 76,
     transformOrigin: 'top middle',
     transform: [{ rotate: '-1deg' }],

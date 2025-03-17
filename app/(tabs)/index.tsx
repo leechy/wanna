@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { router } from 'expo-router';
+import { lists$ as _lists$ } from '@/state/state';
 
 // components
 import { Accordion } from '@/components/Accordion';
@@ -12,175 +13,124 @@ import { DropdownMenu } from '@/components/DropdownMenu';
 
 import SortIcon from '@/assets/symbols/sort.svg';
 import SettingsIcon from '@/assets/symbols/settings.svg';
+import { ListItem } from '@/types/listItem';
+import { convertItemToListItem } from '@/utils/lists';
+import { markItemAsCompleted, updateItemOngoingStatus } from '@/state/actions-lists';
+import { observer } from '@legendapp/state/react';
 
-export default function HomeScreen() {
+const sortTypes: { [value: string]: { title: string; label: string } } = {
+  latest: {
+    title: 'Latest on top',
+    label: 'by time added',
+  },
+  name: {
+    title: 'A-Z',
+    label: 'by name',
+  },
+  deadline: {
+    title: 'Sooner the due',
+    label: 'by deadline',
+  },
+};
+
+function HomeScreen() {
   const dangerColor = useThemeColor({}, 'danger');
 
-  const [openDropdown, setOpenDropdown] = useState(false);
+  const [sortType, setSortType] = useState('latest');
+
+  function goToList(item: ListItem) {
+    router.push(`/${item.type === 'item' ? 'shopping' : 'projects'}/${item.listId}`);
+  }
+
+  function toggleOngoing(item: ListItem) {
+    console.log('toggle ongoing', item);
+    updateItemOngoingStatus(item.listId!, item.id, item.ongoing ? false : true);
+  }
+
+  function checkoutItem(item: ListItem) {
+    markItemAsCompleted(item.listId!, item.id);
+  }
+
+  function restoreItem(item: ListItem) {
+    markItemAsCompleted(item.listId!, item.id, false);
+  }
+
+  const lists = _lists$.get();
+
+  // get all items from all lists that are not completed
+  const pastDeadline: ListItem[] = [];
+  const openItems: ListItem[] = [];
+  const recentlyCompleted: ListItem[] = [];
+
+  const recentDate = new Date().getTime() - 1000 * 60 * 60 * 24 * 7;
+  const now = new Date().toISOString();
+
+  if (lists) {
+    Object.keys(lists).forEach((listId) => {
+      const list = lists[listId];
+      if (list.deleted) {
+        return;
+      }
+
+      const listItems = _lists$[listId]?.listItems.get() || [];
+
+      listItems?.forEach((item) => {
+        if (item.deleted) {
+          return;
+        }
+        if (item.completed) {
+          if (item.completedAt && new Date(item.completedAt).getTime() > recentDate) {
+            recentlyCompleted.push(convertItemToListItem(item, { list: list.name, listId, listType: list.type }));
+          }
+        } else {
+          if (item.deadline && item.deadline < now) {
+            pastDeadline.push(convertItemToListItem(item, { list: list.name, listId, listType: list.type }));
+          }
+          openItems.push(convertItemToListItem(item, { list: list.name, listId, listType: list.type }));
+        }
+      });
+    });
+  }
 
   const blocks: AccordionBlockProps[] = [
     {
       title: 'Past deadline',
       color: dangerColor,
-      items: [
-        {
-          type: 'item',
-          id: '1',
-          label: 'Milk 3.5%',
-          deadline: new Date('2024-12-24 12:00').getTime(),
-          quantity: 6,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '2',
-          label: 'Toast bread',
-          deadline: new Date('2024-12-12 12:00').getTime(),
-          quantity: 1,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '3',
-          label: 'Mozarella',
-          deadline: new Date('2024-11-21 12:00').getTime(),
-          quantity: 2,
-          ongoing: true,
-        },
-      ],
+      items: pastDeadline,
       emptyText: 'Great, no overdue tasks!',
-      showEmpty: true,
+      showEmpty: false,
+      actionHandler: toggleOngoing,
+      checkboxHandler: checkoutItem,
+      longPressHandler: goToList,
     },
     {
       title: 'Open items',
       newItemLabel: 'New wish or task',
       action: (
         <DropdownMenu
-          open={openDropdown}
-          onOpen={() => setOpenDropdown(true)}
-          onClose={() => setOpenDropdown(false)}
-          items={[
-            { label: 'by time added', selected: true, onPress: () => {} },
-            { label: 'by name', onPress: () => {} },
-            { label: 'by deadline', onPress: () => {} },
-            { label: 'by quantity', onPress: () => {} },
-          ]}
+          items={Object.keys(sortTypes).map((sortId) => ({
+            label: sortTypes[sortId].label,
+            selected: sortId === sortType,
+            onPress: () => setSortType(sortId),
+          }))}
         >
-          <SmallButton title="Latest on top" icon={SortIcon} />
+          <SmallButton title={sortTypes[sortType].title} icon={SortIcon} />
         </DropdownMenu>
       ),
-      items: [
-        {
-          type: 'task',
-          id: '1',
-          label: 'Mark this item as ongoing and then as completed',
-          list: 'Tutorial',
-          quantity: 1,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '3',
-          label: 'Mozarella',
-          deadline: Date.now() + 1000 * 60 * 60 * 24 * 2,
-          quantity: 2,
-          ongoing: true,
-        },
-        {
-          type: 'task',
-          id: '4',
-          label: 'Attach the neck to the body',
-          deadline: new Date('2024-12-24 12:00').getTime(),
-          quantity: 1,
-          ongoing: true,
-          list: 'Neon Guitar',
-        },
-        {
-          type: 'item',
-          id: '5',
-          label: 'Baguette',
-          quantity: 2,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '6',
-          label: 'Milk 3.5%',
-          quantity: 6,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '7',
-          label: 'Toast bread',
-          quantity: 1,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '8',
-          label: 'Mozarella',
-          quantity: 2,
-          ongoing: true,
-        },
-        {
-          type: 'task',
-          id: '9',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          ongoing: true,
-        },
-        {
-          type: 'task',
-          id: '10',
-          label: 'Baguette',
-          quantity: 2,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '11',
-          label: 'Milk 3.5%',
-          quantity: 6,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '12',
-          label: 'Toast bread',
-          quantity: 1,
-          ongoing: false,
-        },
-        {
-          type: 'item',
-          id: '13',
-          label: 'Mozarella',
-          quantity: 2,
-          ongoing: true,
-        },
-        {
-          type: 'item',
-          id: '14',
-          label: 'Coca Cola Zero',
-          quantity: 1,
-          ongoing: true,
-        },
-        {
-          type: 'item',
-          id: '15',
-          label: 'Baguette',
-          quantity: 2,
-          ongoing: false,
-        },
-      ],
+      items: openItems,
       emptyText: 'Hm, nothing to do here, add some wishes!',
       showEmpty: true,
+      actionHandler: toggleOngoing,
+      checkboxHandler: checkoutItem,
+      longPressHandler: goToList,
     },
     {
       title: 'Recently completed',
-      items: [],
+      items: recentlyCompleted,
       emptyText: 'No completed tasks, no worries!',
       showEmpty: false,
+      actionHandler: restoreItem,
+      longPressHandler: goToList,
     },
   ];
 
@@ -200,3 +150,5 @@ export default function HomeScreen() {
     </Page>
   );
 }
+
+export default observer(HomeScreen);
