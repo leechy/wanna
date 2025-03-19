@@ -42,7 +42,7 @@ export default function ListItemLabel({
 
   return (
     <View style={globalStyles.itemListLabelContainer} testID={testID}>
-      <Text style={[globalStyles.itemListlabel, { color: textColor }]} adjustsFontSizeToFit={true} numberOfLines={2}>
+      <Text style={[globalStyles.itemListlabel, { color: textColor }]} adjustsFontSizeToFit={false} numberOfLines={2}>
         {showQuantity && (item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
         {item.label}
       </Text>
