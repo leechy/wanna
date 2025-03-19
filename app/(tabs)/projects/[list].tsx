@@ -182,7 +182,7 @@ function ProjectScreen() {
   return (
     <Page hasHeader={false}>
       <View style={globalStyles.customHeader}>
-        {router.canGoBack() && <BackLink />}
+        {router.canGoBack() && <BackLink path="/projects" />}
         <ListMenu listId={listId} isHeaderMenu={false} />
       </View>
       <ThemedView style={globalStyles.titleContainer}>

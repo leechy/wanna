@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 
 export default function ShoppingLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="index"
         options={{

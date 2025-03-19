@@ -39,7 +39,7 @@ function HomeScreen() {
   const [sortType, setSortType] = useState('latest');
 
   function goToList(item: ListItem) {
-    router.push(`/${item.type === 'item' ? 'shopping' : 'projects'}/${item.listId}`);
+    router.navigate(`/${item.type === 'item' ? 'shopping' : 'projects'}/${item.listId}`);
   }
 
   function toggleOngoing(item: ListItem) {

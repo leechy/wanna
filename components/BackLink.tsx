@@ -45,8 +45,6 @@ export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLin
     return routeTitles.home;
   }, [parentTitle, parent, listId]);
 
-  console.log('path', path);
-
   if (!router.canGoBack()) {
     return null;
   }
@@ -63,7 +61,7 @@ export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLin
           if (router.canDismiss()) {
             router.dismissTo(path);
           } else {
-            router.navigate(path);
+            router.replace(path);
           }
         } else if (router.canGoBack()) {
           router.back();
