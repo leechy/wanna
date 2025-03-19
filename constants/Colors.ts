@@ -30,7 +30,7 @@ export const Colors = {
 
     inputText: '#000000',
     inputPlaceholder: '#999999',
-    inputBackground: '#e3e3e4',
+    inputBackground: '#5c5c5c33',
     wheelPickerBackground: '#5c5c5c',
     cursorColor: '#3a1fc1',
     fullButtonText: '#000000',
@@ -59,7 +59,7 @@ export const Colors = {
 
     inputText: '#ffffff',
     inputPlaceholder: '#666666',
-    inputBackground: '#151718',
+    inputBackground: '#e6e6e633',
     wheelPickerBackground: '#e6e6e6',
     cursorColor: '#ffffff',
     fullButtonText: '#efefef',

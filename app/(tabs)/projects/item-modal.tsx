@@ -158,7 +158,7 @@ function ItemModal() {
         <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={() => submitData(true)} />
       </View>
 
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      <StatusBar style={Platform.OS === 'ios' ? 'auto' : 'auto'} />
       <View style={styles.container}>
         <View>
           <View style={{ height: 82, opacity: 0.5 }}>
@@ -217,25 +217,17 @@ function ItemModal() {
                   color: textColor,
                 }}
                 style={{ width: 64, height: 168 }}
-                overlayItemStyle={{ height: 56, backgroundColor, opacity: 0.1 }}
+                overlayItemStyle={{ height: 56, backgroundColor, opacity: 0.2 }}
               />
             </View>
           </View>
           {completedItems.length > 0 && (
-            <ThemedText
-              style={{
-                paddingHorizontal: 24,
-                marginVertical: 8,
-                color: headerColor,
-                fontSize: 14,
-                fontWeight: '600',
-              }}
-            >
+            <ThemedText style={[styles.suggestionsLabel, { color: headerColor }]}>
               Completed items to restore:
             </ThemedText>
           )}
         </View>
-        <View style={{ flex: 2 }}>
+        <View style={{ flex: 2, opacity: 0.7 }}>
           {completedItems.length > 0 && (
             <ItemsList
               actionHandler={restoreItem}
@@ -262,6 +254,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     gap: 12,
+  },
+  suggestionsLabel: {
+    paddingHorizontal: 24,
+    marginVertical: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    opacity: 0.7,
   },
 });
 

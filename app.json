@@ -7,7 +7,11 @@
     "scheme": "wanna",
     "newArchEnabled": true,
     "githubUrl": "https://github.com/leechy/wanna",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "userInterfaceStyle": "automatic",
     "primaryColor": "#3a1fc1",
     "icon": "./assets/icon.png",
@@ -25,7 +29,15 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       },
@@ -33,6 +45,9 @@
         "light": "./assets/icon.png",
         "dark": "./assets/icon-dark.png",
         "tinted": "./assets/icon-tinted.png"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -66,7 +81,9 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/GreatVibes-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/GreatVibes-Regular.ttf"
+          ]
         }
       ],
       [
