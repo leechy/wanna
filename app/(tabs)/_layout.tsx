@@ -57,6 +57,7 @@ export default function TabLayout() {
         options={{
           title: 'Wishes',
           tabBarIcon: ({ color }) => <WishesIcon width={36} height={36} color={color} />,
+          lazy: false,
         }}
       />
       <Tabs.Screen
@@ -64,6 +65,7 @@ export default function TabLayout() {
         options={{
           title: 'Shopping',
           tabBarIcon: ({ color }) => <ShoppingIcon width={36} height={36} color={color} />,
+          lazy: false,
         }}
       />
       <Tabs.Screen
@@ -71,6 +73,7 @@ export default function TabLayout() {
         options={{
           title: 'Projects',
           tabBarIcon: ({ color }) => <ProjectsIcon width={36} height={36} color={color} />,
+          lazy: false,
         }}
       />
     </Tabs>
