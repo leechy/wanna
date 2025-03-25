@@ -33,6 +33,8 @@ export default function TitleInput({ placeholder, value, onChange, onSubmit }: T
         accessibilityRole="text"
         accessibilityLabel={placeholder}
         accessibilityHint={`Tap to enter ${placeholder}`}
+        numberOfLines={1}
+        allowFontScaling={false}
       />
     </View>
   );
@@ -43,12 +45,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: '100%',
     transform: [{ rotate: '-1deg' }],
+    paddingHorizontal: 8,
+    paddingVertical: Platform.OS === 'ios' ? 8 : 0,
   },
   titleInput: {
     width: '100%',
-    height: 100,
+    maxHeight: 100,
     fontFamily: 'GreatVibes-Regular',
-    fontSize: Platform.OS === 'ios' ? 60 : 52,
-    lineHeight: Platform.OS === 'ios' ? 76 : 66,
+    fontSize: 46,
+    // marginVertical: Platform.OS === 'ios' ? undefined : -4,
+    borderWidth: 1,
+    padding: 0,
   },
 });

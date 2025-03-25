@@ -24,15 +24,11 @@ import { BackLink } from '@/components/BackLink';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-import SquareIcon from '@/assets/symbols/square.svg';
-import SquareCheckIcon from '@/assets/symbols/square-check.svg';
-import SquarePlayIcon from '@/assets/symbols/square-play.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
 function ProjectScreen() {
   const primaryColor = useThemeColor({}, 'primary');
-  const touchableColor = useThemeColor({}, 'touchable');
 
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
@@ -175,26 +171,22 @@ function ProjectScreen() {
       resetHandler: restoreItem,
       items: completedItems,
       emptyText: 'Nothing done yet :-((',
-      showEmpty: true,
+      showEmpty: false,
     },
   ];
 
   return (
     <Page hasHeader={false}>
       <View style={globalStyles.customHeader}>
-        {router.canGoBack() && <BackLink path="/projects" />}
-        <ListMenu listId={listId} isHeaderMenu={false} />
+        {router.canGoBack() && <BackLink path="/projects" noTitle={true} />}
+        <View style={globalStyles.listProperties}>
+          <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
+          {/* <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} /> */}
+          <ListMenu listId={listId} isHeaderMenu={false} />
+        </View>
       </View>
       <ThemedView style={globalStyles.titleContainer}>
         <View style={globalStyles.listTitleContainer}>
-          {cartItems.length < 1 && completedItems.length < 1 && !listData?.completed ? (
-            <SquareIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
-          ) : listData?.completed ? (
-            <SquareCheckIcon width={18} height={18} color={touchableColor} style={globalStyles.listTitleIcon} />
-          ) : (
-            <SquarePlayIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
-          )}
-
           <Pressable
             onLongPress={editList}
             style={{ flex: 1 }}
@@ -210,10 +202,6 @@ function ProjectScreen() {
           </Pressable>
         </View>
       </ThemedView>
-      <View style={globalStyles.listProperties}>
-        <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
-        {/* <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} /> */}
-      </View>
       <Accordion blocks={blocks} openBlock={0} />
     </Page>
   );

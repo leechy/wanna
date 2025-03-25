@@ -25,15 +25,11 @@ import ShareMenu from '@/components/ShareMenu';
 
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-import CartNotEmptyIcon from '@/assets/symbols/cart-not-empty.svg';
-import CartIcon from '@/assets/symbols/cart.svg';
-import SquareCheckIcon from '@/assets/symbols/square-check.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
 function ShoppingListScreen() {
   const primaryColor = useThemeColor({}, 'primary');
-  const touchableColor = useThemeColor({}, 'touchable');
 
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
@@ -146,7 +142,7 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       items: cartItems,
       emptyText: 'The cart is empty',
-      showEmpty: true,
+      showEmpty: false,
     },
     {
       title: 'Past purchases',
@@ -155,26 +151,24 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       items: completedItems,
       emptyText: 'No purchases yet',
-      showEmpty: true,
+      showEmpty: false,
     },
   ];
 
   return (
     <Page hasHeader={false}>
       <View style={globalStyles.customHeader}>
-        {router.canGoBack() && <BackLink path="/shopping" />}
-        <ListMenu listId={listId} isHeaderMenu={false} />
+        {router.canGoBack() && <BackLink path="/shopping" noTitle={true} />}
+
+        <View style={globalStyles.listProperties}>
+          <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
+          <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} />
+          <ListMenu listId={listId} isHeaderMenu={false} />
+        </View>
       </View>
+
       <ThemedView style={globalStyles.titleContainer}>
         <View style={globalStyles.listTitleContainer}>
-          {cartItems.length < 1 && completedItems.length < 1 && !listData?.completed ? (
-            <CartIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
-          ) : listData?.completed ? (
-            <SquareCheckIcon width={18} height={18} color={touchableColor} style={globalStyles.listTitleIcon} />
-          ) : (
-            <CartNotEmptyIcon width={18} height={18} color={primaryColor} style={globalStyles.listTitleIcon} />
-          )}
-
           <Pressable
             onLongPress={editList}
             style={{ flex: 1 }}
@@ -190,10 +184,6 @@ function ShoppingListScreen() {
           </Pressable>
         </View>
       </ThemedView>
-      <View style={globalStyles.listProperties}>
-        <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
-        <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} />
-      </View>
       <Accordion blocks={blocks} openBlock={0} />
     </Page>
   );

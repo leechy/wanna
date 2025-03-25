@@ -1,4 +1,4 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
+import { Text, type TextProps, StyleSheet, Platform } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -51,9 +51,10 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'GreatVibes-Regular',
     fontSize: 46,
-    // lineHeight: 76,
+    marginVertical: Platform.OS === 'ios' ? 4 : -4,
     transformOrigin: 'top middle',
     transform: [{ rotate: '-1deg' }],
+    zIndex: 1,
   },
   subtitle: {
     fontFamily: 'Montserrat',

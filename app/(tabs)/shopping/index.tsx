@@ -120,7 +120,7 @@ function ShoppingScreen() {
       checkboxHandler: restoreList,
       items: completedLists,
       emptyText: 'Any lists with all items checked off will move here!',
-      showEmpty: true,
+      showEmpty: false,
     },
   ];
 

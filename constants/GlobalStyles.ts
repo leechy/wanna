@@ -12,9 +12,8 @@ export const globalStyles = StyleSheet.create({
   },
   listProperties: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingBottom: 8,
     gap: 12,
   },
   listItem: {
@@ -84,12 +83,13 @@ export const globalStyles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
     marginBottom: -12,
+    zIndex: 6,
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    paddingTop: 18,
+    paddingBottom: 8,
     paddingHorizontal: 16,
   },
   modalOverlay: {
