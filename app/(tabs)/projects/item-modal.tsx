@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$, generateId } from '@/state/state';
-import { addItem, markItemAsCompleted, updateItem } from '@/state/actions-lists';
+import { addItem, duplicateCompletedItem, updateItem } from '@/state/actions-lists';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // utils
@@ -12,7 +12,6 @@ import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists'
 
 // components
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import HeaderButton from '@/components/HeaderButton';
 import { ThemedInput } from '@/components/ThemedInput';
 import DateSelector from '@/components/DateSelector';
@@ -90,8 +89,8 @@ function ItemModal() {
     setDeadline(date);
   }
 
-  function restoreItem(item: ListItem) {
-    markItemAsCompleted(listId, item.id, false);
+  function duplicateItem(item: ListItem) {
+    duplicateCompletedItem(listId, item.id);
   }
 
   function submitData(closeModal = false) {
@@ -116,7 +115,7 @@ function ItemModal() {
     updateItem(listId, listItemId, updatedItem);
 
     if (router.canDismiss()) {
-      router.dismissTo(`/shopping/${listId}`);
+      router.dismissTo(`/projects/${listId}`);
     }
   }
 
@@ -136,7 +135,7 @@ function ItemModal() {
     setDeadline(undefined);
 
     if (closeModal && router.canDismiss()) {
-      router.dismissTo(`/shopping/${listId}`);
+      router.dismissTo(`/projects/${listId}`);
     } else {
       // set focus to the input back in case submitBehavior="submit" is not working
       setTimeout(() => {
@@ -158,17 +157,10 @@ function ItemModal() {
         <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={() => submitData(true)} />
       </View>
 
-      <StatusBar style={Platform.OS === 'ios' ? 'auto' : 'auto'} />
       <View style={styles.container}>
         <View>
           <View style={{ height: 82, opacity: 0.5 }}>
-            <ItemsList
-              actionHandler={restoreItem}
-              inverted={true}
-              actionIcon={false}
-              submenu={false}
-              items={openitems}
-            />
+            <ItemsList inverted={true} actionIcon={false} submenu={false} items={openitems} />
           </View>
           <View style={{ flexDirection: 'row', width: '100%', height: 116, paddingHorizontal: 16 }}>
             <View style={{ flexDirection: 'column', flex: 1, alignItems: 'flex-start' }}>
@@ -179,7 +171,7 @@ function ItemModal() {
                 containerStyle={{ marginVertical: 8 }}
                 keyboardType="default"
                 enterKeyHint="next"
-                onSubmit={submitData}
+                onSubmit={() => submitData(false)}
                 inputRef={inputRef}
               />
               <View style={styles.properties}>
@@ -230,7 +222,7 @@ function ItemModal() {
         <View style={{ flex: 2, opacity: 0.7 }}>
           {completedItems.length > 0 && (
             <ItemsList
-              actionHandler={restoreItem}
+              actionHandler={duplicateItem}
               submenu={false}
               style={Platform.OS === 'ios' ? { paddingBottom: 66 } : {}}
               items={completedItems}

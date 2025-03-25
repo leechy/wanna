@@ -342,3 +342,40 @@ export async function markItemAsDeleted(listId: string, listItemId: string) {
     updatedAt,
   });
 }
+
+/**
+ * Duplicate completed item
+ * and mark it as not completed and not ongoing
+ * and not assigned to anyone
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @returns {void}
+ */
+export async function duplicateCompletedItem(listId: string, listItemId: string) {
+  const listItems = _lists$[listId].listItems.get();
+  if (!listItems) {
+    console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
+    return;
+  }
+
+  const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const item = listItems[itemIndex];
+  const newItem: Partial<Item> = {
+    ...item,
+    listItemId: generateId(),
+    completed: false,
+    completedAt: null,
+    ongoing: false,
+    assigneeId: null,
+    assignee: null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  addItem(listId, newItem);
+}

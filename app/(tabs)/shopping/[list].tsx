@@ -4,7 +4,13 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
-import { markItemAsCompleted, markItemAsDeleted, updateItemOngoingStatus, updateList } from '@/state/actions-lists';
+import {
+  duplicateCompletedItem,
+  markItemAsCompleted,
+  markItemAsDeleted,
+  updateItemOngoingStatus,
+  updateList,
+} from '@/state/actions-lists';
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
@@ -95,6 +101,10 @@ function ShoppingListScreen() {
     markItemAsDeleted(listId, item.id);
   }
 
+  function duplicateItem(item: ListItem) {
+    duplicateCompletedItem(listId, item.id);
+  }
+
   function editList() {
     if (listData) {
       router.navigate({
@@ -146,7 +156,7 @@ function ShoppingListScreen() {
     },
     {
       title: 'Past purchases',
-      actionHandler: restoreItem,
+      actionHandler: duplicateItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
       items: completedItems,
