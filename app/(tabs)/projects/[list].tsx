@@ -187,7 +187,7 @@ function ProjectScreen() {
 
   return (
     <Page hasHeader={false}>
-      <View style={globalStyles.customHeader}>
+      <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
         {router.canGoBack() && <BackLink path="/projects" noTitle={true} />}
         <View style={globalStyles.listProperties}>
           <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />

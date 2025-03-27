@@ -40,7 +40,9 @@ export default function ChooseContactScreen() {
 
   return (
     <Page hasHeader={false}>
-      <View style={globalStyles.customHeader}>{router.canGoBack() && <BackLink listId={listId as string} />}</View>
+      <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
+        {router.canGoBack() && <BackLink listId={listId as string} />}
+      </View>
       <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">Who to share with? </ThemedText>
       </ThemedView>

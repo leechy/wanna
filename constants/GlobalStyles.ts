@@ -85,6 +85,10 @@ export const globalStyles = StyleSheet.create({
     marginBottom: -12,
     zIndex: 6,
   },
+  customPageHeader: {
+    paddingTop: 4,
+    marginBottom: -4,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',

@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     fontFamily: 'GreatVibes-Regular',
     fontSize: 46,
     // marginVertical: Platform.OS === 'ios' ? undefined : -4,
-    borderWidth: 1,
     padding: 0,
   },
 });
