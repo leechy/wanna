@@ -79,6 +79,7 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
   } else {
     _lists$[listId]?.assign({
       ...update,
+      updatedAt: update.updatedAt || new Date().toISOString(),
     });
 
     // and the updates should go to the server
@@ -86,6 +87,7 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
       queueOperation('list:update', {
         listId,
         ...updatedData,
+        updatedAt: update.updatedAt || new Date().toISOString(),
       });
     }
 
@@ -188,9 +190,12 @@ export async function updateItem(listId: string, listItemId: string, update: Par
     return;
   }
 
+  const now = new Date().toISOString();
+
   // update the item in the state
   _lists$[listId].listItems[itemIndex].assign({
     ...update,
+    updatedAt: update.updatedAt || now,
   });
 
   // recreate items to trigger reactivity
@@ -202,6 +207,7 @@ export async function updateItem(listId: string, listItemId: string, update: Par
       listId,
       listItemId,
       ...update,
+      updatedAt: update.updatedAt || now,
     });
   }
 }
