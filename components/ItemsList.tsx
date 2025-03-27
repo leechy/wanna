@@ -1,31 +1,31 @@
 // hooks
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { useEffect, useState } from 'react';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
 import { FlatList, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { DropdownMenu } from './DropdownMenu';
-import NewItem from './NewItem';
-import ShoppingListItem from './ShoppingListItem';
-import ProjectListItem from './ProjectListItem';
-import ListItemLabel from './ListItemLabel';
-import ContactListItem from './ContactListItem';
-import GroupItem from './GroupItem';
+import { DropdownMenu } from '@/components/DropdownMenu';
+import NewItem from '@/components/NewItem';
+import ShoppingListItem from '@/components/ShoppingListItem';
+import ProjectListItem from '@/components/ProjectListItem';
+import ListItemLabel from '@/components/ListItemLabel';
+import ContactListItem from '@/components/ContactListItem';
+import GroupItem from '@/components/GroupItem';
 
 // icons
-import SquareIcon from '../assets/symbols/square.svg';
-import PlayIcon from '../assets/symbols/square-play.svg';
-import PlayFillIcon from '../assets/symbols/square-play-fill.svg';
-import PauseIcon from '../assets/symbols/square-pause.svg';
-import CartIcon from '../assets/symbols/cart-arr-down.svg';
-import CartWithItemIcon from '../assets/symbols/cart-item-fill.svg';
-import SquareMinusIcon from '../assets/symbols/square-minus.svg';
-import EditIcon from '../assets/symbols/edit.svg';
-// import RearrangeIcon from '../assets/symbols/rearrange.svg';
-import SubmenuIcon from './SubmenuIcon';
-import SquareCheckIcon from '../assets/symbols/square-check.svg';
-import RestoreIcon from '../assets/symbols/restore.svg';
+import SquareIcon from '@/assets/symbols/square.svg';
+import PlayIcon from '@/assets/symbols/square-play.svg';
+import PlayFillIcon from '@/assets/symbols/square-play-fill.svg';
+import PauseIcon from '@/assets/symbols/square-pause.svg';
+import CartIcon from '@/assets/symbols/cart-arr-down.svg';
+import CartWithItemIcon from '@/assets/symbols/cart-item-fill.svg';
+import SquareMinusIcon from '@/assets/symbols/square-minus.svg';
+import EditIcon from '@/assets/symbols/edit.svg';
+// import RearrangeIcon from '@/assets/symbols/rearrange.svg';
+import SubmenuIcon from '@/components/SubmenuIcon';
+import SquareCheckIcon from '@/assets/symbols/square-check.svg';
+import DuplicateIcon from '@/assets/symbols/duplicate.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
@@ -223,7 +223,7 @@ export function ItemsList({
           >
             <ListItemLabel item={item} showQuantity={true} />
             {!actionIcon ? null : item.completed ? (
-              <RestoreIcon width={28} height={28} color={touchableColor} />
+              <DuplicateIcon width={28} height={28} color={touchableColor} />
             ) : item.type === 'item' ? (
               item.ongoing ? (
                 <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
@@ -255,7 +255,7 @@ export function ItemsList({
                     !item.completed && {
                       label: 'Reset',
                       onPress: () => onResetItem(item),
-                      icon: RestoreIcon,
+                      icon: DuplicateIcon,
                     },
                   !item.completed && {
                     label: 'Edit',

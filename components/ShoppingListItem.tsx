@@ -2,18 +2,20 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { ListItem } from '@/types/listItem';
 import { StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import ListItemLabel from './ListItemLabel';
+import ListItemLabel from '@/components/ListItemLabel';
 
 // icons and styles
-import CartNotEmptyIcon from '../assets/symbols/cart-not-empty.svg';
-import CartIcon from '../assets/symbols/cart.svg';
-import ChevronRightIcon from '../assets/symbols/chevron-right.svg';
-import RestoreIcon from '../assets/symbols/restore.svg';
+import CartNotEmptyIcon from '@/assets/symbols/cart-not-empty.svg';
+import CartIcon from '@/assets/symbols/cart.svg';
+import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
+import DuplicateIcon from '@/assets/symbols/duplicate.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
+
+// types
+import { ListItem } from '@/types/listItem';
 
 interface ShoppingListItemProps {
   item: ListItem;
@@ -60,7 +62,7 @@ export default function ShoppingListItem({
               accessibilityLabel={`Check out ${item.label}`}
               accessibilityHint={`Press to check out ${item.label}`}
             >
-              <RestoreIcon width={28} height={28} color={touchableColor} />
+              <DuplicateIcon width={28} height={28} color={touchableColor} />
             </TouchableOpacity>
             <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
               <ListItemLabel item={item} />
