@@ -46,7 +46,9 @@ function SettingsScreen() {
 
   return (
     <Page hasHeader={false}>
-      <View style={globalStyles.customHeader}>{router.canGoBack() && <BackLink />}</View>
+      <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
+        {router.canGoBack() && <BackLink />}
+      </View>
       <ThemedView style={globalStyles.titleContainer}>
         <ThemedText type="title">Settings </ThemedText>
         <SmallButton title="Log Out" onPress={logout} />
