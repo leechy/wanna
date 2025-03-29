@@ -13,7 +13,7 @@ export type ThemedInputProps = {
   value: string;
   onChange?: (value: string) => void;
   onSubmit?: () => void;
-  inputRef: React.RefObject<TextInput>;
+  inputRef?: React.RefObject<TextInput>;
 };
 
 export function ThemedInput({

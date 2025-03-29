@@ -69,14 +69,15 @@ exports[`ThemedText title renders correctly 1`] = `
       undefined,
       {
         "fontFamily": "GreatVibes-Regular",
-        "fontSize": 60,
-        "lineHeight": 76,
+        "fontSize": 46,
+        "marginVertical": 4,
         "transform": [
           {
             "rotate": "-1deg",
           },
         ],
         "transformOrigin": "top middle",
+        "zIndex": 1,
       },
       undefined,
       undefined,

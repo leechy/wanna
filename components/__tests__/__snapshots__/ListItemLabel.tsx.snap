@@ -13,7 +13,7 @@ exports[`ListItemLabel matches snapshot 1`] = `
   }
 >
   <Text
-    adjustsFontSizeToFit={true}
+    adjustsFontSizeToFit={false}
     numberOfLines={2}
     style={
       [

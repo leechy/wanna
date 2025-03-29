@@ -12,6 +12,7 @@ import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 import SquareIcon from '@/assets/symbols/square.svg';
 import PlayIcon from '@/assets/symbols/square-play.svg';
 import PauseIcon from '@/assets/symbols/square-pause.svg';
+// import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
@@ -37,7 +38,10 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
       <LinearGradient
         // Item In Progress Linear Gradient
-        colors={[backgroundColor + '00', item.ongoing || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
+        colors={[
+          backgroundColor + '00',
+          (item.ongoing || 0 > 0) && !item.completed ? primaryColor + '1d' : backgroundColor + '00',
+        ]}
         start={[0, 0]}
         end={[1, 0]}
         style={[globalStyles.listItemGradient, itemBorderRadius]}
@@ -53,10 +57,10 @@ export default function ProjectListItem({ itemBorderRadius, item, actionHandler 
           accessibilityHint={`Press to open ${item.label}`}
         >
           <View style={globalStyles.listItemLeadButton}>
-            {item.ongoing || 0 > 0 ? (
-              <PlayIcon width={28} height={28} color={primaryColor} />
-            ) : item.completed || 0 > 0 ? (
+            {item.completed || 0 > 0 ? (
               <PauseIcon width={28} height={28} color={textColor} />
+            ) : item.ongoing || 0 > 0 ? (
+              <PlayIcon width={28} height={28} color={primaryColor} />
             ) : (
               <SquareIcon width={28} height={28} color={textColor} />
             )}

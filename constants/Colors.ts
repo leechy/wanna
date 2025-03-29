@@ -24,7 +24,7 @@ export const Colors = {
     disabled: '#bbbbbb',
     inactive: '#999999',
     touchable: '#666666',
-    danger: '#e73d01',
+    danger: '#d22105',
 
     listBackground: '#ffffff',
     listSeparator: '#d6d6d6',
@@ -50,12 +50,12 @@ export const Colors = {
     smallButtonBackground: '#1e2022',
 
     primary: '#ffd700',
-    secondary: '#eb6130',
+    secondary: '#b87bf4',
     barelyVisible: '#222222',
     disabled: '#454545',
     inactive: '#666666',
     touchable: '#999999',
-    danger: '#e73d01',
+    danger: '#f53d2c',
 
     listBackground: '#151718',
     listSeparator: '#0a0a0a',
