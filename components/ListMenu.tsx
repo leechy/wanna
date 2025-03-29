@@ -13,6 +13,7 @@ import SubmenuIcon from './SubmenuIcon';
 import EditIcon from '@/assets/symbols/edit.svg';
 import SquareMinusIcon from '@/assets/symbols/square-minus.svg';
 import SquareCheckIcon from '@/assets/symbols/square-check.svg';
+import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
 
 interface ListMenuProps {
   listId?: string;
@@ -71,7 +72,7 @@ function ListMenu({ listId, isHeaderMenu = true }: ListMenuProps) {
         {
           label: list?.completed ? 'Restore list' : 'Mark as completed',
           onPress: list?.completed ? restoreList : markListAsCompleted,
-          icon: SquareCheckIcon,
+          icon: list?.completed ? CircleRestoreIcon : SquareCheckIcon,
         },
         {
           label: 'Delete list',

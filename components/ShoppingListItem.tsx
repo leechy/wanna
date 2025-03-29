@@ -10,7 +10,7 @@ import ListItemLabel from '@/components/ListItemLabel';
 import CartNotEmptyIcon from '@/assets/symbols/cart-not-empty.svg';
 import CartIcon from '@/assets/symbols/cart.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
-import DuplicateIcon from '@/assets/symbols/duplicate.svg';
+import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
@@ -33,6 +33,7 @@ export default function ShoppingListItem({
 }: ShoppingListItemProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const primaryColor = useThemeColor({}, 'primary');
+  const secondaryColor = useThemeColor({}, 'secondary');
   const textColor = useThemeColor({}, 'text');
   const touchableColor = useThemeColor({}, 'touchable');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
@@ -46,7 +47,10 @@ export default function ShoppingListItem({
     <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
       <LinearGradient
         // Item In Progress Linear Gradient
-        colors={[backgroundColor + '00', item.ongoing || 0 > 0 ? primaryColor + '1d' : backgroundColor + '00']}
+        colors={[
+          backgroundColor + '00',
+          (item.ongoing || 0 > 0) && !item.completed ? secondaryColor + '10' : backgroundColor + '00',
+        ]}
         start={[0, 0]}
         end={[1, 0]}
         style={[globalStyles.listItemGradient, itemBorderRadius]}
@@ -62,7 +66,7 @@ export default function ShoppingListItem({
               accessibilityLabel={`Check out ${item.label}`}
               accessibilityHint={`Press to check out ${item.label}`}
             >
-              <DuplicateIcon width={28} height={28} color={touchableColor} />
+              <CircleRestoreIcon width={28} height={28} color={touchableColor} />
             </TouchableOpacity>
             <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
               <ListItemLabel item={item} />
