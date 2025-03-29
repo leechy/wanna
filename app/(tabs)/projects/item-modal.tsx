@@ -39,11 +39,6 @@ const qtyItems = [...Array(100).keys()]
   .reverse();
 
 function ItemModal() {
-  const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState(1);
-  const [deadline, setDeadline] = useState<number | string | undefined>();
-  const [type, setType] = useState<'task' | 'item'>('task');
-
   const { top: safeT } = useSafeAreaInsets();
 
   const textColor = useThemeColor({}, 'text');
@@ -71,6 +66,11 @@ function ItemModal() {
       : params.listItemId
     : '';
   const item = listItems?.find((item) => item.listItemId === listItemId);
+
+  const [name, setName] = useState(item?.name || '');
+  const [quantity, setQuantity] = useState<number>(item ? parseInt(item.quantity.toString() || '1', 10) || 1 : 1);
+  const [deadline, setDeadline] = useState<number | string | undefined>(item?.deadline || undefined);
+  const [type, setType] = useState<'task' | 'item'>(item?.type || 'task');
 
   useEffect(() => {
     if (item) {
