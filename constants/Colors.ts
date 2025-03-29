@@ -19,6 +19,7 @@ export const Colors = {
     smallButtonBackground: '#ffffff',
 
     primary: '#3a1fc1',
+    secondary: '#e73d01',
     barelyVisible: '#dddddd',
     disabled: '#bbbbbb',
     inactive: '#999999',
@@ -44,10 +45,12 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
 
-    tabBarBackground: '#151718',
-    smallButtonBackground: '#151718',
+    tabBarBackground: '#1e2022',
+    tabBarBackground2: '#151718',
+    smallButtonBackground: '#1e2022',
 
     primary: '#ffd700',
+    secondary: '#eb6130',
     barelyVisible: '#222222',
     disabled: '#454545',
     inactive: '#666666',
