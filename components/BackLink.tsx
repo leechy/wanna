@@ -27,7 +27,7 @@ interface BackLinkProps {
 
 export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLinkProps) {
   const primaryColor = useThemeColor({}, 'primary');
-  const backButtonColor = primaryColor + '80';
+  const backButtonColor = primaryColor + 'bb';
 
   const segments = useSegments();
   const parent = segments[segments.length - 2];
