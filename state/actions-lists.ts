@@ -150,7 +150,7 @@ export async function addItem(listId: string, item: Partial<Item>) {
     listId,
     type,
     name: item.name || 'New Item',
-    quantity: item.quantity || 1,
+    quantity: item.quantity?.toString() || '1',
     createdAt: now,
     updatedAt: now,
   };

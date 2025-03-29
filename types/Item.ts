@@ -11,7 +11,7 @@ export type Item = {
   name: string;
   type: 'item' | 'task';
   units?: string;
-  quantity: number;
+  quantity: string | number;
   deadline?: string;
 
   active?: boolean;
