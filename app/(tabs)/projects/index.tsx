@@ -2,16 +2,18 @@
 import { useMemo } from 'react';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
+import { updateList } from '@/state/actions-lists';
 import { router } from 'expo-router';
 
 // components
-import { AccordionBlockProps } from '@/components/AccordionBlock';
-import { Accordion } from '@/components/Accordion';
+import { View } from 'react-native';
+import { Columns } from '@/components/Columns';
 import Page from '@/components/Page';
+import ListButtons from '@/components/ListButtons';
 
 // types
 import { ListItem } from '@/types/listItem';
-import { updateList } from '@/state/actions-lists';
+import { ColumnData } from '@/types/ColumnData';
 
 function ProjectsScreen() {
   function newList() {
@@ -73,11 +75,9 @@ function ProjectsScreen() {
     return [[], []];
   }, [lists]);
 
-  const blocks: AccordionBlockProps[] = [
+  const blocks: ColumnData[] = [
     {
       title: 'Present Continuous',
-      newItemLabel: 'New project',
-      newItemHandler: newList,
       actionHandler: goToList,
       items: projects,
       emptyText: 'No Projects yet! Create a new one to start.',
@@ -88,14 +88,17 @@ function ProjectsScreen() {
       actionHandler: goToList,
       checkboxHandler: restoreList,
       items: completedLists,
-      emptyText: 'Any projects with all items checked off will move here!',
-      showEmpty: false,
+      emptyText: 'Finished projects will move here!',
+      showEmpty: true,
     },
   ];
 
   return (
     <Page>
-      <Accordion title="Projects" blocks={blocks} openBlock={0} />
+      <Columns title="Projects" blocks={blocks} paddingBottom={64} />
+      <View style={{ transform: [{ rotate: '-1deg' }] }}>
+        <ListButtons newItem={newList} newItemTitle="New project" />
+      </View>
     </Page>
   );
 }

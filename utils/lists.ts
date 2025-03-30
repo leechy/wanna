@@ -17,8 +17,8 @@ export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
   return (
     items
       .filter((item) => item.listItemId && !item.deleted)
-      // WIP: sort by sortOrder when it's available and how to mix it with the createdAt
-      .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? -1 : 1))
+      // TODO: sort by sortOrder when it's available and how to mix it with the createdAt
+      .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? 1 : -1))
       .map((item) => convertItemToListItem(item))
   );
 }

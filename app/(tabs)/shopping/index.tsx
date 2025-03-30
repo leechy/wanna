@@ -2,16 +2,18 @@
 import { useMemo } from 'react';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
+import { updateList } from '@/state/actions-lists';
 import { router } from 'expo-router';
 
 // components
-import { AccordionBlockProps } from '@/components/AccordionBlock';
-import { Accordion } from '@/components/Accordion';
+import { View } from 'react-native';
+import { Columns } from '@/components/Columns';
 import Page from '@/components/Page';
+import ListButtons from '@/components/ListButtons';
 
 // types
 import { ListItem } from '@/types/listItem';
-import { updateList } from '@/state/actions-lists';
+import { ColumnData } from '@/types/ColumnData';
 
 function ShoppingScreen() {
   function newList() {
@@ -90,11 +92,9 @@ function ShoppingScreen() {
     return [[], []];
   }, [lists]);
 
-  const blocks: AccordionBlockProps[] = [
+  const blocks: ColumnData[] = [
     {
       title: 'Next Up',
-      newItemLabel: 'New list',
-      newItemHandler: newList,
       actionHandler: goToList,
       items: shoppingLists,
       emptyText: 'No Lists here! Create a new one to start shopping!',
@@ -119,14 +119,17 @@ function ShoppingScreen() {
       actionHandler: goToList,
       checkboxHandler: restoreList,
       items: completedLists,
-      emptyText: 'Any lists with all items checked off will move here!',
-      showEmpty: false,
+      emptyText: 'Lists with all items checked off will move here!',
+      showEmpty: true,
     },
   ];
 
   return (
     <Page>
-      <Accordion title="Shopping Lists" blocks={blocks} openBlock={0} />
+      <Columns title="Shopping Lists" blocks={blocks} />
+      <View style={{ transform: [{ rotate: '-1deg' }] }}>
+        <ListButtons newItem={newList} newItemTitle="New shopping list" />
+      </View>
     </Page>
   );
 }

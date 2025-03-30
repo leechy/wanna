@@ -1,6 +1,5 @@
 // hooks and state
 import { useMemo } from 'react';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
@@ -16,11 +15,8 @@ import {
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
-import { AccordionBlockProps } from '@/components/AccordionBlock';
-import { Accordion } from '@/components/Accordion';
+import { Columns } from '@/components/Columns';
 import Page from '@/components/Page';
-import SmallButton from '@/components/SmallButton';
-import { ListItem } from '@/types/listItem';
 import { Pressable, View } from 'react-native';
 import DateSelector from '@/components/DateSelector';
 import { ThemedView } from '@/components/ThemedView';
@@ -28,14 +24,15 @@ import { ThemedText } from '@/components/ThemedText';
 import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
 
-// icons
-import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-
+// styles
 import { globalStyles } from '@/constants/GlobalStyles';
 
-function ProjectScreen() {
-  const primaryColor = useThemeColor({}, 'primary');
+// types
+import { ListItem } from '@/types/listItem';
+import { ColumnData } from '@/types/ColumnData';
+import ListButtons from '@/components/ListButtons';
 
+function ProjectScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? _lists$[listId]?.get() : null;
@@ -43,10 +40,6 @@ function ProjectScreen() {
   const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
 
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
-  const ongoingItems = useMemo(
-    () => items.filter((item) => item.type === 'task' && !item.completed && item.assignee),
-    [items]
-  );
   const cartItems = useMemo(
     () => items.filter((item) => item.type === 'item' && !item.completed && item.ongoing),
     [items]
@@ -123,11 +116,9 @@ function ProjectScreen() {
     }
   }
 
-  const blocks: AccordionBlockProps[] = [
+  const blocks: ColumnData[] = [
     {
-      title: "What's next",
-      newItemLabel: 'New item',
-      newItemHandler: newItem,
+      title: "What's up?",
       actionHandler: toggleOngoing,
       checkboxHandler: checkoutItem,
       longPressHandler: editItem,
@@ -136,52 +127,17 @@ function ProjectScreen() {
       resetHandler: restoreItem,
       emptyText: 'List is empty. Add some tasks to do!',
       items: openitems,
-      showEmpty: true,
+      showEmpty: listData?.completed ? false : true,
     },
     {
-      title: 'In progress',
-      color: primaryColor,
-      actionHandler: toggleOngoing,
-      checkboxHandler: checkoutItem,
-      longPressHandler: editItem,
-      editHandler: editItem,
-      deleteHandler: deleteItem,
-      resetHandler: restoreItem,
-      items: ongoingItems,
-      emptyText: 'Hurry up to finish the list!',
-      showEmpty: false,
-    },
-    {
-      title: 'Cart',
-      color: primaryColor,
-      action: (
-        <SmallButton
-          title="Checkout"
-          icon={BagFillIcon}
-          onPress={checkoutBasket}
-          color={primaryColor}
-          disabled={cartItems.length === 0}
-        />
-      ),
-      actionHandler: toggleOngoing,
-      checkboxHandler: checkoutItem,
-      longPressHandler: editItem,
-      editHandler: editItem,
-      deleteHandler: deleteItem,
-      resetHandler: restoreItem,
-      items: cartItems,
-      emptyText: 'The cart is empty',
-      showEmpty: false,
-    },
-    {
-      title: 'Already done',
+      title: 'Done',
       actionHandler: duplicateItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
       resetHandler: restoreItem,
       items: completedItems,
-      emptyText: 'Nothing done yet :-((',
-      showEmpty: false,
+      emptyText: 'Nothing was done for this project.',
+      showEmpty: listData?.completed ? true : false,
     },
   ];
 
@@ -212,7 +168,16 @@ function ProjectScreen() {
           </Pressable>
         </View>
       </ThemedView>
-      <Accordion blocks={blocks} openBlock={0} />
+
+      <Columns blocks={listData?.completed ? blocks.reverse() : blocks} paddingBottom={64} openBlock={0} />
+      {!listData?.completed && (
+        <ListButtons
+          newItem={newItem}
+          checkoutBasket={checkoutBasket}
+          newItemTitle={openitems?.length > 0 ? 'I also wanna do...' : 'I wanna do...'}
+          cartItems={cartItems?.length || 0}
+        />
+      )}
     </Page>
   );
 }

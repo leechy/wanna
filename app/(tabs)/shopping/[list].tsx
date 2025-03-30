@@ -1,6 +1,5 @@
 // hooks and state
 import { useMemo } from 'react';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
@@ -16,11 +15,8 @@ import {
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
-import { AccordionBlockProps } from '@/components/AccordionBlock';
-import { Accordion } from '@/components/Accordion';
 import Page from '@/components/Page';
-import SmallButton from '@/components/SmallButton';
-import { ListItem } from '@/types/listItem';
+import { Columns } from '@/components/Columns';
 import { Pressable, View } from 'react-native';
 import DateSelector from '@/components/DateSelector';
 import { ThemedView } from '@/components/ThemedView';
@@ -29,14 +25,14 @@ import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
 import ShareMenu from '@/components/ShareMenu';
 
-// icons
-import BagFillIcon from '@/assets/symbols/bag-fill.svg';
-
 import { globalStyles } from '@/constants/GlobalStyles';
 
-function ShoppingListScreen() {
-  const primaryColor = useThemeColor({}, 'primary');
+// types
+import { ListItem } from '@/types/listItem';
+import { ColumnData } from '@/types/ColumnData';
+import ListButtons from '@/components/ListButtons';
 
+function ShoppingListScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? _lists$[listId]?.get() : null;
@@ -117,11 +113,9 @@ function ShoppingListScreen() {
     }
   }
 
-  const blocks: AccordionBlockProps[] = [
+  const blocks: ColumnData[] = [
     {
-      title: 'Still have to buy',
-      newItemLabel: 'New item',
-      newItemHandler: newItem,
+      title: 'Still wanna',
       actionHandler: toggleCart,
       checkboxHandler: checkoutItem,
       longPressHandler: editItem,
@@ -129,39 +123,17 @@ function ShoppingListScreen() {
       deleteHandler: deleteItem,
       emptyText: 'List is empty. Add some items!',
       items: openitems,
-      showEmpty: true,
+      showEmpty: listData?.completed ? false : true,
     },
     {
-      title: 'Cart',
-      color: primaryColor,
-      action: (
-        <SmallButton
-          title="Checkout"
-          icon={BagFillIcon}
-          onPress={checkoutBasket}
-          color={primaryColor}
-          disabled={cartItems.length === 0}
-        />
-      ),
-      newItemLabel: 'Not planned item in the cart',
-      newItemHandler: newItem,
-      actionHandler: toggleCart,
-      checkboxHandler: checkoutItem,
-      longPressHandler: editItem,
-      editHandler: editItem,
-      deleteHandler: deleteItem,
-      items: cartItems,
-      emptyText: 'The cart is empty',
-      showEmpty: false,
-    },
-    {
-      title: 'Past purchases',
+      // title: 'Completed', but in the style of the 'Still wanna' phrase
+      title: 'Already got',
       actionHandler: duplicateItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
       items: completedItems,
-      emptyText: 'No purchases yet',
-      showEmpty: false,
+      emptyText: 'No purchases were made.',
+      showEmpty: listData?.completed ? true : false,
     },
   ];
 
@@ -194,7 +166,16 @@ function ShoppingListScreen() {
           </Pressable>
         </View>
       </ThemedView>
-      <Accordion blocks={blocks} openBlock={0} />
+
+      <Columns blocks={listData?.completed ? blocks.reverse() : blocks} paddingBottom={64} openBlock={0} />
+      {!listData?.completed && (
+        <ListButtons
+          newItem={newItem}
+          checkoutBasket={checkoutBasket}
+          newItemTitle={openitems?.length > 0 ? 'I also wanna...' : 'I wanna...'}
+          cartItems={cartItems?.length || 0}
+        />
+      )}
     </Page>
   );
 }
