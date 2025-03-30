@@ -47,6 +47,7 @@ interface ItemsListProps {
   actionIcon?: boolean;
   submenu?: boolean;
   style?: ViewStyle;
+  paddingBottom?: number;
 }
 
 export function ItemsList({
@@ -64,6 +65,7 @@ export function ItemsList({
   actionIcon = true,
   submenu = true,
   style,
+  paddingBottom,
 }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
@@ -287,6 +289,7 @@ export function ItemsList({
         renderItem={renderItem}
         style={[styles.list]}
         inverted={inverted}
+        ListFooterComponent={() => <View style={{ height: (paddingBottom || 0) + 16 }} />}
       />
     </View>
   );

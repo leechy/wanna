@@ -9,9 +9,10 @@ import { ColumnData } from '@/types/ColumnData';
 
 interface ColumnItemsProps {
   block: ColumnData;
+  paddingBottom?: number;
 }
 
-export function ColumnItems({ block }: ColumnItemsProps) {
+export function ColumnItems({ block, paddingBottom }: ColumnItemsProps) {
   const primaryColor = useThemeColor({}, 'primary');
 
   const NewIcon = block.newItemIcon || PlusIcon;
@@ -27,6 +28,7 @@ export function ColumnItems({ block }: ColumnItemsProps) {
       deleteHandler={block.deleteHandler}
       resetHandler={block.resetHandler}
       items={block.items}
+      paddingBottom={paddingBottom}
     />
   ) : block.newItemHandler ? (
     <PressableArea
@@ -37,7 +39,7 @@ export function ColumnItems({ block }: ColumnItemsProps) {
       accessibilityHint="Press to create a new list"
       style={{ flex: 1, padding: 16 }}
     >
-      <View style={styles.centered}>
+      <View style={[styles.centered, { paddingBottom }]}>
         <View style={{ marginBottom: 32, alignItems: 'center', flexShrink: 0 }}>
           <NewIcon width={52} height={52} color={primaryColor} />
           <ThemedText
@@ -52,7 +54,7 @@ export function ColumnItems({ block }: ColumnItemsProps) {
       </View>
     </PressableArea>
   ) : (
-    <View style={styles.centered}>
+    <View style={[styles.centered, { paddingBottom }]}>
       <ThemedText style={{ textAlign: 'center' }}>{block.emptyText || 'No items here'}</ThemedText>
     </View>
   );

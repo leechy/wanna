@@ -21,9 +21,18 @@ interface ColumnsProps {
   titleAction?: () => void;
   titleLongPressAction?: () => void;
   openBlock?: number;
+  paddingBottom?: number;
 }
 
-export function Columns({ title, blocks, titleIcon, titleAction, titleLongPressAction, openBlock = 0 }: ColumnsProps) {
+export function Columns({
+  title,
+  blocks,
+  titleIcon,
+  titleAction,
+  titleLongPressAction,
+  openBlock = 0,
+  paddingBottom,
+}: ColumnsProps) {
   const textColor = useThemeColor({}, 'text');
 
   const TitleIcon = titleIcon || (() => null);
@@ -68,7 +77,7 @@ export function Columns({ title, blocks, titleIcon, titleAction, titleLongPressA
             title: block.title,
             items: block.items.length,
             color: block.color,
-            content: <ColumnItems block={block} />,
+            content: <ColumnItems block={block} paddingBottom={paddingBottom} />,
           }))}
       />
     </View>
