@@ -9,6 +9,8 @@ interface PressableAreaProps {
   onPress: () => void;
   rippleColor?: string;
   children: React.ReactNode;
+  hitSlop?: { top: number; bottom: number; left: number; right: number };
+  iOSOpacityPressed?: number;
   testID?: string;
   accessible: boolean;
   accessibilityRole: AccessibilityRole;
@@ -21,6 +23,8 @@ export function PressableArea({
   onPress,
   rippleColor,
   children,
+  hitSlop,
+  iOSOpacityPressed,
   testID,
   accessible,
   accessibilityRole,
@@ -38,7 +42,7 @@ export function PressableArea({
       style={({ pressed }) => [
         style,
         Platform.select({
-          ios: { opacity: pressed ? 0.4 : 1 },
+          ios: { opacity: pressed ? iOSOpacityPressed || 0.4 : 1 },
         }),
       ]}
       onPress={() => Platform.OS !== 'android' && onPress()}
@@ -48,7 +52,7 @@ export function PressableArea({
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
-      hitSlop={{ top: 10, bottom: 10, left: 5, right: 5 }}
+      hitSlop={hitSlop || { top: 10, bottom: 10, left: 5, right: 5 }}
     >
       {children}
     </Pressable>
