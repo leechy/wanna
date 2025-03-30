@@ -5,7 +5,7 @@ import { wrapScrollView, useScrollIntoView, ScrollIntoView } from 'react-native-
 
 // components
 import PagerView from 'react-native-pager-view';
-import { ColorValue, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { PressableArea } from '@/components/PressableArea';
 
 const TabsScrollView = wrapScrollView(ScrollView);
@@ -14,7 +14,7 @@ export type TabContent = {
   title: string;
   content: string | JSX.Element;
   items?: number;
-  color?: ColorValue;
+  color?: string;
 };
 
 interface ScrollingTabsProps {
@@ -25,7 +25,7 @@ interface ScrollingTabsContentProps {
   tab: TabContent;
   index: number;
   isActive: boolean;
-  textColor: ColorValue;
+  textColor: string;
   selectTab: (index: number) => void;
 }
 
@@ -35,6 +35,7 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
   const scrollRef = useRef(null);
   const activeRef = useRef(isActive);
   const primaryColor = useThemeColor({}, 'primary');
+  const secondaryColor = useThemeColor({}, 'secondary');
 
   useEffect(() => {
     if (isActive && !activeRef.current && scrollRef.current) {
@@ -47,7 +48,6 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
 
   function onPress() {
     if (!activeRef.current) {
-      console.log('onPress', tab.title);
       activeRef.current = true;
       selectTab(index);
     }
@@ -73,7 +73,7 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
             style={[
               styles.title,
               {
-                color: isActive ? primaryColor : tab.color || textColor,
+                color: tab.color ? (isActive ? tab.color : tab.color + 'b0') : isActive ? secondaryColor : textColor,
                 fontWeight: isActive ? '700' : '600',
               },
             ]}

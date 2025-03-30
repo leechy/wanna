@@ -26,6 +26,7 @@ import EditIcon from '@/assets/symbols/edit.svg';
 import SubmenuIcon from '@/components/SubmenuIcon';
 import SquareCheckIcon from '@/assets/symbols/square-check.svg';
 import DuplicateIcon from '@/assets/symbols/duplicate.svg';
+import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
@@ -70,6 +71,7 @@ export function ItemsList({
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
   const primaryColor = useThemeColor({}, 'primary');
+  const secondaryColor = useThemeColor({}, 'secondary');
   const disabledColor = useThemeColor({}, 'disabled');
   const touchableColor = useThemeColor({}, 'touchable');
   const dangerColor = useThemeColor({}, 'danger');
@@ -228,13 +230,13 @@ export function ItemsList({
               <DuplicateIcon width={28} height={28} color={touchableColor} />
             ) : item.type === 'item' ? (
               item.ongoing ? (
-                <CartWithItemIcon width={28} height={28} color={primaryColor + '99'} />
+                <CartWithItemIcon width={28} height={28} color={secondaryColor + '99'} />
               ) : (
                 <CartIcon width={28} height={28} color={touchableColor} />
               )
             ) : item.type === 'task' ? (
               item.ongoing ? (
-                <PlayFillIcon width={28} height={28} color={primaryColor + '99'} />
+                <PlayFillIcon width={28} height={28} color={secondaryColor + '99'} />
               ) : item.assignee ? (
                 <PauseIcon width={28} height={28} color={touchableColor} />
               ) : (
@@ -257,13 +259,14 @@ export function ItemsList({
                     !item.completed && {
                       label: 'Reset',
                       onPress: () => onResetItem(item),
-                      icon: DuplicateIcon,
+                      icon: CircleRestoreIcon,
                     },
-                  !item.completed && {
-                    label: 'Edit',
-                    onPress: () => onEditItem(item),
-                    icon: EditIcon,
-                  },
+                  !item.completed &&
+                    editHandler && {
+                      label: 'Edit',
+                      onPress: () => onEditItem(item),
+                      icon: EditIcon,
+                    },
                   {
                     label: 'Delete',
                     onPress: () => onDeleteItem(item),
