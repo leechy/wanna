@@ -43,7 +43,7 @@ export default function ListItemLabel({
   return (
     <View style={globalStyles.itemListLabelContainer} testID={testID}>
       <Text style={[globalStyles.itemListlabel, { color: textColor }]} adjustsFontSizeToFit={false} numberOfLines={2}>
-        {showQuantity && (item.quantity || 0) > 1 && <>{item.quantity} &times; </>}
+        {showQuantity && parseInt(item.quantity?.toString() || '0') > 1 && <>{item.quantity} &times; </>}
         {item.label}
       </Text>
       {(item.deadline || item.list || (item.shared?.length || 0) > 0) && (

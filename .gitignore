@@ -9,6 +9,10 @@ dist/
 web-build/
 expo-env.d.ts
 build-*.*
+public/
+
+# Hosting
+.firebase*
 
 # Native
 *.orig.*

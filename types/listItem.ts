@@ -17,7 +17,7 @@ export type ListItem = {
   listType?: 'project' | 'shopping-list' | 'recipe';
   shared?: string[];
   deadline?: string | number | null;
-  quantity?: number;
+  quantity?: string | number;
   ongoing?: boolean | number; // replacement for the progress property
   completed?: boolean | number;
   createdAt?: string;

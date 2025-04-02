@@ -37,7 +37,7 @@ export function convertItemToListItem(
     label: item.name,
     listId: options?.listId || item.listId,
     deadline: item.deadline,
-    quantity: item.quantity,
+    quantity: item.quantity || 1,
     ongoing: item.ongoing,
     assignee: item.assignee,
     assigneeId: item.assigneeId,

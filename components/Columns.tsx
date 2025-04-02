@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { AccordionBlockProps } from '@/components/AccordionBlock';
 import { ColumnItems } from '@/components/ColumnItems';
 import { PressableArea } from '@/components/PressableArea';
-import ScrollingTabs from '@/components/ScrollingTabs';
+import ScrollingTabs from '@/components/ScrollingTabs.native';
 
 // types and styles
 import { SvgProps } from 'react-native-svg';
