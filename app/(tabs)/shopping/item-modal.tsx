@@ -46,7 +46,7 @@ function ItemModal() {
   const inputRef = useRef<TextInput>(null);
 
   const openitems = useMemo(
-    () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || []),
+    () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || [], true),
     [listItems]
   );
   const completedItems = useMemo(

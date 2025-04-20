@@ -7,20 +7,21 @@ import { humanDate } from './dates';
  * ... and sorts them by the createdAt date (for now)
  *
  * @param {Item[]} items  Array of list items in the format of the state/database
+ * @param {boolean} reversed  If true, the items will be sorted in reverse order
  * @returns {ListItem[]}  Array of list items in the format of the interface lists
  */
-export function convertItemsToListItems(items?: Item[] | null): ListItem[] {
+export function convertItemsToListItems(items?: Item[] | null, reversed = false): ListItem[] {
   if (!items) {
     return [];
   }
 
-  return (
-    items
-      .filter((item) => item.listItemId && !item.deleted)
-      // TODO: sort by sortOrder when it's available and how to mix it with the createdAt
-      .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? 1 : -1))
-      .map((item) => convertItemToListItem(item))
-  );
+  const result = items
+    .filter((item) => item.listItemId && !item.deleted)
+    // TODO: sort by sortOrder when it's available and how to mix it with the createdAt
+    .sort((a, b) => ((a.createdAt || '') > (b.createdAt || '') ? 1 : -1))
+    .map((item) => convertItemToListItem(item));
+
+  return reversed ? result.reverse() : result;
 }
 
 export function convertItemToListItem(
