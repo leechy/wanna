@@ -4,7 +4,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Eas
 import { useEffect } from 'react';
 
 // components
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { PressableArea } from '@/components/PressableArea';
 import { BlurView } from 'expo-blur';
 
@@ -24,9 +24,12 @@ interface ListButtonsProps {
 
 export default function ListButtons({ newItem, newItemTitle, checkoutBasket, cartItems }: ListButtonsProps) {
   const primaryColor = useThemeColor({}, 'primary');
+  const cursorColor = useThemeColor({}, 'cursorColor');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
+  const inputBackgroundAndroid = useThemeColor({}, 'inputBackgroundAndroid');
   const smallButtonBackground = useThemeColor({}, 'smallButtonBackground');
   const touchableColor = useThemeColor({}, 'touchable');
+  const inputPlaceholder = useThemeColor({}, 'inputPlaceholder');
 
   // Add these lines for the blinking animation
   const opacity = useSharedValue<number>(0);
@@ -46,6 +49,26 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
     };
   });
 
+  function renderInputs() {
+    return (
+      <>
+        <View style={globalStyles.listItemLeadButton}>
+          <PlusIcon width={28} height={28} color={touchableColor} />
+        </View>
+        <Animated.View style={[styles.blinkingCursor, { backgroundColor: cursorColor }, animatedStyle]} />
+        <View style={[globalStyles.itemListLabelContainer]}>
+          <Text
+            style={[globalStyles.itemListlabel, { color: inputPlaceholder }]}
+            adjustsFontSizeToFit={true}
+            numberOfLines={2}
+          >
+            {newItemTitle || 'I wanna...'}
+          </Text>
+        </View>
+      </>
+    );
+  }
+
   return (
     <View style={styles.buttonsContainer}>
       <PressableArea
@@ -58,24 +81,13 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
         accessibilityLabel={'Add new item'}
         accessibilityHint={'Press to add a new item to the list.'}
       >
-        <BlurView
-          intensity={32}
-          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: inputBackgroundColor }}
-        >
-          <View style={globalStyles.listItemLeadButton}>
-            <PlusIcon width={28} height={28} color={touchableColor} />
-          </View>
-          <Animated.View style={[styles.blinkingCursor, { backgroundColor: primaryColor }, animatedStyle]} />
-          <View style={[globalStyles.itemListLabelContainer]}>
-            <Text
-              style={[globalStyles.itemListlabel, { color: touchableColor }]}
-              adjustsFontSizeToFit={true}
-              numberOfLines={2}
-            >
-              {newItemTitle || 'I wanna...'}
-            </Text>
-          </View>
-        </BlurView>
+        {Platform.OS === 'ios' ? (
+          <BlurView intensity={32} style={[styles.fakeInput, { backgroundColor: inputBackgroundColor }]}>
+            {renderInputs()}
+          </BlurView>
+        ) : (
+          <View style={[styles.fakeInput, { backgroundColor: inputBackgroundAndroid }]}>{renderInputs()}</View>
+        )}
       </PressableArea>
       {checkoutBasket && (cartItems || 0) > 0 && (
         <PressableArea
@@ -119,6 +131,11 @@ const styles = StyleSheet.create({
     gap: 16,
 
     paddingHorizontal: 16,
+  },
+  fakeInput: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   addButton: {
     borderRadius: 8,
