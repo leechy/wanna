@@ -20,10 +20,13 @@ import { ItemsList } from '@/components/ItemsList';
 import { ThemedText } from '@/components/ThemedText';
 import { BackLink } from '@/components/BackLink';
 
+import BagFillIcon from '@/assets/symbols/bag-fill.svg';
+
 // types
 import { ListItem } from '@/types/listItem';
 import { globalStyles } from '@/constants/GlobalStyles';
 import { Item } from '@/types/Item';
+import SmallButton from '@/components/SmallButton';
 
 const qtyItems = [...Array(100).keys()]
   .map((index) => ({
@@ -35,6 +38,7 @@ const qtyItems = [...Array(100).keys()]
 function ItemModal() {
   const { top: safeT } = useSafeAreaInsets();
 
+  const primaryColor = useThemeColor({}, 'primary');
   const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'wheelPickerBackground');
   const headerColor = useThemeColor({}, 'touchable');
@@ -60,10 +64,10 @@ function ItemModal() {
       : params.listItemId
     : '';
   const item = listItems?.find((item) => item.listItemId === listItemId);
-
   const [name, setName] = useState(item?.name || '');
   const [quantity, setQuantity] = useState<number>(item ? parseInt(item.quantity.toString() || '1', 10) || 1 : 1);
   const [deadline, setDeadline] = useState<number | string | undefined>(item?.deadline || undefined);
+  const [ongoing, setOngoing] = useState<boolean>(item?.ongoing || false);
 
   useEffect(() => {
     if (item) {
@@ -121,7 +125,9 @@ function ItemModal() {
       name,
       quantity,
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
+      ongoing,
     };
+
     addItem(listId, newItem);
     setName('');
     setQuantity(1);
@@ -169,6 +175,14 @@ function ItemModal() {
               />
               <View style={styles.properties}>
                 <DateSelector placeholder="Buy before" value={deadline} onChange={updateDeadline} />
+                <SmallButton
+                  icon={BagFillIcon}
+                  color={ongoing ? primaryColor : undefined}
+                  title="In the cart"
+                  onPress={() => {
+                    setOngoing((state) => !state);
+                  }}
+                />
               </View>
             </View>
             <Text style={{ width: 32, textAlign: 'center', fontSize: 24, lineHeight: 68, color: textColor }}>
@@ -222,7 +236,8 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   suggestionsLabel: {
     paddingHorizontal: 24,

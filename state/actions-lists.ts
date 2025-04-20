@@ -144,6 +144,9 @@ export async function addItem(listId: string, item: Partial<Item>) {
   const type: 'item' | 'task' = item.type || 'item';
   const now = new Date().toISOString();
 
+  const assigneeId = item.ongoing ? _user$.uid?.get() : null;
+  const assignee = item.ongoing ? _user$.names?.get() : null;
+
   const newItem: Item = {
     listItemId,
     itemId,
@@ -151,6 +154,9 @@ export async function addItem(listId: string, item: Partial<Item>) {
     type,
     name: item.name || 'New Item',
     quantity: item.quantity?.toString() || '1',
+    ongoing: item.ongoing || false,
+    assigneeId,
+    assignee,
     createdAt: now,
     updatedAt: now,
   };
