@@ -44,8 +44,9 @@ export function ThemedInput({
         placeholderTextColor={inputPlaceholder}
         keyboardType={keyboardType ?? 'default'}
         enterKeyHint={enterKeyHint}
-        selectionColor={cursorColor}
         cursorColor={cursorColor}
+        selectionColor={cursorColor + '66'}
+        selectionHandleColor={cursorColor}
         autoFocus={true}
         submitBehavior="submit"
         accessible
