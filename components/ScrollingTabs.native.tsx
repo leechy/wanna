@@ -66,10 +66,11 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
       >
         <Text style={styles.title}>
           {tab.title}
-          {(tab.items || 0) > 0 ? tab.items : ''}
+          {(tab.items || 0) > 0 ? tab.items : '0'}
         </Text>
         <View style={styles.titleOverlay}>
           <Text
+            numberOfLines={1}
             style={[
               styles.title,
               {
@@ -180,14 +181,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    justifyContent: 'center',
-  },
-  pagerView: {
-    flexGrow: 1,
-    flexShrink: 0,
-  },
-  page: {
-    paddingTop: 0,
+    justifyContent: 'flex-start',
   },
   number: {
     paddingTop: 2,
@@ -195,5 +189,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     opacity: 0.5,
+  },
+  pagerView: {
+    flexGrow: 1,
+    flexShrink: 0,
+  },
+  page: {
+    flex: 1,
+    paddingTop: 0,
   },
 });

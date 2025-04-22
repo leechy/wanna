@@ -52,9 +52,9 @@ function HomeScreen() {
     markItemAsCompleted(item.listId!, item.id);
   }
 
-  function restoreItem(item: ListItem) {
-    markItemAsCompleted(item.listId!, item.id, false);
-  }
+  // function restoreItem(item: ListItem) {
+  //   markItemAsCompleted(item.listId!, item.id, false);
+  // }
 
   const lists = _lists$.get();
 
@@ -161,7 +161,7 @@ function HomeScreen() {
         blocks={blocks}
         openBlock={0}
       /> */}
-      <Columns title="Current wishes" blocks={blocks} titleIcon={SettingsIcon} titleAction={gotoSettings} />
+      <Columns title="Wanna Wanna" blocks={blocks} titleIcon={SettingsIcon} titleAction={gotoSettings} />
     </Page>
   );
 }
