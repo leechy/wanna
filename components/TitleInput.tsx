@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     maxHeight: 100,
     fontFamily: 'GreatVibes-Regular',
     fontSize: 46,
-    lineHeight: 64,
+    lineHeight: Platform.OS === 'ios' ? 64 : 76,
     // marginVertical: Platform.OS === 'ios' ? undefined : -4,
     padding: 2,
   },
