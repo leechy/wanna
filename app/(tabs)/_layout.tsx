@@ -12,7 +12,15 @@ import WishesIcon from '@/assets/symbols/wishes-icon.svg';
 import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
 import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { Platform } from 'react-native';
+
 export const TAB_BAR_HEIGHT = 66;
+
+export const ModalOptions: NativeStackNavigationOptions = {
+  presentation: 'modal',
+  animation: Platform.OS === 'ios' ? 'slide_from_bottom' : 'fade_from_bottom',
+};
 
 export default function TabLayout() {
   const { bottom } = useSafeAreaInsets();

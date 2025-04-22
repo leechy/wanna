@@ -1,5 +1,6 @@
 // components
 import { Stack } from 'expo-router';
+import { ModalOptions } from '@/app/(tabs)/_layout';
 
 export default function ShoppingLayout() {
   return (
@@ -11,18 +12,8 @@ export default function ShoppingLayout() {
         }}
       />
       <Stack.Screen name="[list]" />
-      <Stack.Screen
-        name="list-modal"
-        options={{
-          presentation: 'modal',
-        }}
-      />
-      <Stack.Screen
-        name="item-modal"
-        options={{
-          presentation: 'modal',
-        }}
-      />
+      <Stack.Screen name="list-modal" options={ModalOptions} />
+      <Stack.Screen name="item-modal" options={ModalOptions} />
       <Stack.Screen name="choose-contact" />
     </Stack>
   );
