@@ -10,7 +10,6 @@
     "platforms": ["ios", "android", "web"],
     "userInterfaceStyle": "automatic",
     "primaryColor": "#3a1fc1",
-    "icon": "./assets/icon.png",
     "notification": {
       "icon": "./assets/icon-notifications.png",
       "color": "#3a1fc1",
@@ -34,9 +33,9 @@
         ]
       },
       "icon": {
-        "light": "./assets/icon.png",
-        "dark": "./assets/icon-dark.png",
-        "tinted": "./assets/icon-tinted.png"
+        "light": "./assets/ios-icon.png",
+        "dark": "./assets/ios-icon-dark.png",
+        "tinted": "./assets/ios-icon-tinted.png"
       },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -44,10 +43,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon-adaptive.png",
-        "backgroundImage": "./assets/icon-adaptive-bg.png",
+        "foregroundImage": "./assets/android-icon.png",
         "backgroundColor": "#ffd98d",
-        "monochromeImage": "./assets/icon-mono.png"
+        "monochromeImage": "./assets/android-icon-mono.png"
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.wannawanna.app"
@@ -62,11 +60,11 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#f2f2f2",
-          "image": "./assets/icon-adaptive.png",
+          "backgroundColor": "#ffffff",
+          "image": "./assets/android-icon.png",
           "dark": {
             "backgroundColor": "#000000",
-            "image": "./assets/icon-adaptive-dark.png"
+            "image": "./assets/android-icon-dark.png"
           }
         }
       ],
