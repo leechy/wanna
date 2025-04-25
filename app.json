@@ -39,7 +39,8 @@
       },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "associatedDomains": ["applinks:app.wanna-wanna.app"]
     },
     "android": {
       "adaptiveIcon": {
@@ -48,7 +49,21 @@
         "monochromeImage": "./assets/android-icon-mono.png"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.wannawanna.app"
+      "package": "com.wannawanna.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.wanna-wanna.app",
+              "pathPrefix": "/shared"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
