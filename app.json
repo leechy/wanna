@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Wanna Wanna",
+    "name": "Wanna²",
     "slug": "wanna-wanna",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -44,7 +44,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon.png",
-        "backgroundColor": "#ffd98d",
+        "backgroundColor": "#ffffff",
         "monochromeImage": "./assets/android-icon-mono.png"
       },
       "softwareKeyboardLayoutMode": "pan",
