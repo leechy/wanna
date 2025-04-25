@@ -22,10 +22,11 @@ interface BackLinkProps {
   parentTitle?: string;
   listId?: string;
   noTitle?: boolean;
+  noIcon?: boolean;
   path?: '/' | '/shopping' | '/projects';
 }
 
-export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLinkProps) {
+export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false, path }: BackLinkProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const backButtonColor = primaryColor + 'bb';
 
@@ -53,7 +54,7 @@ export function BackLink({ parentTitle, listId, noTitle = false, path }: BackLin
     <HeaderButton
       title={noTitle ? '' : title}
       color={backButtonColor}
-      icon={Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
+      icon={noIcon ? undefined : Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
       style={Platform.OS === 'android' ? { gap: 8, paddingLeft: 8 } : {}}
       // @ts-ignore
       onPress={() => {

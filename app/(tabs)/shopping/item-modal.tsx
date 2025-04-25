@@ -152,7 +152,7 @@ function ItemModal() {
           Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {},
         ]}
       >
-        {router.canGoBack() && <BackLink parentTitle="Cancel" />}
+        {router.canGoBack() && <BackLink noIcon={true} parentTitle="Cancel" />}
         <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={() => submitData(true)} />
       </View>
 

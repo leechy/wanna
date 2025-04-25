@@ -81,7 +81,7 @@ export default function NewListModal() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
-        {router.canGoBack() && <BackLink parentTitle="Cancel" />}
+        {router.canGoBack() && <BackLink noIcon={true} parentTitle="Cancel" />}
         <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />
       </View>
       <View style={styles.container}>
