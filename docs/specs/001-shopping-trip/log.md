@@ -2,6 +2,14 @@
 
 Newest entries on top. Each entry: what changed, where (repo + commit), and any decision or surprise worth remembering.
 
+## 2026-11-02 — Client on the new protocol
+
+**wanna** — Expo SDK 52 → 58 (one SDK at a time, `b08dccc`…`316fc0d`), then `e924d78`: shared lists sync (items from other members, lists joined later), push token sent after the first shared list, heartbeat + "X is shopping now", checkout ends the trip, `/shared/<shareId>` route.
+
+**wanna-nest** `136128d`, `4c92ba5` — `auth` is an idempotent sign-in-or-up (the app raced sign-up and sign-in); item quantity accepted as a string, as the app sends it — every new item was rejected before.
+
+Checked: replay of the app's exact payloads against a local server, 8/8. Not checked: on devices, push delivery, the universal link (Firebase certificate for `app.` is still pending).
+
 ## 2026-11-02 — Deployed
 
 `6d023ff` is live on `api.wanna-wanna.com` (first successful run of the deploy Action). Droplet: Node 18 → 22, 1 GB swap added (the 512 MB droplet ran out of memory on `apt`, which probably also explains the old server's 58 restarts), old database moved to `~/wanna-dev.db.backup-2026-11-02`, logs cleaned.
