@@ -1,6 +1,6 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-import { type ViewStyle, StyleSheet, View, TextInput, TextStyle } from 'react-native';
+import { type ViewStyle, StyleSheet, View, TextInput, TextStyle, type TextInputInstance } from 'react-native';
 
 export type ThemedInputProps = {
   style?: TextStyle;
@@ -13,7 +13,7 @@ export type ThemedInputProps = {
   value: string;
   onChange?: (value: string) => void;
   onSubmit?: () => void;
-  inputRef?: React.RefObject<TextInput | null>;
+  inputRef?: React.RefObject<TextInputInstance | null>;
 };
 
 export function ThemedInput({

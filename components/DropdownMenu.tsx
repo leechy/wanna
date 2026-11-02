@@ -16,6 +16,7 @@ import {
   TouchableWithoutFeedback,
   useWindowDimensions,
   View,
+  type ViewInstance,
 } from 'react-native';
 import { PressableArea } from './PressableArea';
 import CheckIcon from '@/assets/symbols/check.svg';
@@ -51,7 +52,7 @@ export function DropdownMenu({
   isHeaderMenu = false,
   isModal = false,
 }: DropdownMenuProps) {
-  const triggerRef = useRef<View>(null);
+  const triggerRef = useRef<ViewInstance>(null);
   const { height: winH, width: winW } = useWindowDimensions();
   const { top: safeT, right: safeR, bottom: safeB, left: safeL } = useSafeAreaInsets();
   const [position, setPosition] = useState({ x: 0, y: 0, width });

@@ -2,9 +2,12 @@
 import { Stack } from 'expo-router';
 import { ModalOptions } from '@/app/(tabs)/_layout';
 
+// the screen under the others when the app opens on a deep link
+export const unstable_settings = { anchor: 'index' };
+
 export default function ShoppingLayout() {
   return (
-    <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="index"
         options={{

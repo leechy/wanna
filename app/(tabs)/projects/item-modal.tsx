@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, type TextInputInstance } from 'react-native';
 import HeaderButton from '@/components/HeaderButton';
 import { ThemedInput } from '@/components/ThemedInput';
 import DateSelector from '@/components/DateSelector';
@@ -49,7 +49,7 @@ function ItemModal() {
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
   const listItems = _lists$[listId]?.listItems?.get() || null;
 
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
 
   const openitems = useMemo(
     () => convertItemsToListItems(listItems?.filter((item) => !item.completed) || [], true),

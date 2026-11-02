@@ -3,26 +3,26 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { ThemedButton } from '../ThemedButton';
 
 describe('ThemedButton', () => {
-  it('renders correctly', () => {
-    const { getByText } = render(
+  it('renders correctly', async () => {
+    const { getByText } = await render(
       <ThemedButton title="Click me" onPress={() => {}} />
     );
     expect(getByText('Click me')).toBeTruthy();
   });
 
-  it('calls onPress when pressed', () => {
+  it('calls onPress when pressed', async () => {
     const onPressMock = jest.fn();
-    const { getByText } = render(
+    const { getByText } = await render(
       <ThemedButton title="Click me" onPress={onPressMock} />
     );
     const button = getByText('Click me');
 
-    fireEvent.press(button);
+    await fireEvent.press(button);
     expect(onPressMock).toHaveBeenCalled();
   });
 
-  it('matches snapshot', () => {
-    const { toJSON } = render(
+  it('matches snapshot', async () => {
+    const { toJSON } = await render(
       <ThemedButton title="Click me" onPress={() => {}} />
     );
     expect(toJSON()).toMatchSnapshot();

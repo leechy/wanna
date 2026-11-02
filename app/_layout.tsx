@@ -10,7 +10,6 @@ import { useFonts } from 'expo-font';
 // styles
 import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
 import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
-import { Colors } from '@/constants/Colors';
 
 // navigation
 import { Stack } from 'expo-router';
@@ -25,10 +24,12 @@ import 'react-native-reanimated';
 // import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { Platform } from 'react-native';
 
 // services
 import { socketService } from '@/services/socketService';
+
+// the screen under the others when the app opens on a deep link
+export const unstable_settings = { anchor: '(tabs)' };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -95,7 +96,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }} initialRouteName="(tabs)">
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="+not-found" />

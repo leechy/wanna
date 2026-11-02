@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { wrapScrollView, useScrollIntoView, ScrollIntoView } from 'react-native-scroll-into-view';
 
 // components
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { PressableArea } from '@/components/PressableArea';
 
 const TabsScrollView = wrapScrollView(ScrollView);
@@ -89,7 +89,7 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
 }
 
 export default function ScrollingTabs({ tabs }: ScrollingTabsProps) {
-  const pagerRef = useRef<ScrollView>(null);
+  const pagerRef = useRef<ScrollViewInstance>(null);
   const [activeTab, setActiveTab] = useState(0);
 
   const textColor = useThemeColor({}, 'text');

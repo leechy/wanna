@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import type { ReactTestInstance } from 'react-test-renderer';
 import ListItemLabel from '../ListItemLabel';
 import { ListItem } from '@/types/listItem';
 import { Colors } from '@/constants/Colors';
@@ -17,46 +16,46 @@ jest.mock('../../utils/dates', () => ({
 }));
 
 describe('ListItemLabel', () => {
-  it('renders the label correctly', () => {
+  it('renders the label correctly', async () => {
     const item: ListItem = { id: '0', type: 'item', label: 'Test Item', quantity: 3 };
-    const { getByText } = render(<ListItemLabel item={item} showQuantity={false} />);
+    const { getByText } = await render(<ListItemLabel item={item} showQuantity={false} />);
     expect(getByText('Test Item')).toBeTruthy();
   });
 
-  it('shows the quantity when showQuantity is true', () => {
+  it('shows the quantity when showQuantity is true', async () => {
     const item: ListItem = { id: '1', type: 'item', label: 'Test Item', quantity: 3 };
-    const { getByText } = render(<ListItemLabel item={item} showQuantity={true} />);
+    const { getByText } = await render(<ListItemLabel item={item} showQuantity={true} />);
     expect(getByText('3 × Test Item')).toBeTruthy();
   });
 
-  it('applies the correct styles', () => {
+  it('applies the correct styles', async () => {
     const item: ListItem = { id: '3', type: 'item', label: 'Test Item' };
-    const { getByText } = render(<ListItemLabel item={item} showQuantity={false} />);
+    const { getByText } = await render(<ListItemLabel item={item} showQuantity={false} />);
     const label = getByText('Test Item');
     expect(label.props.style).toHaveProperty('[1].color', '#333333');
   });
 
-  it('shows the deadline if set', () => {
+  it('shows the deadline if set', async () => {
     const item: ListItem = { id: '2', type: 'item', label: 'Test Item', deadline: Date.now() + 10000 };
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testCalendarID="item-label-calendar" />
     );
     expect(getByTestId('item-label-calendar')).toBeTruthy();
   });
 
-  it('applies the danger color when overdue', () => {
+  it('applies the danger color when overdue', async () => {
     const item: ListItem = { id: '4', type: 'item', label: 'Test Item', deadline: Date.now() - 10000 };
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testCalendarID="item-label-calendar" />
     );
     const date = getByTestId('item-label-calendar');
     expect(date.children[0]).toHaveProperty('type', 'CalendarIcon');
-    expect((date.children[1] as ReactTestInstance).props.style).toHaveProperty('[1].color', Colors['light'].danger);
+    expect((date.children[1] as unknown as { props: { style: unknown } }).props.style).toHaveProperty('[1].color', Colors['light'].danger);
   });
 
-  it('shows the list if set', () => {
+  it('shows the list if set', async () => {
     const item: ListItem = { id: '2', type: 'item', label: 'Test Item', list: 'test list' };
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testListID="item-label-list" />
     );
     const list = getByTestId('item-label-list');
@@ -65,9 +64,9 @@ describe('ListItemLabel', () => {
     expect(getByText('test list')).toBeTruthy();
   });
 
-  it('shows the one person correctly', () => {
+  it('shows the one person correctly', async () => {
     const item: ListItem = { id: '2', type: 'item', label: 'Test Item', shared: ['user1'] };
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testPersonasID="item-label-personas" />
     );
     const shared = getByTestId('item-label-personas');
@@ -76,27 +75,27 @@ describe('ListItemLabel', () => {
     expect(shared.children[0]).toHaveProperty('type', 'PersonaIcon');
   });
 
-  it('shows the two persons correctly', () => {
+  it('shows the two persons correctly', async () => {
     const item: ListItem = { id: '2', type: 'item', label: 'Test Item', shared: ['user1', 'user2'] };
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testPersonasID="item-label-personas" />
     );
     expect(getByText('user1 and user2')).toBeTruthy();
     expect(getByTestId('item-label-personas').children[0]).toHaveProperty('type', 'TwoPersonasIcon');
   });
 
-  it('shows the more than 2 persons correctly', () => {
+  it('shows the more than 2 persons correctly', async () => {
     const item: ListItem = { id: '2', type: 'item', label: 'Test Item', shared: ['user1', 'user2', 'user3', 'user4'] };
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = await render(
       <ListItemLabel item={item} showQuantity={false} testPersonasID="item-label-personas" />
     );
     expect(getByText('4 people')).toBeTruthy();
     expect(getByTestId('item-label-personas').children[0]).toHaveProperty('type', 'ThreePersonasIcon');
   });
 
-  it('matches snapshot', () => {
+  it('matches snapshot', async () => {
     const item: ListItem = { id: '5', type: 'item', label: 'Test Item', quantity: 3, deadline: Date.now() + 10000 };
-    const { toJSON } = render(<ListItemLabel item={item} showQuantity={true} />);
+    const { toJSON } = await render(<ListItemLabel item={item} showQuantity={true} />);
     expect(toJSON()).toMatchSnapshot();
   });
 });

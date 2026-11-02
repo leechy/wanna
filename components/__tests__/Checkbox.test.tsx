@@ -7,29 +7,29 @@ jest.mock('../../assets/symbols/square.svg', () => 'SquareIcon');
 jest.mock('../../assets/symbols/square-check.svg', () => 'SquareCheckIcon');
 
 describe('Checkbox', () => {
-  it('renders correctly', () => {
-    const { getByTestId } = render(<Checkbox checked={false} onChange={() => {}} testID="checkbox" />);
+  it('renders correctly', async () => {
+    const { getByTestId } = await render(<Checkbox checked={false} onChange={() => {}} testID="checkbox" />);
     expect(getByTestId('checkbox')).toBeTruthy();
   });
 
-  it('calls onChange when clicked', () => {
+  it('calls onChange when clicked', async () => {
     const onChangeMock = jest.fn();
-    const { getByTestId } = render(<Checkbox checked={false} onChange={onChangeMock} testID="checkbox" />);
+    const { getByTestId } = await render(<Checkbox checked={false} onChange={onChangeMock} testID="checkbox" />);
     const checkbox = getByTestId('checkbox');
 
     // Initially unchecked
 
     // Click to change state
-    fireEvent.press(checkbox);
+    await fireEvent.press(checkbox);
     expect(onChangeMock).toHaveBeenCalledWith(true);
 
     // Click again to change state
-    fireEvent.press(checkbox);
+    await fireEvent.press(checkbox);
     expect(onChangeMock).toHaveBeenCalledWith(false);
   });
 
-  it('renders label with additional elements', () => {
-    const { getByText } = render(
+  it('renders label with additional elements', async () => {
+    const { getByText } = await render(
       <Checkbox checked={false} onChange={() => {}} testID="checkbox">
         <Text>
           Label with{' '}
@@ -44,8 +44,8 @@ describe('Checkbox', () => {
     expect(getByText('link')).toBeTruthy();
   });
 
-  it('matches snapshot', () => {
-    const { toJSON } = render(
+  it('matches snapshot', async () => {
+    const { toJSON } = await render(
       <Checkbox checked={false} onChange={() => {}} testID="checkbox">
         <Text>
           Label with{' '}

@@ -12,10 +12,10 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 
 describe('Page component', () => {
-  it('matches snapshot', () => {
+  it('matches snapshot', async () => {
     (useSafeAreaInsets as jest.Mock).mockReturnValue({ top: 0 });
 
-    const { toJSON } = render(
+    const { toJSON } = await render(
       <Page>
         <View />
       </Page>
@@ -24,10 +24,10 @@ describe('Page component', () => {
     expect(toJSON()).toMatchSnapshot();
   });
 
-  it('renders correctly with top inset', () => {
+  it('renders correctly with top inset', async () => {
     (useSafeAreaInsets as jest.Mock).mockReturnValue({ top: 10 });
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <Page>
         <View testID="child-view" />
       </Page>
@@ -37,16 +37,16 @@ describe('Page component', () => {
     expect(childView).toBeTruthy();
   });
 
-  it('applies the correct marginTop style based on top inset', () => {
+  it('applies the correct marginTop style based on top inset', async () => {
     (useSafeAreaInsets as jest.Mock).mockReturnValue({ top: 20 });
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <Page>
         <View testID="child-view" />
       </Page>
     );
 
-    const pageView = getByTestId('child-view').parent?.parent;
+    const pageView = getByTestId('child-view').parent;
     expect(pageView?.props.style).toMatchObject({ marginTop: 20, flex: 1 });
   });
 });

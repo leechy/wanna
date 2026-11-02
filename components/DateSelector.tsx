@@ -4,7 +4,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { humanDate } from '@/utils/dates';
 
 // components
-import { Modal, Platform, StyleSheet, Text, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native';
+import { Modal, Platform, StyleSheet, Text, TouchableWithoutFeedback, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import SmallButton from './SmallButton';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -41,7 +41,7 @@ export default function DateSelector({ placeholder, value, initialOffset = 2, on
 
   const width: number = 364;
   const height: number = 324;
-  const triggerRef = useRef<View>(null);
+  const triggerRef = useRef<ViewInstance>(null);
   const { height: winH, width: winW } = useWindowDimensions();
 
   function activate() {

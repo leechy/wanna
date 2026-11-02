@@ -4,24 +4,24 @@ import { render } from '@testing-library/react-native';
 import { ThemedText } from '../ThemedText';
 
 describe('ThemedText', () => {
-  it(`renders correctly`, () => {
-    const tree = render(<ThemedText>Snapshot test!</ThemedText>).toJSON();
+  it(`renders correctly`, async () => {
+    const tree = (await render(<ThemedText>Snapshot test!</ThemedText>)).toJSON();
 
     expect(tree).toMatchSnapshot();
   });
 
-  it(`title renders correctly`, () => {
-    const tree = render(
+  it(`title renders correctly`, async () => {
+    const tree = (await render(
       <ThemedText type="title">Snapshot test!</ThemedText>
-    ).toJSON();
+    )).toJSON();
 
     expect(tree).toMatchSnapshot();
   });
 
-  it(`subtitle renders correctly`, () => {
-    const tree = render(
+  it(`subtitle renders correctly`, async () => {
+    const tree = (await render(
       <ThemedText type="subtitle">Snapshot test!</ThemedText>
-    ).toJSON();
+    )).toJSON();
 
     expect(tree).toMatchSnapshot();
   });
