@@ -2,6 +2,10 @@
 
 Newest entries on top. Each entry: what changed, where (repo + commit), and any decision or surprise worth remembering.
 
+## 2026-11-02 — Deployed
+
+`6d023ff` is live on `api.wanna-wanna.com` (first successful run of the deploy Action). Droplet: Node 18 → 22, 1 GB swap added (the 512 MB droplet ran out of memory on `apt`, which probably also explains the old server's 58 restarts), old database moved to `~/wanna-dev.db.backup-2026-11-02`, logs cleaned.
+
 ## 2026-11-02 — Event log and deploy
 
 **wanna-nest** `6d023ff` — analytics event log in our own database (see [docs index](../../README.md#analytics)), 19 tests pass.
