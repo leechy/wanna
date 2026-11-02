@@ -23,7 +23,7 @@ interface ListButtonsProps {
 }
 
 export default function ListButtons({ newItem, newItemTitle, checkoutBasket, cartItems }: ListButtonsProps) {
-  const primaryColor = useThemeColor({}, 'primary');
+  const secondaryColor = useThemeColor({}, 'secondary');
   const cursorColor = useThemeColor({}, 'cursorColor');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
   const inputBackgroundAndroid = useThemeColor({}, 'inputBackgroundAndroid');
@@ -69,6 +69,40 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
     );
   }
 
+  // Add these for cart button animation
+  const cartButtonWidth = useSharedValue(0);
+  const cartButtonOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    // When cart items exist, animate button in
+    if (checkoutBasket && (cartItems || 0) > 0) {
+      // Get the final button width (you may need to adjust this value)
+      const finalWidth = 124;
+
+      // Animate width and opacity
+      cartButtonWidth.value = withTiming(finalWidth, {
+        duration: 300,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+      cartButtonOpacity.value = withTiming(1, { duration: 250 });
+    } else {
+      // Animate out
+      cartButtonWidth.value = withTiming(0, {
+        duration: 250,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+      cartButtonOpacity.value = withTiming(0, { duration: 200 });
+    }
+  }, [checkoutBasket, cartItems, cartButtonWidth, cartButtonOpacity]);
+
+  const cartButtonAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: cartButtonWidth.value,
+      opacity: cartButtonOpacity.value,
+      overflow: 'hidden',
+    };
+  });
+
   return (
     <View style={styles.buttonsContainer}>
       <PressableArea
@@ -89,30 +123,36 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
           <View style={[styles.fakeInput, { backgroundColor: inputBackgroundAndroid }]}>{renderInputs()}</View>
         )}
       </PressableArea>
-      {checkoutBasket && (cartItems || 0) > 0 && (
-        <PressableArea
-          style={[
-            styles.cartButton,
-            {
-              backgroundColor: smallButtonBackground,
-              borderColor: primaryColor + '80',
-            },
-          ]}
-          onPress={checkoutBasket}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel={'Checkout'}
-          accessibilityHint={'Press to move selected items to the completed list.'}
-        >
-          <BagFillIcon width={24} height={24} color={primaryColor} />
-          <View style={styles.cartButtonLabel}>
-            <Text style={[styles.cartButtonText, { color: primaryColor }]}>Checkout</Text>
-            <Text style={[styles.cartButtonText, { color: primaryColor }]}>
-              <Text style={{ fontWeight: '700', fontSize: 14 }}>{cartItems}</Text>{' '}
-              {(cartItems || 0) > 1 ? 'items' : 'item'}
-            </Text>
-          </View>
-        </PressableArea>
+
+      {checkoutBasket && (
+        <Animated.View style={cartButtonAnimatedStyle}>
+          <PressableArea
+            style={[
+              styles.cartButton,
+              {
+                backgroundColor: smallButtonBackground,
+                borderColor: secondaryColor + '80',
+                justifyContent: 'flex-start',
+              },
+            ]}
+            onPress={checkoutBasket}
+            accessible={(cartItems || 0) > 0}
+            accessibilityRole="button"
+            accessibilityLabel={'Checkout'}
+            accessibilityHint={'Press to move selected items to the completed list.'}
+          >
+            <View style={styles.cartButtonIcon}>
+              <BagFillIcon width={24} height={24} color={secondaryColor} />
+            </View>
+            <View style={styles.cartButtonLabel}>
+              <Text style={[styles.cartButtonText, { color: secondaryColor }]}>Checkout</Text>
+              <Text style={[styles.cartButtonText, { color: secondaryColor }]}>
+                <Text style={{ fontWeight: '700', fontSize: 14 }}>{cartItems}</Text>{' '}
+                {(cartItems || 0) > 1 ? 'items' : 'item'}
+              </Text>
+            </View>
+          </PressableArea>
+        </Animated.View>
       )}
     </View>
   );
@@ -124,11 +164,11 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: 16,
     right: 0,
-    height: 48,
+    height: 46,
 
     display: 'flex',
     flexDirection: 'row',
-    gap: 16,
+    // gap: 16,
 
     paddingHorizontal: 16,
   },
@@ -150,6 +190,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   cartButton: {
+    marginStart: 16,
     display: 'flex',
     flexDirection: 'row',
     gap: 4,
@@ -159,6 +200,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
+  },
+  cartButtonIcon: {
+    minWidth: 24,
+    flex: 0,
   },
   cartButtonLabel: {
     display: 'flex',

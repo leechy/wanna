@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     borderRadius: 8,
     shadowColor: '#000',
-    boxShadow: '0px 0px 4px 1px rgba(0, 0, 0, 0.25)',
+    boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.25)',
   },
   background: {
     borderRadius: 8,

@@ -59,9 +59,10 @@ export default function TabLayout() {
           fontFamily: 'Montserrat',
         },
       }}
+      initialRouteName="wishes"
     >
       <Tabs.Screen
-        name="index"
+        name="wishes"
         options={{
           title: 'Wishes',
           tabBarIcon: ({ color }) => <WishesIcon width={36} height={36} color={color} />,

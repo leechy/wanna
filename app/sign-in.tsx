@@ -25,7 +25,7 @@ export default function SignInScreen() {
   const user = useSelector(() => _user$.get());
 
   if (user?.uid) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/(tabs)/wishes" />;
   }
 
   return (

@@ -23,7 +23,7 @@ interface BackLinkProps {
   listId?: string;
   noTitle?: boolean;
   noIcon?: boolean;
-  path?: '/' | '/shopping' | '/projects';
+  path?: '/' | '/wishes' | '/shopping' | '/projects';
 }
 
 export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false, path }: BackLinkProps) {
