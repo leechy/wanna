@@ -17,7 +17,7 @@ export function extractText(component: ReactNode): string {
 
   if (typeof component === 'object' && component !== null) {
     if ('props' in component) {
-      return extractText(component.props.children);
+      return extractText((component.props as { children?: ReactNode }).children);
     }
   }
 

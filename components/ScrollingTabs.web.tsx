@@ -11,7 +11,7 @@ const TabsScrollView = wrapScrollView(ScrollView);
 
 export type TabContent = {
   title: string;
-  content: string | JSX.Element;
+  content: string | React.JSX.Element;
   items?: number;
   color?: string;
 };
