@@ -26,4 +26,9 @@ export type ListItem = {
   completedAt?: string | null;
   assignee?: string | null;
   assigneeId?: string | null;
+  addedById?: string | null;
+  unavailable?: boolean;
+  unavailableAt?: string | null;
+  unavailableNote?: string | null;
+  unavailableReply?: string | null;
 };

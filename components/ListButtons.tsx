@@ -138,14 +138,14 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
             onPress={checkoutBasket}
             accessible={(cartItems || 0) > 0}
             accessibilityRole="button"
-            accessibilityLabel={'Checkout'}
-            accessibilityHint={'Press to move selected items to the completed list.'}
+            accessibilityLabel={'Done shopping'}
+            accessibilityHint={'Ends the shopping trip, the items in the cart are bought.'}
           >
             <View style={styles.cartButtonIcon}>
               <BagFillIcon width={24} height={24} color={secondaryColor} />
             </View>
             <View style={styles.cartButtonLabel}>
-              <Text style={[styles.cartButtonText, { color: secondaryColor }]}>Checkout</Text>
+              <Text style={[styles.cartButtonText, { color: secondaryColor }]}>Done</Text>
               <Text style={[styles.cartButtonText, { color: secondaryColor }]}>
                 <Text style={{ fontWeight: '700', fontSize: 14 }}>{cartItems}</Text>{' '}
                 {(cartItems || 0) > 1 ? 'items' : 'item'}

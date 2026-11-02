@@ -17,6 +17,8 @@ import {
   useWindowDimensions,
   View,
   type ViewInstance,
+  type ViewStyle,
+  type PressableProps,
 } from 'react-native';
 import { PressableArea } from './PressableArea';
 import CheckIcon from '@/assets/symbols/check.svg';
@@ -37,6 +39,14 @@ interface DropdownMenuProps {
   width?: number;
   isHeaderMenu?: boolean;
   isModal?: boolean;
+  // 'longPress': the children are tappable on their own and open the menu on a long press
+  trigger?: 'press' | 'longPress';
+  onPress?: () => void;
+  triggerStyle?: ViewStyle;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityActions?: PressableProps['accessibilityActions'];
+  onAccessibilityAction?: PressableProps['onAccessibilityAction'];
   children: ReactNode;
 }
 
@@ -51,6 +61,13 @@ export function DropdownMenu({
   width = 200,
   isHeaderMenu = false,
   isModal = false,
+  trigger = 'press',
+  onPress,
+  triggerStyle,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityActions,
+  onAccessibilityAction,
 }: DropdownMenuProps) {
   const triggerRef = useRef<ViewInstance>(null);
   const { height: winH, width: winW } = useWindowDimensions();
@@ -150,11 +167,15 @@ export function DropdownMenu({
   return (
     <View>
       <PressableArea
-        onPress={onTriggerPress}
+        style={triggerStyle}
+        onPress={trigger === 'press' ? onTriggerPress : () => onPress?.()}
+        onLongPress={trigger === 'longPress' ? onTriggerPress : undefined}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`Open menu ${extractText(children)}`}
-        accessibilityHint="Press to open the menu"
+        accessibilityLabel={accessibilityLabel ?? `Open menu ${extractText(children)}`}
+        accessibilityHint={accessibilityHint ?? 'Press to open the menu'}
+        accessibilityActions={accessibilityActions}
+        onAccessibilityAction={onAccessibilityAction}
       >
         <View ref={triggerRef}>{children}</View>
       </PressableArea>

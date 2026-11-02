@@ -1,4 +1,5 @@
 // hooks
+import type { ShoppingItemActions } from '@/components/ShoppingItemRow';
 import { useEffect, useMemo } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -28,6 +29,7 @@ export interface AccordionBlockProps {
   editHandler?: (item: ListItem) => void;
   deleteHandler?: (item: ListItem) => void;
   resetHandler?: (item: ListItem) => void;
+  shoppingActions?: ShoppingItemActions;
   items: ListItem[];
   onToggle?: () => void;
   isOpen?: boolean;

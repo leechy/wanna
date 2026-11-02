@@ -65,6 +65,34 @@ There is no separate notification about the end of the session.
 
 List cards. Inside the cards or on top of them, a "needed now" grouping by deadlines. During a session the list card shows its status.
 
+### 6. Working with the list
+
+One tap target per item instead of a checkbox plus a cart icon: two similar states ("in cart" and "bought") were too much to keep in mind.
+
+**Still wanna**
+
+| Gesture | Action |
+|---|---|
+| Tap | Toggles "picked" (in the cart): a check mark, the item stays in place, dimmed — rows must not jump under the finger in the store |
+| Swipe left | Delete, with "Undo" for a few seconds — the list is shared |
+| Swipe right | Toggles "out of stock"; swiping again means "found it after all" |
+| Long press | Menu: Edit, Out of stock, Delete |
+
+- When something is picked, a "Done (N)" button appears: the trip ends and the cart is bought. Without it the trip ends by the timeout.
+- An out-of-stock item shows "Out of stock · 14:32" under the name (a date for older days). A tap on that line adds a note ("only 3.2%"); the author's reply shows below.
+- Every swipe action is also an accessibility action, so it works with VoiceOver/TalkBack.
+
+**Already got**
+
+| Gesture | Action |
+|---|---|
+| Tap | Nothing |
+| Swipe left | Delete |
+| Swipe right | Buy again: a copy goes back to Still wanna |
+| Long press | Menu: Edit, Back to the list (picked by mistake), Buy again, Delete |
+
+Shopping lists only; project lists keep their current behaviour until they're decided on.
+
 ## Experiment: with and without the cart
 
 Both models are built behind a list-level flag, switched in the list settings:
@@ -135,13 +163,16 @@ No store database is needed: when the session starts we remember the current loc
 
 1. **Timeout is 30 minutes** since the list was last on the shopper's screen. While the screen is open, the app sends a heartbeat to the server and the timeout is extended.
 2. **Several shoppers.** Two people in different stores with one list — two sessions. Two people in the same store — one session with two shoppers. Telling "same store or different" apart is only possible with location, so in v1 every shopper gets their own session, but the data model already allows several shoppers per session.
-3. **"Out of stock"** — where it goes in the UI we decide together on prototypes when we get to it.
+3. **"Out of stock"** is a swipe right on the item, plus a menu entry for discoverability (see "Working with the list"). The note is optional and added by tapping the label, so the swipe stays instant.
 4. **Live Activity** — after regular pushes, but within v1.
 
 ## Open questions
 
 1. How to merge shoppers into one session once we have location: radius, time, an explicit "I'm with Masha"?
+2. **Long press: menu or edit?** v1 opens a menu (the iOS convention, and it makes the swipe actions discoverable). Andrey prefers long press = edit, if there is another good way to show the actions. Test both again with people.
+3. **Android menu.** Android has no system long-press context menu (Gmail and Keep use long press for selection). v1 shows our own menu; the native Material menu comes with the redesign.
 
 ## Ideas
 
 - A default list for a new user who didn't come by a shared link, so the first screen isn't empty.
+- Drop project lists and maybe the bottom tabs, to focus the app on shopping (decided to come back to it, nothing removed yet).

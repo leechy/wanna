@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { DropdownMenu } from '@/components/DropdownMenu';
 import NewItem from '@/components/NewItem';
 import ShoppingListItem from '@/components/ShoppingListItem';
+import { ShoppingItemRow, type ShoppingItemActions } from '@/components/ShoppingItemRow';
 import ProjectListItem from '@/components/ProjectListItem';
 import ListItemLabel from '@/components/ListItemLabel';
 import ContactListItem from '@/components/ContactListItem';
@@ -43,6 +44,7 @@ interface ItemsListProps {
   editHandler?: (item: ListItem) => void;
   deleteHandler?: (item: ListItem) => void;
   resetHandler?: (item: ListItem) => void;
+  shoppingActions?: ShoppingItemActions;
   items?: ListItem[];
   inverted?: boolean;
   actionIcon?: boolean;
@@ -61,6 +63,7 @@ export function ItemsList({
   editHandler,
   deleteHandler,
   resetHandler,
+  shoppingActions,
   items,
   inverted = false,
   actionIcon = true,
@@ -144,6 +147,9 @@ export function ItemsList({
 
     if (item.type === 'new') {
       return <NewItem item={item} icon={newItemIcon} itemBorderRadius={itemBorderRadius} actionHandler={onNewItem} />;
+    }
+    if (shoppingActions && item.type === 'item') {
+      return <ShoppingItemRow item={item} itemBorderRadius={itemBorderRadius} {...shoppingActions} />;
     }
     if (item.type === 'shopping-list') {
       return (

@@ -19,6 +19,8 @@ export type TabContent = {
 
 interface ScrollingTabsProps {
   tabs: TabContent[];
+  // off when the content has its own horizontal swipes
+  swipeEnabled?: boolean;
 }
 
 interface ScrollingTabsContentProps {
@@ -90,7 +92,7 @@ function ScrollingTabsContent({ tab, index, isActive, textColor, selectTab }: Sc
   );
 }
 
-export default function ScrollingTabs({ tabs }: ScrollingTabsProps) {
+export default function ScrollingTabs({ tabs, swipeEnabled = true }: ScrollingTabsProps) {
   const pagerRef = useRef<PagerView>(null);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -132,6 +134,7 @@ export default function ScrollingTabs({ tabs }: ScrollingTabsProps) {
         ref={pagerRef}
         style={styles.pagerView}
         initialPage={0}
+        scrollEnabled={swipeEnabled}
         onPageScroll={(e) => {
           onTabsScroll(e.nativeEvent);
         }}

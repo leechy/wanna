@@ -1,13 +1,17 @@
 // hooks and state
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
-import { lists$ as _lists$ } from '@/state/state';
+import { lists$ as _lists$, user$ as _user$ } from '@/state/state';
 import {
   checkoutCart,
   duplicateCompletedItem,
   markItemAsCompleted,
   markItemAsDeleted,
+  replyToUnavailable,
+  restoreDeletedItem,
+  setItemUnavailable,
+  setUnavailableNote,
   updateItemOngoingStatus,
   updateList,
 } from '@/state/actions-lists';
@@ -27,6 +31,9 @@ import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
 import ShareMenu from '@/components/ShareMenu';
 import { ShoppingNow } from '@/components/ShoppingNow';
+import { UndoBar } from '@/components/UndoBar';
+import { TextPrompt } from '@/components/TextPrompt';
+import type { ShoppingItemActions } from '@/components/ShoppingItemRow';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
@@ -106,6 +113,37 @@ function ShoppingListScreen() {
     duplicateCompletedItem(listId, item.id);
   }
 
+  // the last deleted item, until the undo bar is gone
+  const [deleted, setDeleted] = useState<ListItem | null>(null);
+  const hideUndo = useCallback(() => setDeleted(null), []);
+  // asking for the out of stock note or a custom reply
+  const [prompt, setPrompt] = useState<{ kind: 'note' | 'reply'; item: ListItem } | null>(null);
+
+  function submitPrompt(text: string) {
+    if (prompt?.kind === 'note') {
+      setUnavailableNote(listId, prompt.item.id, text);
+    } else if (prompt?.kind === 'reply' && text) {
+      replyToUnavailable(listId, prompt.item.id, text);
+    }
+    setPrompt(null);
+  }
+
+  const shoppingActions: ShoppingItemActions = {
+    uid: _user$.uid?.get(),
+    onToggle: toggleCart,
+    onEdit: editItem,
+    onDelete: (item) => {
+      markItemAsDeleted(listId, item.id);
+      setDeleted(item);
+    },
+    onUnavailable: (item, unavailable) => setItemUnavailable(listId, item.id, unavailable),
+    onNote: (item) => setPrompt({ kind: 'note', item }),
+    onReply: (item, reply) =>
+      reply ? replyToUnavailable(listId, item.id, reply) : setPrompt({ kind: 'reply', item }),
+    onRestore: restoreItem,
+    onBuyAgain: duplicateItem,
+  };
+
   function editList() {
     if (listData) {
       router.navigate({
@@ -126,6 +164,7 @@ function ShoppingListScreen() {
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
+      shoppingActions,
       emptyText: 'List is empty. Add some items!',
       items: openitems,
       showEmpty: listData?.completed ? false : true,
@@ -136,6 +175,7 @@ function ShoppingListScreen() {
       actionHandler: duplicateItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
+      shoppingActions,
       items: completedItems,
       emptyText: 'No purchases were made.',
       showEmpty: listData?.completed ? true : false,
@@ -173,7 +213,12 @@ function ShoppingListScreen() {
       </ThemedView>
       <ShoppingNow names={trip.others} />
 
-      <Columns blocks={listData?.completed ? blocks.reverse() : blocks} paddingBottom={64} openBlock={0} />
+      <Columns
+        blocks={listData?.completed ? blocks.reverse() : blocks}
+        paddingBottom={64}
+        openBlock={0}
+        swipeTabs={false}
+      />
       {!listData?.completed && (
         <ListButtons
           newItem={newItem}
@@ -182,6 +227,21 @@ function ShoppingListScreen() {
           cartItems={cartItems?.length || 0}
         />
       )}
+      <UndoBar
+        message={deleted ? `Deleted ${deleted.label}` : null}
+        onUndo={() => deleted && restoreDeletedItem(listId, deleted.id)}
+        onHide={hideUndo}
+      />
+      <TextPrompt
+        key={prompt ? `${prompt.kind}-${prompt.item.id}` : 'none'}
+        visible={prompt !== null}
+        title={prompt?.kind === 'note' ? `What was on the shelf instead of ${prompt.item.label}?` : `Reply about ${prompt?.item.label}`}
+        placeholder={prompt?.kind === 'note' ? 'e.g. only 3.2%' : 'e.g. take the bigger one'}
+        initialValue={prompt?.kind === 'note' ? prompt.item.unavailableNote ?? '' : ''}
+        submitTitle={prompt?.kind === 'note' ? 'Save' : 'Send'}
+        onSubmit={submitPrompt}
+        onCancel={() => setPrompt(null)}
+      />
     </Page>
   );
 }

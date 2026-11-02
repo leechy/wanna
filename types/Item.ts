@@ -26,6 +26,7 @@ export type Item = {
   // who added the item, gets asked when it's out of stock
   addedById?: string | null;
   unavailable?: boolean;
+  unavailableAt?: string | null;
   unavailableNote?: string | null;
   unavailableReply?: string | null;
   // the shopping trip the item was picked in

@@ -2,11 +2,14 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { AccessibilityRole, Platform, Pressable } from 'react-native';
+import { AccessibilityRole, Platform, Pressable, type PressableProps } from 'react-native';
 
 interface PressableAreaProps {
   style?: any;
   onPress: () => void;
+  onLongPress?: () => void;
+  accessibilityActions?: PressableProps['accessibilityActions'];
+  onAccessibilityAction?: PressableProps['onAccessibilityAction'];
   rippleColor?: string;
   children: React.ReactNode;
   hitSlop?: { top: number; bottom: number; left: number; right: number };
@@ -21,6 +24,9 @@ interface PressableAreaProps {
 export function PressableArea({
   style,
   onPress,
+  onLongPress,
+  accessibilityActions,
+  onAccessibilityAction,
   rippleColor,
   children,
   hitSlop,
@@ -45,8 +51,13 @@ export function PressableArea({
           ios: { opacity: pressed ? iOSOpacityPressed || 0.4 : 1 },
         }),
       ]}
-      onPress={() => Platform.OS !== 'android' && onPress()}
-      onPressOut={() => Platform.OS === 'android' && onPress()}
+      // on Android the press fires on release to show the ripple, unless
+      // there is a long press, which must not trigger the press as well
+      onPress={() => (Platform.OS !== 'android' || onLongPress) && onPress()}
+      onPressOut={() => Platform.OS === 'android' && !onLongPress && onPress()}
+      onLongPress={onLongPress}
+      accessibilityActions={accessibilityActions}
+      onAccessibilityAction={onAccessibilityAction}
       testID={testID}
       accessible={accessible}
       accessibilityRole={accessibilityRole}

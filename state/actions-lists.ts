@@ -395,6 +395,8 @@ export async function updateItemOngoingStatus(listId: string, listItemId: string
     assigneeId,
     assignee,
     updatedAt,
+    // found it after all
+    ...(ongoing && { unavailable: false, unavailableAt: null, unavailableNote: null, unavailableReply: null }),
   });
 
   // recreate items to trigger reactivity
@@ -443,6 +445,69 @@ export async function markItemAsDeleted(listId: string, listItemId: string) {
     deleted: true,
     updatedAt,
   });
+}
+
+/**
+ * Changes the item locally and sends the change to the server
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @param {Partial<Item>} local  changes for the local state
+ * @param {Partial<Item>} remote  changes for the server, the server derives the rest
+ */
+function patchItem(listId: string, listItemId: string, local: Partial<Item>, remote: Partial<Item> = local) {
+  const itemIndex = _lists$[listId].listItems.peek()?.findIndex((item) => item.listItemId === listItemId) ?? -1;
+  if (itemIndex < 0) {
+    console.warn('Item not found and not updated', listItemId);
+    return;
+  }
+
+  const updatedAt = new Date().toISOString();
+  _lists$[listId].listItems[itemIndex].assign({ ...local, updatedAt });
+
+  // recreate items to trigger reactivity
+  _lists$[listId].listItems.set([...(_lists$[listId].listItems.get() || [])]);
+
+  queueOperation('listItem:update', { listId, listItemId, ...remote, updatedAt });
+}
+
+/**
+ * The shopper couldn't find the item, or found it after all
+ *
+ * @param {string} listId  list id
+ * @param {string} listItemId  item id
+ * @param {boolean} unavailable  whether the item is out of stock
+ */
+export function setItemUnavailable(listId: string, listItemId: string, unavailable: boolean) {
+  patchItem(
+    listId,
+    listItemId,
+    unavailable
+      ? { unavailable, unavailableAt: new Date().toISOString(), unavailableReply: null, ongoing: false }
+      : { unavailable, unavailableAt: null, unavailableNote: null, unavailableReply: null },
+    { unavailable }
+  );
+}
+
+/**
+ * What the shopper saw on the shelf instead, e.g. "only 3.2%"
+ */
+export function setUnavailableNote(listId: string, listItemId: string, note: string) {
+  patchItem(listId, listItemId, { unavailableNote: note || null }, { unavailableNote: note });
+}
+
+/**
+ * The author tells the shopper what to buy instead
+ */
+export function replyToUnavailable(listId: string, listItemId: string, reply: string) {
+  patchItem(listId, listItemId, { unavailableReply: reply });
+}
+
+/**
+ * Brings back the item deleted by mistake
+ */
+export function restoreDeletedItem(listId: string, listItemId: string) {
+  patchItem(listId, listItemId, { deleted: false });
 }
 
 /**

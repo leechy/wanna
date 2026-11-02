@@ -22,6 +22,8 @@ interface ColumnsProps {
   titleLongPressAction?: () => void;
   openBlock?: number;
   paddingBottom?: number;
+  // off when the items have their own horizontal swipes
+  swipeTabs?: boolean;
 }
 
 export function Columns({
@@ -32,6 +34,7 @@ export function Columns({
   titleLongPressAction,
   openBlock = 0,
   paddingBottom,
+  swipeTabs = true,
 }: ColumnsProps) {
   const textColor = useThemeColor({}, 'text');
 
@@ -71,6 +74,7 @@ export function Columns({
         </ThemedView>
       )}
       <ScrollingTabs
+        swipeEnabled={swipeTabs}
         tabs={blocks
           .filter((block) => block.items.length > 0 || block.showEmpty)
           .map((block) => ({

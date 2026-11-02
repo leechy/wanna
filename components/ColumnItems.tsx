@@ -27,6 +27,7 @@ export function ColumnItems({ block, paddingBottom }: ColumnItemsProps) {
       editHandler={block.editHandler}
       deleteHandler={block.deleteHandler}
       resetHandler={block.resetHandler}
+      shoppingActions={block.shoppingActions}
       items={block.items}
       paddingBottom={paddingBottom}
     />
