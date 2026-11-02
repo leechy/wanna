@@ -13,13 +13,6 @@
     ],
     "userInterfaceStyle": "automatic",
     "primaryColor": "#3a1fc1",
-    "notification": {
-      "icon": "./assets/icon-notifications.png",
-      "color": "#3a1fc1",
-      "iosDisplayInForeground": true,
-      "androidMode": "default",
-      "androidCollapsedTitle": "Wanna Wanna"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.wanna-wanna.app",
@@ -133,7 +126,14 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon-notifications.png",
+          "color": "#3a1fc1"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
