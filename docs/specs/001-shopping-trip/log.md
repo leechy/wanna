@@ -2,6 +2,14 @@
 
 Newest entries on top. Each entry: what changed, where (repo + commit), and any decision or surprise worth remembering.
 
+## 2026-11-02 — Event log and deploy
+
+**wanna-nest** `6d023ff` — analytics event log in our own database (see [docs index](../../README.md#analytics)), 19 tests pass.
+
+The deploy pipeline had never run and would have failed: the Prisma CLI was a dev dependency (so `migrate deploy` on the server would fetch an incompatible latest Prisma), the Prisma client was generated in CI but not shipped, and `scp` would have left the old migrations on the server. Fixed: Node 22, tests before deploy, dependencies installed on the server, old build and migrations removed first.
+
+Domains bought: `api.` (droplet, works over HTTPS), `www.` (Vercel, works), `app.` (Firebase, CNAME resolves but the certificate is not issued yet).
+
 ## 2026-11-02 — Server ready for the trip
 
 **wanna-nest** `0944b84` — closed authorization holes: list access wasn't checked when `listId` was missing, and list updates were broadcast to every connected client.

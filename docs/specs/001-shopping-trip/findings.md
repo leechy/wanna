@@ -4,14 +4,14 @@ What testing tells us: numbers from the data and what families say in interviews
 
 ## Data collection
 
-Approach: TBD — see the proposal in the [docs index](../../README.md#analytics).
+Own event log in the server database, see [docs index](../../README.md#analytics).
 
 | Metric | Source |
 |---|---|
-| Items added by others during someone's session | server events |
-| Items in the cart longer than 12 h | server events |
-| How sessions end (timeout / geofence / button) | server events |
-| Time to reply to "out of stock" | server events |
+| Items added by others during someone's session | `item.added` with `duringOthersSession` |
+| Items in the cart longer than 12 h | `item.picked` without `item.bought` / `session.ended` within 12 h |
+| How sessions end (timeout / geofence / button) | `session.ended` `reason` |
+| Time to reply to "out of stock" | `item.unavailable` → `item.unavailable_replied` by `listItemId` |
 | Questions resolved without a call | interviews |
 | Cart vs. no-cart preference | interviews |
 
