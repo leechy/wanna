@@ -3,8 +3,14 @@
     "public": "dist",
     "ignore": [
       "firebase.json",
-      "**/.*",
+      "**/.DS_Store",
       "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/.well-known/apple-app-site-association",
+        "headers": [{ "key": "Content-Type", "value": "application/json" }]
+      }
     ],
     "rewrites": [
       {
