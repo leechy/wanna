@@ -4,6 +4,8 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
 import { AccessibilityActionEvent, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 import ReanimatedSwipeable, {
   SwipeDirection,
   type SwipeableMethods,
@@ -21,6 +23,7 @@ import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
 import XIcon from '@/assets/symbols/x.svg';
 
 // types
+import { SvgProps } from 'react-native-svg';
 import { ListItem } from '@/types/listItem';
 import { DropdownItem } from '@/types/DropdownItem';
 
@@ -71,18 +74,31 @@ export function ShoppingItemRow({
   const primaryColor = useThemeColor({}, 'primary');
   const secondaryColor = useThemeColor({}, 'secondary');
   const dangerColor = useThemeColor({}, 'danger');
+  const warningColor = useThemeColor({}, 'warning');
+  const onPrimaryColor = useThemeColor({}, 'onPrimary');
+  const onDangerColor = useThemeColor({}, 'onDanger');
+  const onWarningColor = useThemeColor({}, 'onWarning');
   const swipeableRef = useRef<SwipeableMethods>(null);
 
   const bought = Boolean(item.completed);
   const picked = Boolean(item.ongoing) && !bought;
   const unavailable = Boolean(item.unavailable) && !bought;
+  // found or bought, but it wasn't there at some point
+  const wasUnavailable = !unavailable && Boolean(item.unavailableAt || item.unavailableNote || item.unavailableReply);
   const isAuthor = Boolean(uid) && item.addedById === uid;
 
-  const rightSwipe = bought
-    ? { label: 'Buy again', color: primaryColor, run: () => onBuyAgain?.(item) }
+  // the same icons as in the menu
+  const rightSwipe: SwipeActionProps & { run: () => void } = bought
+    ? { label: 'Buy again', icon: DuplicateIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onBuyAgain?.(item) }
     : unavailable
-    ? { label: 'Found it', color: primaryColor, run: () => onUnavailable?.(item, false) }
-    : { label: 'Out of stock', color: secondaryColor, run: () => onUnavailable?.(item, true) };
+    ? { label: 'Found it', icon: SquareCheckIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onUnavailable?.(item, false) }
+    : { label: 'Out of stock', icon: XIcon, color: warningColor, textColor: onWarningColor, run: () => onUnavailable?.(item, true) };
+  const leftSwipe: SwipeActionProps = { label: 'Delete', icon: SquareMinusIcon, color: dangerColor, textColor: onDangerColor };
+
+  // past the threshold the action is going to happen
+  function onSwipeableWillOpen() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }
 
   function onSwipeableOpen(direction: SwipeDirection) {
     // full swipe: run the action and put the row back
@@ -135,9 +151,10 @@ export function ShoppingItemRow({
       rightThreshold={96}
       overshootLeft={false}
       overshootRight={false}
+      onSwipeableWillOpen={onSwipeableWillOpen}
       onSwipeableOpen={onSwipeableOpen}
-      renderLeftActions={() => <SwipeAction label={rightSwipe.label} color={rightSwipe.color} align="left" />}
-      renderRightActions={() => <SwipeAction label="Delete" color={dangerColor} align="right" />}
+      renderLeftActions={(progress) => <SwipeAction {...rightSwipe} progress={progress} align="left" />}
+      renderRightActions={(progress) => <SwipeAction {...leftSwipe} progress={progress} align="right" />}
     >
       <View style={[styles.row, { backgroundColor }]}>
         <DropdownMenu
@@ -166,23 +183,25 @@ export function ShoppingItemRow({
           </View>
         </DropdownMenu>
 
-        {unavailable && (
+        {(unavailable || wasUnavailable) && (
           <View style={styles.status}>
             <Pressable
-              onPress={() => onNote?.(item)}
-              accessibilityRole="button"
-              accessibilityLabel={`Out of stock since ${formatTime(item.unavailableAt)}`}
-              accessibilityHint="Add a note about what was on the shelf"
+              onPress={() => unavailable && onNote?.(item)}
+              disabled={!unavailable}
+              accessibilityRole={unavailable ? 'button' : 'text'}
+              accessibilityLabel={`${unavailable ? 'Out of stock' : 'Was out of stock'} since ${formatTime(item.unavailableAt)}`}
+              accessibilityHint={unavailable ? 'Add a note about what was on the shelf' : undefined}
               hitSlop={8}
             >
-              <Text style={[styles.statusText, { color: secondaryColor }]}>
-                Out of stock · {formatTime(item.unavailableAt)}
-                {item.unavailableNote ? `: ${item.unavailableNote}` : onNote ? ' · add a note' : ''}
+              <Text style={[styles.statusText, { color: unavailable ? secondaryColor : inactiveColor }]}>
+                {unavailable ? 'Out of stock' : 'Was out of stock'} · {formatTime(item.unavailableAt)}
+                {item.unavailableNote ? `: ${item.unavailableNote}` : unavailable && onNote ? ' · add a note' : ''}
               </Text>
             </Pressable>
             {item.unavailableReply ? (
               <Text style={[styles.statusText, { color: primaryColor }]}>↳ {item.unavailableReply}</Text>
             ) : (
+              unavailable &&
               isAuthor &&
               onReply && (
                 <View style={styles.replies}>
@@ -200,10 +219,35 @@ export function ShoppingItemRow({
   );
 }
 
-function SwipeAction({ label, color, align }: { label: string; color: string; align: 'left' | 'right' }) {
+type SwipeActionProps = {
+  label: string;
+  icon: React.FC<SvgProps>;
+  color: string;
+  textColor: string;
+};
+
+/**
+ * A pill with the icon and the name of the action, grows in as the row is swiped
+ */
+function SwipeAction({
+  label,
+  icon: Icon,
+  color,
+  textColor,
+  progress,
+  align,
+}: SwipeActionProps & { progress: SharedValue<number>; align: 'left' | 'right' }) {
+  const pillStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.4, 1], [0, 0.6, 1], 'clamp'),
+    transform: [{ scale: interpolate(progress.value, [0, 1], [0.7, 1], 'clamp') }],
+  }));
+
   return (
-    <View style={[styles.swipeAction, { backgroundColor: color, alignItems: align === 'left' ? 'flex-start' : 'flex-end' }]}>
-      <Text style={styles.swipeActionText}>{label}</Text>
+    <View style={[styles.swipeAction, { alignItems: align === 'left' ? 'flex-start' : 'flex-end' }]}>
+      <Animated.View style={[styles.pill, { backgroundColor: color }, pillStyle]}>
+        <Icon width={20} height={20} color={textColor} />
+        <Text style={[styles.pillText, { color: textColor }]}>{label}</Text>
+      </Animated.View>
     </View>
   );
 }
@@ -290,13 +334,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   swipeAction: {
-    flex: 1,
+    width: 160,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
   },
-  swipeActionText: {
-    color: '#ffffff',
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+  },
+  pillText: {
     fontFamily: 'Montserrat_700Bold',
-    fontSize: 15,
+    fontSize: 14,
   },
 });

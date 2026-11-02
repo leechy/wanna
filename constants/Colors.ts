@@ -25,6 +25,11 @@ export const Colors = {
     inactive: '#999999',
     touchable: '#666666',
     danger: '#d22105',
+    warning: '#f0a202',
+    // text on the colored buttons
+    onPrimary: '#ffffff',
+    onDanger: '#ffffff',
+    onWarning: '#2b1d00',
 
     listBackground: '#ffffff',
     listSeparator: '#d6d6d6',
@@ -57,6 +62,11 @@ export const Colors = {
     inactive: '#666666',
     touchable: '#999999',
     danger: '#f53d2c',
+    warning: '#f5b942',
+    // text on the colored buttons
+    onPrimary: '#000000',
+    onDanger: '#ffffff',
+    onWarning: '#2b1d00',
 
     listBackground: '#151718',
     listSeparator: '#0a0a0a',

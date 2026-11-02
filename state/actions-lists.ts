@@ -395,8 +395,8 @@ export async function updateItemOngoingStatus(listId: string, listItemId: string
     assigneeId,
     assignee,
     updatedAt,
-    // found it after all
-    ...(ongoing && { unavailable: false, unavailableAt: null, unavailableNote: null, unavailableReply: null }),
+    // found it after all, the note and the reply stay as the history
+    ...(ongoing && { unavailable: false }),
   });
 
   // recreate items to trigger reactivity
@@ -484,7 +484,7 @@ export function setItemUnavailable(listId: string, listItemId: string, unavailab
     listItemId,
     unavailable
       ? { unavailable, unavailableAt: new Date().toISOString(), unavailableReply: null, ongoing: false }
-      : { unavailable, unavailableAt: null, unavailableNote: null, unavailableReply: null },
+      : { unavailable },
     { unavailable }
   );
 }
