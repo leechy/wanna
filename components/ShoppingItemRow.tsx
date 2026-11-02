@@ -4,7 +4,8 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
 import { AccessibilityActionEvent, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedReaction, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import * as Haptics from 'expo-haptics';
 import ReanimatedSwipeable, {
   SwipeDirection,
@@ -50,6 +51,11 @@ interface ShoppingItemRowProps extends ShoppingItemActions {
 
 const QUICK_REPLIES = ['Any is fine', 'Skip it'];
 
+// a short swipe reveals the button and keeps it open,
+// a swipe past FULL_SWIPE runs the action right away
+const ACTION_WIDTH = 160;
+const FULL_SWIPE = 240;
+
 /**
  * A shopping list item: tap to pick, swipe left to delete,
  * swipe right for out of stock (or buy again when already got),
@@ -79,6 +85,8 @@ export function ShoppingItemRow({
   const onDangerColor = useThemeColor({}, 'onDanger');
   const onWarningColor = useThemeColor({}, 'onWarning');
   const swipeableRef = useRef<SwipeableMethods>(null);
+  const isOpen = useRef(false);
+  const isFullSwipe = useRef(false);
 
   const bought = Boolean(item.completed);
   const picked = Boolean(item.ongoing) && !bought;
@@ -95,18 +103,39 @@ export function ShoppingItemRow({
     : { label: 'Out of stock', icon: XIcon, color: warningColor, textColor: onWarningColor, run: () => onUnavailable?.(item, true) };
   const leftSwipe: SwipeActionProps = { label: 'Delete', icon: SquareMinusIcon, color: dangerColor, textColor: onDangerColor };
 
-  // past the threshold the action is going to happen
-  function onSwipeableWillOpen() {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }
-
-  function onSwipeableOpen(direction: SwipeDirection) {
-    // full swipe: run the action and put the row back
+  function runSwipeAction(direction: SwipeDirection) {
     swipeableRef.current?.close();
     if (direction === SwipeDirection.RIGHT) {
       rightSwipe.run();
     } else {
       onDelete?.(item);
+    }
+  }
+
+  // the finger crossed the full swipe line, one way or the other
+  function onFullSwipeChange(full: boolean) {
+    isFullSwipe.current = full;
+    if (full) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }
+
+  // released: past the line it's done, otherwise the button stays on view
+  function onSwipeableWillOpen(direction: SwipeDirection) {
+    if (isFullSwipe.current) {
+      isFullSwipe.current = false;
+      runSwipeAction(direction);
+    }
+  }
+
+  function onRowPress() {
+    // a tap on the row with a button revealed just puts the row back
+    if (isOpen.current) {
+      swipeableRef.current?.close();
+      return;
+    }
+    if (!bought) {
+      onToggle?.(item);
     }
   }
 
@@ -146,20 +175,40 @@ export function ShoppingItemRow({
     <ReanimatedSwipeable
       ref={swipeableRef}
       containerStyle={[styles.container, itemBorderRadius]}
-      friction={1.5}
-      leftThreshold={96}
-      rightThreshold={96}
-      overshootLeft={false}
-      overshootRight={false}
+      friction={1}
+      leftThreshold={ACTION_WIDTH / 2}
+      rightThreshold={ACTION_WIDTH / 2}
+      overshootLeft={true}
+      overshootRight={true}
+      overshootFriction={1}
       onSwipeableWillOpen={onSwipeableWillOpen}
-      onSwipeableOpen={onSwipeableOpen}
-      renderLeftActions={(progress) => <SwipeAction {...rightSwipe} progress={progress} align="left" />}
-      renderRightActions={(progress) => <SwipeAction {...leftSwipe} progress={progress} align="right" />}
+      onSwipeableOpen={() => (isOpen.current = true)}
+      onSwipeableClose={() => (isOpen.current = false)}
+      renderLeftActions={(progress, translation) => (
+        <SwipeAction
+          {...rightSwipe}
+          progress={progress}
+          translation={translation}
+          align="left"
+          onPress={() => runSwipeAction(SwipeDirection.RIGHT)}
+          onFullSwipeChange={onFullSwipeChange}
+        />
+      )}
+      renderRightActions={(progress, translation) => (
+        <SwipeAction
+          {...leftSwipe}
+          progress={progress}
+          translation={translation}
+          align="right"
+          onPress={() => runSwipeAction(SwipeDirection.LEFT)}
+          onFullSwipeChange={onFullSwipeChange}
+        />
+      )}
     >
       <View style={[styles.row, { backgroundColor }]}>
         <DropdownMenu
           trigger="longPress"
-          onPress={() => !bought && onToggle?.(item)}
+          onPress={onRowPress}
           triggerStyle={styles.trigger}
           items={menuItems}
           accessibilityLabel={
@@ -227,7 +276,8 @@ type SwipeActionProps = {
 };
 
 /**
- * A pill with the icon and the name of the action, grows in as the row is swiped
+ * A pill with the icon and the name of the action: grows in as the row is swiped,
+ * stays tappable when the row is left open, follows the finger on a full swipe
  */
 function SwipeAction({
   label,
@@ -235,19 +285,52 @@ function SwipeAction({
   color,
   textColor,
   progress,
+  translation,
   align,
-}: SwipeActionProps & { progress: SharedValue<number>; align: 'left' | 'right' }) {
-  const pillStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.4, 1], [0, 0.6, 1], 'clamp'),
-    transform: [{ scale: interpolate(progress.value, [0, 1], [0.7, 1], 'clamp') }],
-  }));
+  onPress,
+  onFullSwipeChange,
+}: SwipeActionProps & {
+  progress: SharedValue<number>;
+  translation: SharedValue<number>;
+  align: 'left' | 'right';
+  onPress: () => void;
+  onFullSwipeChange: (full: boolean) => void;
+}) {
+  useAnimatedReaction(
+    () => Math.abs(translation.value) > FULL_SWIPE,
+    (full, wasFull) => {
+      if (wasFull !== null && full !== wasFull) {
+        scheduleOnRN(onFullSwipeChange, full);
+      }
+    }
+  );
+
+  const pillStyle = useAnimatedStyle(() => {
+    const distance = Math.abs(translation.value);
+    // past the open position the pill travels with the edge of the row
+    const follow = Math.max(0, distance - ACTION_WIDTH) * (align === 'left' ? 1 : -1);
+    return {
+      opacity: interpolate(progress.value, [0, 0.4, 1], [0, 0.6, 1], 'clamp'),
+      transform: [
+        { translateX: follow },
+        { scale: interpolate(distance, [0, ACTION_WIDTH, FULL_SWIPE], [0.7, 1, 1.08], 'clamp') },
+      ],
+    };
+  });
 
   return (
-    <View style={[styles.swipeAction, { alignItems: align === 'left' ? 'flex-start' : 'flex-end' }]}>
-      <Animated.View style={[styles.pill, { backgroundColor: color }, pillStyle]}>
-        <Icon width={20} height={20} color={textColor} />
-        <Text style={[styles.pillText, { color: textColor }]}>{label}</Text>
-      </Animated.View>
+    <View
+      style={[
+        styles.swipeAction,
+        { alignItems: align === 'left' ? 'flex-end' : 'flex-start' },
+      ]}
+    >
+      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityHint={`${label} this item`}>
+        <Animated.View style={[styles.pill, { backgroundColor: color }, pillStyle]}>
+          <Icon width={20} height={20} color={textColor} />
+          <Text style={[styles.pillText, { color: textColor }]}>{label}</Text>
+        </Animated.View>
+      </Pressable>
     </View>
   );
 }
@@ -334,7 +417,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   swipeAction: {
-    width: 160,
+    width: ACTION_WIDTH,
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
