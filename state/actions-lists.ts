@@ -118,11 +118,48 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
   }
 
   // update the items in the list
-  listItems?.forEach((item) => {
-    updateItem(listId, item.listItemId, item, fromServer);
-  });
+  if (fromServer) {
+    if (listItems) {
+      mergeServerItems(listId, listItems);
+    }
+  } else {
+    listItems?.forEach((item) => {
+      updateItem(listId, item.listItemId, item, fromServer);
+    });
+  }
 
   return listId;
+}
+
+/**
+ * Merges the items sent by the server into the list in one go:
+ * new items are added, newer ones replace the local copies,
+ * the local changes not synced yet are kept
+ *
+ * @param {string} listId  list id
+ * @param {Item[]} serverItems  all the list items from the server
+ */
+function mergeServerItems(listId: string, serverItems: Item[]) {
+  const localItems = _lists$[listId].listItems.peek() ?? [];
+  const localById = new Map(localItems.map((item) => [item.listItemId, item]));
+  const serverIds = new Set(serverItems.map((item) => item.listItemId));
+
+  const merged = serverItems.map((serverItem) => {
+    const local = localById.get(serverItem.listItemId);
+    if (local?.updatedAt && serverItem.updatedAt && local.updatedAt > serverItem.updatedAt) {
+      return local;
+    }
+    return { ...local, ...serverItem, listId };
+  });
+
+  // created here and not on the server yet
+  localItems.forEach((item) => {
+    if (!serverIds.has(item.listItemId)) {
+      merged.push(item);
+    }
+  });
+
+  _lists$[listId].listItems.set(merged);
 }
 
 /**
