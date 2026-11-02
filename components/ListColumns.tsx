@@ -18,7 +18,8 @@ interface ListColumnsProps {
 const TabsScrollView = wrapScrollView(ScrollView);
 
 export function ListColumns({ lists, selectedList }: ListColumnsProps) {
-  const [activeList, setActiveList] = useState<string>(selectedList || lists[0].listId);
+  // a new user has no lists yet
+  const [activeList, setActiveList] = useState<string | undefined>(selectedList ?? lists[0]?.listId);
   const pagerRef = useRef<PagerView>(null);
 
   function selectList(listId: string) {
