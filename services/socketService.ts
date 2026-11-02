@@ -4,13 +4,16 @@ import NetInfo from '@react-native-community/netinfo';
 
 // state
 import { observe } from '@legendapp/state';
-import { queue$ as _queue$, user$ as _user$, lists$ as _lists$, connectionStatus$ } from '@/state/state';
+import { queue$ as _queue$, user$ as _user$, connectionStatus$, pendingShare$ } from '@/state/state';
 import { queueOperation } from '@/state/actions-queue';
 import { updateUser } from '@/state/actions-user';
 import { updateList } from '@/state/actions-lists';
 
 // types
 import { QueuedOperation } from '@/types/QueuedOperation';
+
+// replies to the commands, not the list updates
+const LIST_COMMANDS = ['list:join', 'list:leave', 'list:view'];
 
 class SocketService {
   private socket: Socket | null = null;
@@ -86,15 +89,14 @@ class SocketService {
     this.socket.on('error', this.handleDataError);
 
     this.socket.on('auth', this.handleAuthUpdate);
+    this.socket.on('list:join', this.handleListJoin);
 
-    // Set up list update listeners
-    this.setupListListeners();
-  }
-
-  setupListListeners() {
-    const lists = Object.keys(_lists$.get());
-    lists.forEach((listId) => {
-      this.socket?.on(`list:${listId}`, this.handleListUpdate);
+    // the server sends the updates of every list the user is in as `list:<listId>`,
+    // including the lists created or joined after the connection
+    this.socket.onAny((event: string, message: any) => {
+      if (event.startsWith('list:') && !LIST_COMMANDS.includes(event)) {
+        this.handleListUpdate(message);
+      }
     });
   }
 
@@ -128,9 +130,13 @@ class SocketService {
     }
   };
 
-  handleDataError = (data: Error) => {
-    console.error('WebSocket data error:', data);
-    connectionStatus$.errors.push(data.message);
+  // the server reports the failed messages as { event, error }
+  handleDataError = (data: { event?: string; error?: string }) => {
+    console.warn('WebSocket data error:', data);
+    if (data?.event === 'list:join') {
+      pendingShare$.error.set(data.error ?? 'Could not join the list');
+    }
+    connectionStatus$.errors.push(data?.error ?? 'Unknown error');
   };
 
   handleAuthUpdate = (message: any) => {
@@ -156,6 +162,12 @@ class SocketService {
         updateList(list.listId, list, true);
       });
     }
+
+    // the token may be new since the last time, or the server may have lost it
+    const expo_push_token = _user$.expo_push_token?.get();
+    if (expo_push_token) {
+      queueOperation('user:update', { expo_push_token });
+    }
   };
 
   handleListUpdate = (message: any) => {
@@ -165,14 +177,21 @@ class SocketService {
     updateList(listId, changes, true);
   };
 
-  subscribeToList(listId: string) {
-    this.socket?.emit('subscribe', { listId });
-    this.socket?.on(`list:${listId}`, this.handleListUpdate);
-  }
+  handleListJoin = (message: any) => {
+    const { joinedList } = message || {};
+    if (joinedList?.listId) {
+      updateList(joinedList.listId, joinedList, true);
+    }
+  };
 
-  unsubscribeFromList(listId: string) {
-    this.socket?.emit('unsubscribe', { listId });
-    this.socket?.off(`list:${listId}`);
+  /**
+   * Sends right away, or not at all when offline:
+   * for the messages that make no sense later, like heartbeats
+   */
+  sendNow(event: string, data: any) {
+    if (this.socket?.connected) {
+      this.socket.emit(event, data);
+    }
   }
 
   emit(event: string, data: any) {

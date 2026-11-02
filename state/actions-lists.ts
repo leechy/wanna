@@ -28,11 +28,11 @@ export async function addList(list: Partial<List>, updateServer = true) {
     name,
     type,
     deadline: list.deadline,
-    active: list.active || true,
-    hideCompleted: list.hideCompleted || true,
-    notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
-    notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
-    notifyOnListShared: list.notifyOnListShared || true,
+    active: list.active ?? true,
+    hideCompleted: list.hideCompleted ?? true,
+    notifyOnListItemsUpdate: list.notifyOnListItemsUpdate ?? true,
+    notifyOnItemStateUpdate: list.notifyOnItemStateUpdate ?? true,
+    notifyOnListShared: list.notifyOnListShared ?? true,
     createdAt: now,
     updatedAt: now,
     deleted: false,
@@ -46,9 +46,9 @@ export async function addList(list: Partial<List>, updateServer = true) {
       name,
       type,
       deadline: list.deadline,
-      notifyOnListItemsUpdate: list.notifyOnListItemsUpdate || true,
-      notifyOnItemStateUpdate: list.notifyOnItemStateUpdate || true,
-      notifyOnListShared: list.notifyOnListShared || true,
+      notifyOnListItemsUpdate: list.notifyOnListItemsUpdate ?? true,
+      notifyOnItemStateUpdate: list.notifyOnItemStateUpdate ?? true,
+      notifyOnListShared: list.notifyOnListShared ?? true,
     });
   }
 
@@ -64,21 +64,42 @@ export async function addList(list: Partial<List>, updateServer = true) {
  * @returns {void}
  */
 export async function updateList(listId: string, update: Partial<List>, fromServer = false) {
-  const { users, listItems, ...updatedData } = update;
-  // check that the list exists in the state
-  // and if not, create one instead
-  if (!_lists$[listId]) {
-    console.warn('List not found, creating new one', { listId, update });
-    addList({ listId, ...update }, false);
-    return;
+  const { users, listItems, sessions, ...updatedData } = update;
+
+  if (!_lists$[listId].peek()) {
+    if (!fromServer) {
+      console.warn('List not found and not updated', listId);
+      return;
+    }
+    // a list shared with the user or created on another device
+    _lists$[listId].set({
+      active: true,
+      completed: false,
+      deleted: false,
+      ...updatedData,
+      users: users ?? [],
+      sessions: sessions ?? [],
+      listItems: listItems ?? [],
+    } as List);
+    return listId;
   }
+
+  // members and shopping trips are owned by the server,
+  // they change without touching the list updatedAt
+  if (fromServer) {
+    _lists$[listId].assign({
+      ...(users && { users }),
+      sessions: sessions ?? [],
+    });
+  }
+
   // check that the incoming list data from the server is not older to update
   const stateUpdatedAt = _lists$[listId]?.updatedAt?.get();
   if (update.updatedAt && stateUpdatedAt && update.updatedAt <= stateUpdatedAt) {
     console.warn('Incoming list data is older', listId + ':', update.updatedAt, '<=', stateUpdatedAt);
   } else {
     _lists$[listId]?.assign({
-      ...update,
+      ...updatedData,
       updatedAt: update.updatedAt || new Date().toISOString(),
     });
 
@@ -186,7 +207,12 @@ export async function updateItem(listId: string, listItemId: string, update: Par
 
   const itemIndex = listItems.findIndex((item) => item.listItemId === listItemId);
   if (itemIndex < 0) {
-    console.warn('Item not found and not updated', listItemId);
+    if (fromServer) {
+      // added by another member
+      _lists$[listId].listItems.push({ ...update, listId, listItemId } as Item);
+    } else {
+      console.warn('Item not found and not updated', listItemId);
+    }
     return;
   }
 
@@ -272,6 +298,28 @@ export async function markItemAsCompleted(listId: string, listItemId: string, co
       completedAt: new Date().toISOString(),
     });
   }
+}
+
+/**
+ * The shopper is done: everything in the cart is bought.
+ * The server ends the shopping trip and buys the cart itself,
+ * so the items are only updated locally here.
+ *
+ * @param {string} listId  list id
+ * @returns {void}
+ */
+export function checkoutCart(listId: string) {
+  const now = new Date().toISOString();
+  _lists$[listId].listItems.get()?.forEach((item, index) => {
+    if (item.ongoing && !item.completed && !item.deleted) {
+      _lists$[listId].listItems[index].assign({ completed: true, ongoing: false, completedAt: now });
+    }
+  });
+
+  // recreate items to trigger reactivity
+  _lists$[listId].listItems.set([...(_lists$[listId].listItems.get() || [])]);
+
+  queueOperation('session:end', { listId });
 }
 
 /**

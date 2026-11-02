@@ -23,6 +23,14 @@ export type Item = {
   completed?: boolean;
   completedAt?: string | null;
 
+  // who added the item, gets asked when it's out of stock
+  addedById?: string | null;
+  unavailable?: boolean;
+  unavailableNote?: string | null;
+  unavailableReply?: string | null;
+  // the shopping trip the item was picked in
+  sessionId?: string | null;
+
   sortOrder?: number;
 
   deleted?: boolean;

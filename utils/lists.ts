@@ -1,4 +1,6 @@
 import { Item } from '@/types/Item';
+import { List } from '@/types/list';
+import type { Href } from 'expo-router';
 import { ListItem } from '@/types/listItem';
 import { humanDate } from './dates';
 
@@ -106,4 +108,16 @@ export function groupItemsByCompletedAt(items: ListItem[]): ListItem[] {
       };
       return [...acc, groupItem, ...groups[groupId]];
     }, [] as ListItem[]);
+}
+
+/**
+ * The screen of the list, by the list type
+ *
+ * @param {List} list  list
+ * @returns {string}  route path
+ */
+export function listPath(list: Pick<List, 'listId' | 'type'>): Href {
+  return list.type === 'project'
+    ? { pathname: '/projects/[list]', params: { list: list.listId } }
+    : { pathname: '/shopping/[list]', params: { list: list.listId } };
 }

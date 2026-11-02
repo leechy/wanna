@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$ } from '@/state/state';
 import {
+  checkoutCart,
   duplicateCompletedItem,
   markItemAsCompleted,
   markItemAsDeleted,
@@ -13,6 +14,7 @@ import {
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
+import { useShoppingTrip } from '@/hooks/useShoppingTrip';
 
 // components
 import Page from '@/components/Page';
@@ -24,6 +26,7 @@ import { ThemedText } from '@/components/ThemedText';
 import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
 import ShareMenu from '@/components/ShareMenu';
+import { ShoppingNow } from '@/components/ShoppingNow';
 
 import { globalStyles } from '@/constants/GlobalStyles';
 
@@ -36,6 +39,8 @@ function ShoppingListScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? _lists$[listId]?.get() : null;
+
+  const trip = useShoppingTrip(listId);
 
   const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
 
@@ -86,7 +91,7 @@ function ShoppingListScreen() {
   }
 
   function checkoutBasket() {
-    cartItems?.forEach((item) => markItemAsCompleted(listId, item.id, true));
+    checkoutCart(listId);
   }
 
   function restoreItem(item: ListItem) {
@@ -166,6 +171,7 @@ function ShoppingListScreen() {
           </Pressable>
         </View>
       </ThemedView>
+      <ShoppingNow names={trip.others} />
 
       <Columns blocks={listData?.completed ? blocks.reverse() : blocks} paddingBottom={64} openBlock={0} />
       {!listData?.completed && (

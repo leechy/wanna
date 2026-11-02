@@ -10,6 +10,7 @@ export type User = {
   // notification tokens
   expo_push_token?: string;
   device_push_token?: string;
+  notificationStatus?: NotificationStatus;
 
   // settings
   notifyOnListShared?: boolean;
@@ -17,10 +18,4 @@ export type User = {
   notifyOnItemStateUpdate?: boolean;
 } | null;
 
-export type UserState = {
-  session: User | null;
-  id: string | null;
-  expoPushToken: string;
-  devicePushToken: string;
-  notificationStatus: 'undetermined' | 'granted' | 'denied' | 'not-supported';
-};
+export type NotificationStatus = 'undetermined' | 'granted' | 'denied' | 'not-supported';

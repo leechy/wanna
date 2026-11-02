@@ -51,6 +51,12 @@ syncObservable(
   })
 );
 
+// the shared list link the app was opened with, kept through the sign-in
+export const pendingShare$ = observable<{ shareId: string | null; error: string | null }>({
+  shareId: null,
+  error: null,
+});
+
 // Connection state observable
 export const connectionStatus$ = observable<ConnectionState>({
   isConnected: false,

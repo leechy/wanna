@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useSelector } from '@legendapp/state/react';
 import { createUser } from '@/state/actions-user';
-import { user$ as _user$ } from '@/state/state';
+import { pendingShare$, user$ as _user$ } from '@/state/state';
 
 // components
 import { Redirect, Stack } from 'expo-router';
@@ -23,8 +23,13 @@ export default function SignInScreen() {
   };
 
   const user = useSelector(() => _user$.get());
+  const sharedListId = useSelector(() => pendingShare$.shareId.get());
 
   if (user?.uid) {
+    // came here by a shared list link
+    if (sharedListId) {
+      return <Redirect href={{ pathname: '/shared/[shareId]', params: { shareId: sharedListId } }} />;
+    }
     return <Redirect href="/(tabs)/wishes" />;
   }
 

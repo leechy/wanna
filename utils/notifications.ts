@@ -11,23 +11,25 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { user$ as _user$ } from '@/state/state';
+import { queueOperation } from '@/state/actions-queue';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
-    shouldSetBadge: true,
+    shouldSetBadge: false,
   }),
 });
 
-function handleRegistrationError(errorMessage: string) {
-  console.error(errorMessage);
-  throw new Error(errorMessage);
-}
-
-export async function registerForPushNotificationsAsync(): Promise<[string, string] | void> {
+/**
+ * Asks for the permission if needed and returns the Expo push token
+ *
+ * @returns {string | null}  token, or null when not allowed or not possible
+ */
+async function getExpoPushToken(): Promise<string | null> {
   if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
+    await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
@@ -35,94 +37,44 @@ export async function registerForPushNotificationsAsync(): Promise<[string, stri
     });
   }
 
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
-      return;
-    }
-
-    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-
-    if (!projectId) {
-      handleRegistrationError('Project ID not found');
-    }
-
-    try {
-      const expoPushToken = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-      const devicePushToken = (await Notifications.getDevicePushTokenAsync()).data;
-      return [expoPushToken, devicePushToken];
-    } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
+  if (!Device.isDevice) {
     _user$.notificationStatus.set('not-supported');
-    handleRegistrationError('Must use physical device for push notifications');
+    return null;
   }
+
+  let { status } = await Notifications.getPermissionsAsync();
+  if (status === 'undetermined') {
+    ({ status } = await Notifications.requestPermissionsAsync());
+  }
+  _user$.notificationStatus.set(status);
+  if (status !== 'granted') {
+    return null;
+  }
+
+  const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+  if (!projectId) {
+    console.error('Push notifications: EAS project id not found');
+    return null;
+  }
+
+  return (await Notifications.getExpoPushTokenAsync({ projectId })).data;
 }
 
 /**
- * Register the device for push notifications
- * Call this function when the user logs in and have some shared list
- * or when the user changes the settings for push notifications
+ * Registers the device for push notifications and sends the token to the server.
+ * Call it when notifications start to make sense — the user has a shared list —
+ * so the permission prompt comes with a reason.
  *
  * @returns {void}
  */
 export async function registerForPushNotifications() {
-  const currentStatus = await checkPushNotificationsStatus();
-  const stateStatus = _user$.notificationStatus?.get();
-
-  if (currentStatus === 'undetermined' && stateStatus === 'undetermined') {
-    registerForPushNotificationsAsync()
-      .then((tokens) => {
-        if (tokens) {
-          const [expoPushToken, devicePushToken] = tokens;
-          _user$.expoPushToken.set(expoPushToken);
-          _user$.devicePushToken.set(devicePushToken);
-          _user$.notificationStatus.set('granted');
-        }
-      })
-      .catch((error: any) => console.error(`Error getting notifications push tokens: ${error}`));
-  } else {
-    const deviceToken = _user$.devicePushToken?.get();
-    if (!deviceToken || deviceToken === '') {
-      Notifications.getDevicePushTokenAsync().then((token) => {
-        if (token) {
-          _user$.devicePushToken.set(token.data);
-        }
-      });
+  try {
+    const token = await getExpoPushToken();
+    if (token && token !== _user$.expo_push_token?.get()) {
+      _user$.expo_push_token.set(token);
+      queueOperation('user:update', { expo_push_token: token });
     }
-    const expoToken = _user$.expoPushToken?.get();
-    if (!expoToken || expoToken === '') {
-      Notifications.getExpoPushTokenAsync().then((token) => {
-        if (token) {
-          _user$.expoPushToken.set(token.data);
-          _user$.notificationStatus.set('granted');
-        }
-      });
-    }
-    console.log(
-      'Push notifications already registered',
-      currentStatus,
-      stateStatus,
-      _user$.devicePushToken?.get(),
-      _user$.expoPushToken?.get()
-    );
+  } catch (error) {
+    console.error('Error getting the push token:', error);
   }
-}
-
-/**
- * Check is the device is already registered for push notifications
- */
-export async function checkPushNotificationsStatus() {
-  const { status } = await Notifications.getPermissionsAsync();
-  return status;
 }

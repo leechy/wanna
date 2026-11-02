@@ -1,9 +1,5 @@
 // hooks
-import {
-  useEffect,
-  // useRef,
-  // useState
-} from 'react';
+import { useEffect } from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
 
@@ -12,21 +8,24 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
 import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 
 // navigation
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 
 // state
 import '@/state/state';
 import { useSelector } from '@legendapp/state/react';
-import { user$ } from '@/state/state';
+import { lists$, user$ } from '@/state/state';
 
 // system
 import 'react-native-reanimated';
-// import * as Notifications from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
 // services
 import { socketService } from '@/services/socketService';
+import { registerForPushNotifications } from '@/utils/notifications';
+import { trackEvent } from '@/utils/analytics';
+import { listPath } from '@/utils/lists';
 
 // the screen under the others when the app opens on a deep link
 export const unstable_settings = { anchor: '(tabs)' };
@@ -35,31 +34,6 @@ export const unstable_settings = { anchor: '(tabs)' };
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // Register for push notifications
-  // const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
-  // const notificationListener = useRef<Notifications.EventSubscription>();
-  // const responseListener = useRef<Notifications.EventSubscription>();
-
-  // useEffect(() => {
-  //   console.log('Notification in the state', notification);
-  //   // This listener is fired whenever a notification is received while the app is foregrounded
-  //   notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-  //     setNotification(notification);
-  //     console.log('Notification received while in the foreground', notification);
-  //   });
-
-  //   // This listener is fired whenever a user taps on or interacts with a notification
-  //   // (works when app is foregrounded, backgrounded, or killed)
-  //   responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-  //     console.log('Notification tapped', response);
-  //   });
-
-  //   return () => {
-  //     notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
-  //     responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
-  //   };
-  // }, []);
-
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     'GreatVibes-Regular': require('../assets/fonts/GreatVibes-Regular.ttf'),
@@ -86,9 +60,28 @@ export default function RootLayout() {
         socketService.dispose();
       };
     }
-  }, [user]);
+  }, [user?.uid]);
 
-  console.log('Usrer', user);
+  // ask for notifications once there is somebody to get them from
+  const hasSharedList = useSelector(() =>
+    Object.values(lists$.get() ?? {}).some((list) => !list.deleted && (list.users?.length ?? 0) > 1)
+  );
+  useEffect(() => {
+    if (user?.uid && hasSharedList) {
+      registerForPushNotifications();
+    }
+  }, [user?.uid, hasSharedList]);
+
+  // tapping a notification opens its list
+  const notificationResponse = Notifications.useLastNotificationResponse();
+  useEffect(() => {
+    const data = notificationResponse?.notification.request.content.data;
+    const list = typeof data?.listId === 'string' ? lists$[data.listId].peek() : undefined;
+    if (list) {
+      router.push(listPath(list));
+      trackEvent('push_opened', { listId: list.listId }, { action: data?.action ?? null });
+    }
+  }, [notificationResponse]);
 
   if (!loaded) {
     return null;
@@ -101,6 +94,7 @@ export default function RootLayout() {
         <Stack.Screen name="settings" />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="sign-in" />
+        <Stack.Screen name="shared/[shareId]" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
