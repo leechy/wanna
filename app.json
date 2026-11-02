@@ -7,7 +7,11 @@
     "scheme": "wanna",
     "newArchEnabled": true,
     "githubUrl": "https://github.com/leechy/wanna",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "userInterfaceStyle": "automatic",
     "primaryColor": "#3a1fc1",
     "notification": {
@@ -24,11 +28,15 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           },
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       },
@@ -40,7 +48,9 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "associatedDomains": ["applinks:app.wanna-wanna.com"]
+      "associatedDomains": [
+        "applinks:app.wanna-wanna.com"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -61,7 +71,10 @@
               "pathPrefix": "/shared"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -86,7 +99,9 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/GreatVibes-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/GreatVibes-Regular.ttf"
+          ]
         }
       ],
       [
@@ -118,7 +133,8 @@
             }
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
