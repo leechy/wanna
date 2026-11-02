@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { DropdownMenu } from '@/components/DropdownMenu';
 import NewItem from '@/components/NewItem';
 import ShoppingListItem from '@/components/ShoppingListItem';
-import { ShoppingItemRow, type ShoppingItemActions } from '@/components/ShoppingItemRow';
+import { ShoppingItemRow, closeOpenShoppingRow, type ShoppingItemActions } from '@/components/ShoppingItemRow';
 import ProjectListItem from '@/components/ProjectListItem';
 import ListItemLabel from '@/components/ListItemLabel';
 import ContactListItem from '@/components/ContactListItem';
@@ -298,6 +298,7 @@ export function ItemsList({
         renderItem={renderItem}
         style={[styles.list]}
         inverted={inverted}
+        onScrollBeginDrag={shoppingActions ? closeOpenShoppingRow : undefined}
         ListFooterComponent={() => <View style={{ height: (paddingBottom || 0) + 16 }} />}
       />
     </View>

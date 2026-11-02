@@ -4,7 +4,13 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
 import { AccessibilityActionEvent, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Animated, { interpolate, useAnimatedReaction, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import Animated, {
+  interpolate,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  type SharedValue,
+} from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import * as Haptics from 'expo-haptics';
 import ReanimatedSwipeable, {
@@ -51,10 +57,23 @@ interface ShoppingItemRowProps extends ShoppingItemActions {
 
 const QUICK_REPLIES = ['Any is fine', 'Skip it'];
 
-// a short swipe reveals the button and keeps it open,
+// a short swipe reveals the button and keeps it open (the row stops by the button),
 // a swipe past FULL_SWIPE runs the action right away
-const ACTION_WIDTH = 160;
-const FULL_SWIPE = 240;
+const OPEN_THRESHOLD = 40;
+const FULL_SWIPE = 220;
+// the release of a swipe is reported as a press too, it must not toggle the item
+const PRESS_AFTER_SWIPE_MS = 350;
+
+// like on iOS, only one row has its buttons revealed
+let openRow: SwipeableMethods | null = null;
+
+/**
+ * Puts back the row with the revealed buttons, e.g. when the list scrolls
+ */
+export function closeOpenShoppingRow() {
+  openRow?.close();
+  openRow = null;
+}
 
 /**
  * A shopping list item: tap to pick, swipe left to delete,
@@ -87,6 +106,8 @@ export function ShoppingItemRow({
   const swipeableRef = useRef<SwipeableMethods>(null);
   const isOpen = useRef(false);
   const isFullSwipe = useRef(false);
+  const isDragging = useRef(false);
+  const swipeEndedAt = useRef(0);
 
   const bought = Boolean(item.completed);
   const picked = Boolean(item.ongoing) && !bought;
@@ -120,15 +141,43 @@ export function ShoppingItemRow({
     }
   }
 
+  function onSwipeStart() {
+    isDragging.current = true;
+    if (openRow && openRow !== swipeableRef.current) {
+      openRow.close();
+    }
+  }
+
+  function onSwipeEnd() {
+    isDragging.current = false;
+    swipeEndedAt.current = Date.now();
+  }
+
   // released: past the line it's done, otherwise the button stays on view
   function onSwipeableWillOpen(direction: SwipeDirection) {
+    onSwipeEnd();
     if (isFullSwipe.current) {
       isFullSwipe.current = false;
       runSwipeAction(direction);
     }
   }
 
+  function onSwipeableOpen() {
+    isOpen.current = true;
+    openRow = swipeableRef.current;
+  }
+
+  function onSwipeableClose() {
+    isOpen.current = false;
+    if (openRow === swipeableRef.current) {
+      openRow = null;
+    }
+  }
+
   function onRowPress() {
+    if (isDragging.current || Date.now() - swipeEndedAt.current < PRESS_AFTER_SWIPE_MS) {
+      return;
+    }
     // a tap on the row with a button revealed just puts the row back
     if (isOpen.current) {
       swipeableRef.current?.close();
@@ -176,14 +225,17 @@ export function ShoppingItemRow({
       ref={swipeableRef}
       containerStyle={[styles.container, itemBorderRadius]}
       friction={1}
-      leftThreshold={ACTION_WIDTH / 2}
-      rightThreshold={ACTION_WIDTH / 2}
+      leftThreshold={OPEN_THRESHOLD}
+      rightThreshold={OPEN_THRESHOLD}
       overshootLeft={true}
       overshootRight={true}
       overshootFriction={1}
+      onSwipeableOpenStartDrag={onSwipeStart}
+      onSwipeableCloseStartDrag={onSwipeStart}
       onSwipeableWillOpen={onSwipeableWillOpen}
-      onSwipeableOpen={() => (isOpen.current = true)}
-      onSwipeableClose={() => (isOpen.current = false)}
+      onSwipeableWillClose={onSwipeEnd}
+      onSwipeableOpen={onSwipeableOpen}
+      onSwipeableClose={onSwipeableClose}
       renderLeftActions={(progress, translation) => (
         <SwipeAction
           {...rightSwipe}
@@ -305,25 +357,26 @@ function SwipeAction({
     }
   );
 
+  // the row opens as wide as the pill
+  const openWidth = useSharedValue(FULL_SWIPE / 2);
+
   const pillStyle = useAnimatedStyle(() => {
     const distance = Math.abs(translation.value);
     // past the open position the pill travels with the edge of the row
-    const follow = Math.max(0, distance - ACTION_WIDTH) * (align === 'left' ? 1 : -1);
+    const follow = Math.max(0, distance - openWidth.value) * (align === 'left' ? 1 : -1);
     return {
       opacity: interpolate(progress.value, [0, 0.4, 1], [0, 0.6, 1], 'clamp'),
       transform: [
         { translateX: follow },
-        { scale: interpolate(distance, [0, ACTION_WIDTH, FULL_SWIPE], [0.7, 1, 1.08], 'clamp') },
+        { scale: interpolate(distance, [0, openWidth.value, FULL_SWIPE], [0.7, 1, 1.08], 'clamp') },
       ],
     };
   });
 
   return (
     <View
-      style={[
-        styles.swipeAction,
-        { alignItems: align === 'left' ? 'flex-end' : 'flex-start' },
-      ]}
+      style={[styles.swipeAction, { alignItems: align === 'left' ? 'flex-end' : 'flex-start' }]}
+      onLayout={(event) => openWidth.set(event.nativeEvent.layout.width)}
     >
       <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityHint={`${label} this item`}>
         <Animated.View style={[styles.pill, { backgroundColor: color }, pillStyle]}>
@@ -417,7 +470,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   swipeAction: {
-    width: ACTION_WIDTH,
+    // full height of the row, as wide as the pill
+    alignSelf: 'stretch',
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
