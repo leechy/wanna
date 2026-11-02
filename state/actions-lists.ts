@@ -36,6 +36,7 @@ export async function addList(list: Partial<List>, updateServer = true) {
     createdAt: now,
     updatedAt: now,
     deleted: false,
+    listItems: [],
   });
 
   // add the new list to the server
@@ -199,6 +200,10 @@ export async function addItem(listId: string, item: Partial<Item>) {
  * @returns {void}
  */
 export async function updateItem(listId: string, listItemId: string, update: Partial<Item>, fromServer = false) {
+  // lists created before there were items have no array yet
+  if (fromServer && _lists$[listId].peek() && !_lists$[listId].listItems.peek()) {
+    _lists$[listId].listItems.set([]);
+  }
   const listItems = _lists$[listId]?.listItems.get();
   if (!listItems) {
     console.warn('No list items found for the list:', listId, '. List item not updated:', listItemId);
