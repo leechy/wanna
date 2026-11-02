@@ -104,9 +104,11 @@ class SocketService {
     connectionStatus$.lastConnected.set(new Date().toISOString());
     this.reconnectAttempts = 0;
 
-    if (_user$.auth.get()) {
-      // Sync user data if there is user already
-      queueOperation('auth', { auth: _user$.auth.get() });
+    const { uid, auth, names } = _user$.get() || {};
+    if (auth) {
+      // Sync user data if there is user already, the server signs up
+      // the user with uid + names when it doesn't know the token yet
+      queueOperation('auth', { uid, auth, names });
     }
 
     // and process queue
