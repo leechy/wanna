@@ -15,9 +15,6 @@ import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 import type { NativeStackNavigationOptions } from 'expo-router';
 import { Platform } from 'react-native';
 
-// the screen under the others when the app opens on a deep link
-export const unstable_settings = { anchor: 'wishes' };
-
 export const TAB_BAR_HEIGHT = 66;
 
 export const ModalOptions: NativeStackNavigationOptions = {
