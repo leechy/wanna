@@ -2,6 +2,14 @@
 
 Newest entries on top. Each entry: what changed, where (repo + commit), and any decision or surprise worth remembering.
 
+## 2026-11-02 — First end-to-end trip
+
+Simulator (Leechy) + a scripted second member (Andrey (test)) on the production server: join by link → items added by the other member appear live → "Andrey (test) is shopping now" shows up on the first item in the cart → an item added during the trip reaches the shopper → checkout buys the cart and the status disappears.
+
+Bugs found on the way, fixed in **wanna** `5b3feee`, `1da575a`: lists created on the phone had no items array, and items from the server were applied one by one and got lost — now merged in one assignment.
+
+Not checked yet: push delivery (needs a real phone), the 30-minute timeout, the universal link.
+
 ## 2026-11-02 — Client on the new protocol
 
 **wanna** — Expo SDK 52 → 58 (one SDK at a time, `b08dccc`…`316fc0d`), then `e924d78`: shared lists sync (items from other members, lists joined later), push token sent after the first shared list, heartbeat + "X is shopping now", checkout ends the trip, `/shared/<shareId>` route.

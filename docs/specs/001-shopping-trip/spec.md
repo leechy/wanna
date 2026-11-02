@@ -141,3 +141,7 @@ No store database is needed: when the session starts we remember the current loc
 ## Open questions
 
 1. How to merge shoppers into one session once we have location: radius, time, an explicit "I'm with Masha"?
+
+## Ideas
+
+- A default list for a new user who didn't come by a shared link, so the first screen isn't empty.
