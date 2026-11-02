@@ -133,7 +133,8 @@
           "icon": "./assets/icon-notifications.png",
           "color": "#3a1fc1"
         }
-      ]
+      ],
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true

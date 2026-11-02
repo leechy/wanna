@@ -14,12 +14,10 @@ import {
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
-  useColorScheme,
   useWindowDimensions,
   View,
 } from 'react-native';
 import { PressableArea } from './PressableArea';
-import * as NavigationBar from 'expo-navigation-bar';
 import CheckIcon from '@/assets/symbols/check.svg';
 
 // types and constants
@@ -64,19 +62,7 @@ export function DropdownMenu({
   const disabledColor = useThemeColor({}, 'disabled');
   const touchableColor = useThemeColor({}, 'touchable');
   const barelyVisibleColor = useThemeColor({}, 'barelyVisible');
-  const tabBarBackground = useThemeColor({}, 'tabBarBackground');
 
-  const colorScheme = useColorScheme();
-
-  // set the color for the navigation bar
-  useEffect(() => {
-    if (Platform.OS === 'android' && colorScheme) {
-      setTimeout(() => {
-        NavigationBar.setBackgroundColorAsync(tabBarBackground);
-        NavigationBar.setButtonStyleAsync(colorScheme === 'dark' ? 'light' : 'dark');
-      }, 80);
-    }
-  }, [colorScheme, isOpen, tabBarBackground]);
 
   function calculatePosition() {
     if (isHeaderMenu) {

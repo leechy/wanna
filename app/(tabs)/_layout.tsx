@@ -12,7 +12,7 @@ import WishesIcon from '@/assets/symbols/wishes-icon.svg';
 import ShoppingIcon from '@/assets/symbols/shopping-icon.svg';
 import ProjectsIcon from '@/assets/symbols/projects-icon.svg';
 
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import type { NativeStackNavigationOptions } from 'expo-router';
 import { Platform } from 'react-native';
 
 export const TAB_BAR_HEIGHT = 66;

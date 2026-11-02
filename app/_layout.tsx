@@ -8,7 +8,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
 
 // styles
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
 import { Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { Colors } from '@/constants/Colors';
 
@@ -24,7 +24,6 @@ import { user$ } from '@/state/state';
 import 'react-native-reanimated';
 // import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
-import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 
@@ -69,13 +68,6 @@ export default function RootLayout() {
   });
 
   const user = useSelector(() => user$.get());
-
-  // set the color for the navigation bar
-  useEffect(() => {
-    if (Platform.OS === 'android' && colorScheme) {
-      NavigationBar.setBackgroundColorAsync(Colors[colorScheme].tabBarBackground);
-    }
-  }, [colorScheme]);
 
   useEffect(() => {
     if (loaded) {

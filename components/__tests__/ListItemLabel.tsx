@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import type { ReactTestInstance } from 'react-test-renderer';
 import ListItemLabel from '../ListItemLabel';
 import { ListItem } from '@/types/listItem';
 import { Colors } from '@/constants/Colors';
@@ -50,7 +51,7 @@ describe('ListItemLabel', () => {
     );
     const date = getByTestId('item-label-calendar');
     expect(date.children[0]).toHaveProperty('type', 'CalendarIcon');
-    expect(date.children[1].props.style).toHaveProperty('[1].color', Colors['light'].danger);
+    expect((date.children[1] as ReactTestInstance).props.style).toHaveProperty('[1].color', Colors['light'].danger);
   });
 
   it('shows the list if set', () => {

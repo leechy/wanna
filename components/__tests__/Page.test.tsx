@@ -46,7 +46,7 @@ describe('Page component', () => {
       </Page>
     );
 
-    const pageView = getByTestId('child-view').parent.parent;
-    expect(pageView.props.style).toMatchObject({ marginTop: 20, flex: 1 });
+    const pageView = getByTestId('child-view').parent?.parent;
+    expect(pageView?.props.style).toMatchObject({ marginTop: 20, flex: 1 });
   });
 });
