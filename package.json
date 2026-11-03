@@ -21,6 +21,7 @@
     "@expo-google-fonts/montserrat": "^0.2.3",
     "@expo-google-fonts/nunito": "^0.2.3",
     "@expo/config-plugins": "~58.0.0",
+    "@expo/ui": "~58.0.26",
     "@expo/vector-icons": "^15.0.3",
     "@legendapp/state": "^3.0.0-beta.19",
     "@quidone/react-native-wheel-picker": "^1.7.2",

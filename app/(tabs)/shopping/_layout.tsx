@@ -1,4 +1,5 @@
 // components
+import { Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { ModalOptions } from '@/app/(tabs)/_layout';
 
@@ -15,7 +16,8 @@ export default function ShoppingLayout() {
         }}
       />
       <Stack.Screen name="[list]" />
-      <Stack.Screen name="list-modal" options={ModalOptions} />
+      {/* on iOS the header is native: its buttons come from Stack.Toolbar in the screen */}
+      <Stack.Screen name="list-modal" options={{ ...ModalOptions, headerShown: Platform.OS === 'ios' }} />
       <Stack.Screen name="item-modal" options={ModalOptions} />
     </Stack>
   );
