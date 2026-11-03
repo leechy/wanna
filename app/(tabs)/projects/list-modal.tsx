@@ -3,21 +3,18 @@ import { useEffect, useState } from 'react';
 import { lists$ as _lists$ } from '@/state/state';
 import { addList, updateList } from '@/state/actions-lists';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // components
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 import TitleInput from '@/components/TitleInput';
 import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
 import Checkbox from '@/components/Checkbox';
-import HeaderButton from '@/components/HeaderButton';
 import DateSelector from '@/components/DateSelector';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
-import { globalStyles } from '@/constants/GlobalStyles';
 
 export default function NewListModal() {
   const [name, setName] = useState('');
@@ -26,7 +23,6 @@ export default function NewListModal() {
   const [listItemsUpdate, setListItemsUpdate] = useState(true);
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
 
-  const { top: safeT } = useSafeAreaInsets();
 
   const params = useLocalSearchParams();
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
@@ -80,10 +76,7 @@ export default function NewListModal() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
-        {router.canGoBack() && <BackLink noIcon={true} parentTitle="Cancel" />}
-        <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />
-      </View>
+      <ModalHeader submitTitle={listId ? 'Update' : 'Create'} onSubmit={submitData} fallbackPath="/projects" />
       <View style={styles.container}>
         <View style={styles.properties}>
           <DateSelector

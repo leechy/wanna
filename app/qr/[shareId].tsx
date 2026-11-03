@@ -1,34 +1,29 @@
 // hooks
 import { useLocalSearchParams } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWindowDimensions } from 'react-native';
 
 // components
 import { Platform, StyleSheet, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { ThemedText } from '@/components/ThemedText';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 
 // utils
 import { shareLink } from '@/utils/share';
 
 // styles
-import { globalStyles } from '@/constants/GlobalStyles';
 
 /**
  * The QR code of the list's share link, to scan with "Join shared list" on another phone
  */
 export default function ListQrScreen() {
   const { shareId, name } = useLocalSearchParams<{ shareId: string; name?: string }>();
-  const { top: safeT } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const size = Math.min(width - 96, 320);
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
-        <BackLink noIcon={true} parentTitle="Done" />
-      </View>
+      <ModalHeader closeTitle="Done" />
       <View style={styles.container}>
         <ThemedText type="subtitle" style={styles.centered}>
           {name || 'Shared list'}

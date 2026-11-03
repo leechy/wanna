@@ -10,12 +10,11 @@ import { copyListLinkToClipboard } from '@/utils/share';
 import { getContacts } from '@/utils/contacts';
 
 // components
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ItemsList } from '@/components/ItemsList';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 import SmallButton from '@/components/SmallButton';
-import { globalStyles } from '@/constants/GlobalStyles';
 
 // icons
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
@@ -30,8 +29,8 @@ import { ListItem } from '@/types/listItem';
  */
 export default function ContactsScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
-  const { top: safeT } = useSafeAreaInsets();
 
+  const { bottom: safeB } = useSafeAreaInsets();
   const uid = useSelector(() => _user$.uid?.get());
   const list = useSelector(() => _lists$[listId]?.get());
   const contacts = useSelector(() =>
@@ -62,10 +61,9 @@ export default function ContactsScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
-        <BackLink noIcon={true} parentTitle="Cancel" />
-      </View>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ModalHeader />
+      {/* only the list scrolls, the hint and the QR button stay */}
+      <View style={[styles.container, { paddingBottom: safeB + 16 }]}>
         <ThemedText type="subtitle">Who to share with?</ThemedText>
         <ThemedText>
           {items.length
@@ -78,20 +76,27 @@ export default function ContactsScreen() {
           newItemIcon={CopyLinkIcon}
           actionHandler={invite}
           items={items}
+          style={styles.list}
         />
         <View style={styles.buttons}>
           <SmallButton title="Show QR code" icon={QrCodeIcon} onPress={showQrCode} />
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
     paddingTop: 24,
     gap: 16,
+  },
+  list: {
+    flex: 1,
+    // the list has its own side padding
+    marginHorizontal: -16,
   },
   buttons: {
     flexDirection: 'row',

@@ -19,6 +19,8 @@ export const TAB_BAR_HEIGHT = 66;
 
 export const ModalOptions: NativeStackNavigationOptions = {
   presentation: 'modal',
+  // on iOS the header is native, its buttons come from ModalHeader
+  headerShown: Platform.OS === 'ios',
   animation: Platform.OS === 'ios' ? 'slide_from_bottom' : 'fade_from_bottom',
 };
 

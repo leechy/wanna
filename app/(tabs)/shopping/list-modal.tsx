@@ -2,23 +2,19 @@
 import { useEffect, useState } from 'react';
 import { lists$ as _lists$ } from '@/state/state';
 import { addList, updateList } from '@/state/actions-lists';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { router, useLocalSearchParams } from 'expo-router';
 
 // components
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 import TitleInput from '@/components/TitleInput';
 import SmallButton from '@/components/SmallButton';
 import { ThemedText } from '@/components/ThemedText';
 import Checkbox from '@/components/Checkbox';
-import HeaderButton from '@/components/HeaderButton';
 import DateSelector from '@/components/DateSelector';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
-import { globalStyles } from '@/constants/GlobalStyles';
 
 export default function NewListModal() {
   const [name, setName] = useState('');
@@ -27,9 +23,6 @@ export default function NewListModal() {
   const [listItemsUpdate, setListItemsUpdate] = useState(true);
   const [itemStateUpdate, setItemStateUpdate] = useState(true);
 
-  const { top: safeT } = useSafeAreaInsets();
-  const backgroundColor = useThemeColor({}, 'background');
-  const primaryColor = useThemeColor({}, 'primary');
 
   const params = useLocalSearchParams();
   const listId: string = params?.listId ? (Array.isArray(params?.listId) ? params.listId[0] : params.listId) : '';
@@ -82,48 +75,7 @@ export default function NewListModal() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      {Platform.OS === 'ios' ? (
-        // system header buttons, glass on iOS 26
-        <>
-          <Stack.Screen
-            options={{
-              headerTitle: '',
-              headerTransparent: false,
-              headerShadowVisible: false,
-              headerStyle: { backgroundColor },
-              headerTintColor: primaryColor,
-            }}
-          />
-          <Stack.Toolbar placement="left">
-            <Stack.Toolbar.Button
-              icon="xmark"
-              onPress={() => router.back()}
-              accessibilityLabel="Cancel"
-              accessibilityHint="Closes without saving"
-            >
-              Cancel
-            </Stack.Toolbar.Button>
-          </Stack.Toolbar>
-          <Stack.Toolbar placement="right">
-            <Stack.Toolbar.Button
-              icon="checkmark"
-              variant="prominent"
-              tintColor={primaryColor}
-              onPress={submitData}
-              accessibilityLabel={listId ? 'Update the list' : 'Create the list'}
-              accessibilityHint="Saves the list and closes"
-            >
-              {listId ? 'Update' : 'Create'}
-            </Stack.Toolbar.Button>
-          </Stack.Toolbar>
-        </>
-      ) : (
-        // Android keeps the arrow with Cancel and a text button
-        <View style={[globalStyles.customHeader, { paddingTop: safeT + 12 }]}>
-          {router.canGoBack() && <BackLink parentTitle="Cancel" />}
-          <HeaderButton title={listId ? 'Update' : 'Create'} onPress={submitData} />
-        </View>
-      )}
+      <ModalHeader submitTitle={listId ? 'Update' : 'Create'} onSubmit={submitData} fallbackPath="/shopping" />
       <View style={styles.container}>
         <View style={styles.properties}>
           <DateSelector

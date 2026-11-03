@@ -17,6 +17,7 @@ import { invitations$, lists$, user$ } from '@/state/state';
 
 // system
 import 'react-native-reanimated';
+import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
@@ -102,9 +103,9 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="sign-in" />
         <Stack.Screen name="shared/[shareId]" />
-        <Stack.Screen name="join" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="qr/[shareId]" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="contacts/[listId]" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="join" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
+        <Stack.Screen name="qr/[shareId]" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
+        <Stack.Screen name="contacts/[listId]" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
         <Stack.Screen name="invitation/[listId]" />
       </Stack>
       <StatusBar style="auto" />

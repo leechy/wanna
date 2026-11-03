@@ -9,7 +9,7 @@ import { trackEvent } from '@/utils/analytics';
 import { convertItemsToListItems } from '@/utils/lists';
 
 // components
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Page from '@/components/Page';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -65,24 +65,31 @@ export default function InvitationScreen() {
         <ThemedText type="title">{list.name + ' '}</ThemedText>
       </ThemedView>
 
-      <ScrollView contentContainerStyle={styles.container}>
+      {/* only the list scrolls */}
+      <View style={styles.container}>
         <ThemedText>
           {invitedBy} invited you{members ? `, ${members} ${list.users?.length === 1 ? 'is' : 'are'} in the list` : ''}
         </ThemedText>
         {items.length ? (
-          <ItemsList items={items} />
+          <ItemsList items={items} style={styles.list} />
         ) : (
           <ThemedText style={styles.message}>The list is empty for now</ThemedText>
         )}
-      </ScrollView>
+      </View>
     </Page>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
     gap: 16,
+  },
+  list: {
+    flex: 1,
+    // the list has its own side padding
+    marginHorizontal: -16,
   },
   message: {
     padding: 16,

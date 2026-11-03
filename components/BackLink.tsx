@@ -24,9 +24,11 @@ interface BackLinkProps {
   noTitle?: boolean;
   noIcon?: boolean;
   path?: '/' | '/wishes' | '/shopping' | '/projects';
+  // where to go when there is no screen to go back to, e.g. a modal opened by a link
+  fallbackPath?: '/' | '/wishes' | '/shopping' | '/projects';
 }
 
-export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false, path }: BackLinkProps) {
+export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false, path, fallbackPath }: BackLinkProps) {
   const primaryColor = useThemeColor({}, 'primary');
   const backButtonColor = primaryColor + 'bb';
 
@@ -46,7 +48,7 @@ export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false,
     return routeTitles.home;
   }, [parentTitle, parent, listId]);
 
-  if (!router.canGoBack()) {
+  if (!router.canGoBack() && !fallbackPath) {
     return null;
   }
 
@@ -68,6 +70,8 @@ export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false,
           router.back();
         } else if (router.canDismiss()) {
           router.dismiss();
+        } else if (fallbackPath) {
+          router.replace(fallbackPath);
         }
       }}
     />

@@ -5,26 +5,23 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
 import { lists$ as _lists$, generateId } from '@/state/state';
 import { addItem, duplicateCompletedItem, updateItem } from '@/state/actions-lists';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
 
 // components
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View, type TextInputInstance } from 'react-native';
-import HeaderButton from '@/components/HeaderButton';
 import { ThemedInput } from '@/components/ThemedInput';
 import DateSelector from '@/components/DateSelector';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { ItemsList } from '@/components/ItemsList';
 import { ThemedText } from '@/components/ThemedText';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
-import { globalStyles } from '@/constants/GlobalStyles';
 import { Item } from '@/types/Item';
 import SmallButton from '@/components/SmallButton';
 
@@ -36,7 +33,6 @@ const qtyItems = [...Array(100).keys()]
   .reverse();
 
 function ItemModal() {
-  const { top: safeT } = useSafeAreaInsets();
 
   const primaryColor = useThemeColor({}, 'primary');
   const textColor = useThemeColor({}, 'text');
@@ -145,16 +141,12 @@ function ItemModal() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <View
-        style={[
-          globalStyles.customHeader,
-          { marginBottom: 0 },
-          Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {},
-        ]}
-      >
-        {router.canGoBack() && <BackLink noIcon={true} parentTitle="Cancel" />}
-        <HeaderButton title={listItemId ? 'Update' : 'Add'} onPress={() => submitData(true)} />
-      </View>
+      <ModalHeader
+        submitTitle={listItemId ? 'Update' : 'Add'}
+        onSubmit={() => submitData(true)}
+        fallbackPath="/shopping"
+        style={{ marginBottom: 0 }}
+      />
 
       <View style={styles.container}>
         <View>

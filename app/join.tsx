@@ -1,17 +1,16 @@
 // hooks
 import { useRef, useState } from 'react';
 import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCameraPermissions } from 'expo-camera';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { CameraView, type BarcodeScanningResult } from 'expo-camera';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedInput } from '@/components/ThemedInput';
 import SmallButton from '@/components/SmallButton';
-import { BackLink } from '@/components/BackLink';
+import ModalHeader from '@/components/ModalHeader';
 
 // utils
 import * as Clipboard from 'expo-clipboard';
@@ -19,7 +18,6 @@ import { parseShareId } from '@/utils/share';
 import { trackEvent } from '@/utils/analytics';
 
 // styles
-import { globalStyles } from '@/constants/GlobalStyles';
 
 /**
  * Joins a shared list by a pasted link or typed code, or by the QR code from another phone,
@@ -33,7 +31,6 @@ export default function JoinListScreen() {
   // the scanner reports the same code many times a second
   const joining = useRef(false);
 
-  const { top: safeT } = useSafeAreaInsets();
   const secondaryColor = useThemeColor({}, 'secondary');
   const dangerColor = useThemeColor({}, 'danger');
   const inputBackground = useThemeColor({}, 'inputBackground');
@@ -108,9 +105,7 @@ export default function JoinListScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={[globalStyles.customHeader, Platform.OS === 'android' ? { paddingTop: safeT + 12 } : {}]}>
-        <BackLink noIcon={true} parentTitle="Cancel" />
-      </View>
+      <ModalHeader />
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
