@@ -11,6 +11,7 @@ exports[`ThemedButton matches snapshot 1`] = `
         "marginVertical": 12,
         "shadowColor": "#000",
       },
+      false,
       undefined,
     ]
   }
@@ -93,6 +94,7 @@ exports[`ThemedButton matches snapshot 1`] = `
             "paddingHorizontal": 24,
             "width": "100%",
           },
+          false,
           {
             "backgroundColor": "transparent",
             "opacity": 1,
@@ -109,10 +111,11 @@ exports[`ThemedButton matches snapshot 1`] = `
             {
               "fontFamily": "Nunito",
               "fontSize": 21,
-              "fontWeight": "900",
+              "fontWeight": "700",
               "lineHeight": 32,
               "textAlign": "center",
             },
+            false,
           ]
         }
       >

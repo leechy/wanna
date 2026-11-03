@@ -1,7 +1,6 @@
 // hooks and state
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSelector } from '@legendapp/state/react';
-import { useThemeColor } from '@/hooks/useThemeColor';
 import { invitations$ as _invitations$ } from '@/state/state';
 import { trackEvent } from '@/utils/analytics';
 
@@ -15,7 +14,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ItemsList } from '@/components/ItemsList';
 import { BackLink } from '@/components/BackLink';
-import SmallButton from '@/components/SmallButton';
+import { ThemedButton } from '@/components/ThemedButton';
 import { globalStyles } from '@/constants/GlobalStyles';
 
 /**
@@ -25,9 +24,6 @@ import { globalStyles } from '@/constants/GlobalStyles';
 export default function InvitationScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
   const invitation = useSelector(() => _invitations$[listId]?.get());
-
-  const warningColor = useThemeColor({}, 'warning');
-  const onWarningColor = useThemeColor({}, 'onWarning');
 
   function join() {
     if (invitation?.list.shareId) {
@@ -41,7 +37,7 @@ export default function InvitationScreen() {
     return (
       <Page hasHeader={false}>
         <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
-          <BackLink noTitle={true} />
+          <BackLink parentTitle="Back" fallbackPath="/" />
         </View>
         <ThemedText style={styles.message}>This invitation isn't there any more</ThemedText>
       </Page>
@@ -50,15 +46,12 @@ export default function InvitationScreen() {
 
   const { list, invitedBy } = invitation;
   const items = convertItemsToListItems(list.listItems).filter((item) => !item.completed);
-  const members = list.users?.map((user) => user.names).join(', ');
 
   return (
     <Page hasHeader={false}>
       <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
-        <BackLink noTitle={true} />
-        <View style={globalStyles.listProperties}>
-          <SmallButton title="Join" onPress={join} color={onWarningColor} backgroundColor={warningColor} />
-        </View>
+        <BackLink parentTitle="Back" fallbackPath="/" />
+        <ThemedButton title="Join" size="small" onPress={join} />
       </View>
 
       <ThemedView style={globalStyles.titleContainer}>
@@ -68,10 +61,10 @@ export default function InvitationScreen() {
       {/* only the list scrolls */}
       <View style={styles.container}>
         <ThemedText>
-          {invitedBy} invited you{members ? `, ${members} ${list.users?.length === 1 ? 'is' : 'are'} in the list` : ''}
+          <ThemedText type="defaultSemiBold">{invitedBy}</ThemedText> invited you
         </ThemedText>
         {items.length ? (
-          <ItemsList items={items} style={styles.list} />
+          <ItemsList items={items} readOnly={true} style={styles.list} />
         ) : (
           <ThemedText style={styles.message}>The list is empty for now</ThemedText>
         )}
@@ -84,6 +77,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    // the line about the invitation belongs to the title
+    paddingTop: 0,
     gap: 16,
   },
   list: {

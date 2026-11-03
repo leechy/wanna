@@ -51,6 +51,8 @@ interface ItemsListProps {
   submenu?: boolean;
   style?: ViewStyle;
   paddingBottom?: number;
+  // just shows the items, e.g. a list the user is invited to: check marks for the ones in the cart
+  readOnly?: boolean;
 }
 
 export function ItemsList({
@@ -70,6 +72,7 @@ export function ItemsList({
   submenu = true,
   style,
   paddingBottom,
+  readOnly = false,
 }: ItemsListProps) {
   const backgroundColor = useThemeColor({}, 'listBackground');
   const borderBottomColor = useThemeColor({}, 'listSeparator');
@@ -173,6 +176,27 @@ export function ItemsList({
     }
     if (item.type === 'group') {
       return <GroupItem item={item} itemBorderRadius={itemBorderRadius} />;
+    }
+    if (readOnly) {
+      return (
+        <View
+          style={[styles.item, styles.gradient, { backgroundColor }, itemBorderRadius]}
+          accessible={true}
+          accessibilityLabel={item.ongoing ? `${item.label}, in the cart` : item.label}
+          accessibilityHint="Join the list to change it"
+        >
+          <View style={styles.button}>
+            {item.ongoing ? (
+              <SquareCheckIcon width={28} height={28} color={touchableColor} />
+            ) : (
+              <SquareIcon width={28} height={28} color={touchableColor} />
+            )}
+          </View>
+          <View style={styles.labelButton}>
+            <ListItemLabel item={item} showQuantity={true} />
+          </View>
+        </View>
+      );
     }
 
     return (

@@ -11,15 +11,18 @@ export type ThemedButtonProps = {
   darkColor?: string;
   title: string;
   onPress?: () => void;
+  // small fits into a header next to the other buttons
+  size?: 'default' | 'small';
 };
 
-export function ThemedButton({ style, lightColor, darkColor, title, onPress }: ThemedButtonProps) {
+export function ThemedButton({ style, lightColor, darkColor, title, onPress, size = 'default' }: ThemedButtonProps) {
+  const small = size === 'small';
   const fullButtonText = useThemeColor({ light: lightColor, dark: darkColor }, 'fullButtonText');
   const theme = useColorScheme();
   const fullButtonBackground = fullButtonBackgrounds[theme];
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, small && styles.smallContainer, style]}>
       <LinearGradient
         // Button Linear Gradient
         colors={fullButtonBackground as [string, string, ...string[]]}
@@ -34,6 +37,7 @@ export function ThemedButton({ style, lightColor, darkColor, title, onPress }: T
           }}
           style={({ pressed }) => [
             styles.button,
+            small && styles.smallButton,
             Platform.select({
               ios: {
                 opacity: pressed ? 0.4 : 1,
@@ -53,6 +57,7 @@ export function ThemedButton({ style, lightColor, darkColor, title, onPress }: T
                 color: fullButtonText,
               },
               styles.text,
+              small && styles.smallText,
             ]}
           >
             {title}
@@ -84,10 +89,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'transparent',
   },
+  smallContainer: {
+    alignSelf: 'auto',
+    marginVertical: 0,
+  },
+  smallButton: {
+    minHeight: 34,
+    width: 'auto',
+    paddingHorizontal: 18,
+  },
+  smallText: {
+    fontSize: 17,
+    lineHeight: 24,
+  },
   text: {
     fontFamily: 'Nunito',
     fontSize: 21,
-    fontWeight: '900',
+    // iOS draws the same weight much heavier
+    fontWeight: Platform.OS === 'ios' ? '700' : '900',
     lineHeight: 32,
     textAlign: 'center',
   },
