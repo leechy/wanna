@@ -14,6 +14,7 @@ export type ThemedInputProps = {
   onChange?: (value: string) => void;
   onSubmit?: () => void;
   inputRef?: React.RefObject<TextInputInstance | null>;
+  autoFocus?: boolean;
 };
 
 export function ThemedInput({
@@ -28,6 +29,7 @@ export function ThemedInput({
   onChange,
   onSubmit,
   inputRef,
+  autoFocus = true,
 }: ThemedInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'inputText');
   const inputPlaceholder = useThemeColor({ light: lightColor, dark: darkColor }, 'inputPlaceholder');
@@ -47,7 +49,7 @@ export function ThemedInput({
         cursorColor={cursorColor}
         selectionColor={cursorColor + '66'}
         selectionHandleColor={cursorColor}
-        autoFocus={true}
+        autoFocus={autoFocus}
         submitBehavior="submit"
         accessible
         accessibilityRole="text"

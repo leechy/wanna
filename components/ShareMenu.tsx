@@ -11,17 +11,20 @@ import { router } from 'expo-router';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
+import TwoPersonasIcon from '@/assets/symbols/two-personas.svg';
 import ShareIcon from '@/assets/symbols/share.svg';
 import CopyLinkIcon from '@/assets/symbols/copy-link.svg';
+import QrCodeIcon from '@/assets/symbols/qr-code.svg';
 import ChevronRightIcon from '@/assets/symbols/chevron-right.svg';
 
 interface ShareMenuProps {
   listId?: string;
   listName?: string;
   shareId?: string;
+  membersCount?: number;
 }
 
-export default function ShareMenu({ listId, listName, shareId }: ShareMenuProps) {
+export default function ShareMenu({ listId, listName, shareId, membersCount = 0 }: ShareMenuProps) {
   const touchableColor = useThemeColor({}, 'touchable');
 
   return (
@@ -48,6 +51,16 @@ export default function ShareMenu({ listId, listName, shareId }: ShareMenuProps)
           },
           disabled: !shareId,
           icon: CopyLinkIcon,
+        },
+        {
+          label: 'Show QR code',
+          onPress: () => {
+            if (shareId) {
+              router.push({ pathname: '/qr/[shareId]', params: { shareId, name: listName ?? '' } });
+            }
+          },
+          disabled: !shareId,
+          icon: QrCodeIcon,
         },
         {
           label: 'Share with',
@@ -91,7 +104,11 @@ export default function ShareMenu({ listId, listName, shareId }: ShareMenuProps)
         },
       ]}
     >
-      <SmallButton icon={PersonPlusIcon} title="Not shared" />
+      {membersCount > 1 ? (
+        <SmallButton icon={TwoPersonasIcon} title={`${membersCount} people`} />
+      ) : (
+        <SmallButton icon={PersonPlusIcon} title="Not shared" />
+      )}
     </DropdownMenu>
   );
 }

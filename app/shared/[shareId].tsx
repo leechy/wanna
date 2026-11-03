@@ -33,11 +33,12 @@ export default function SharedListScreen() {
   }, [shareId]);
 
   useEffect(() => {
-    // joining twice is fine, the server answers with the list either way
-    if (uid && shareId && !list) {
+    // joining twice is fine, the server answers with the list either way,
+    // so a list that is already here gets fresh items too
+    if (uid && shareId) {
       queueOperation('list:join', { shareId });
     }
-  }, [uid, shareId, list]);
+  }, [uid, shareId]);
 
   // the sign-in screen brings the user back here
   if (!uid) {

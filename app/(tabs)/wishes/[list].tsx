@@ -189,7 +189,12 @@ function ShoppingListScreen() {
 
         <View style={globalStyles.listProperties}>
           <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
-          <ShareMenu listId={listId} listName={listData?.name} shareId={listData?.shareId} />
+          <ShareMenu
+            listId={listId}
+            listName={listData?.name}
+            shareId={listData?.shareId}
+            membersCount={listData?.users?.length}
+          />
           <ListMenu listId={listId} isHeaderMenu={false} />
         </View>
       </View>

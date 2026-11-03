@@ -97,6 +97,8 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="sign-in" />
         <Stack.Screen name="shared/[shareId]" />
+        <Stack.Screen name="join" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="qr/[shareId]" options={{ presentation: 'modal' }} />
       </Stack>
       <StatusBar style="auto" />
       </ThemeProvider>

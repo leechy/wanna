@@ -14,7 +14,9 @@ import ListButtons from '@/components/ListButtons';
 // types
 import { ListItem } from '@/types/listItem';
 import { ColumnData } from '@/types/ColumnData';
-import { ListColumns } from '@/components/ListColumns';
+
+// icons
+import SettingsIcon from '@/assets/symbols/settings.svg';
 
 function ShoppingScreen() {
   function newList() {
@@ -36,11 +38,6 @@ function ShoppingScreen() {
   }
 
   const lists = _lists$.get();
-  const sortedLists = Object.keys(lists)
-    .filter((listId) => lists[listId].type === 'shopping-list' && !lists[listId].deleted && !lists[listId].completed)
-    .map((listId) => lists[listId])
-    .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-
   const [shoppingLists, completedLists] = useMemo(() => {
     if (lists) {
       const newCompletedLists: ListItem[] = [];
@@ -114,10 +111,14 @@ function ShoppingScreen() {
 
   return (
     <Page>
-      <ListColumns lists={sortedLists} />
-      <Columns blocks={blocks} />
+      <Columns
+        title="Wanna Wanna"
+        blocks={blocks}
+        titleIcon={SettingsIcon}
+        titleAction={() => router.push('/settings')}
+      />
       <View style={{ transform: [{ rotate: '-1deg' }] }}>
-        <ListButtons newItem={newList} newItemTitle="New shopping list" />
+        <ListButtons newItem={newList} newItemTitle="New shopping list" joinList={() => router.navigate('/join')} />
       </View>
     </Page>
   );

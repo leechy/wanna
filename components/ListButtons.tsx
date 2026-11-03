@@ -14,15 +14,17 @@ import { globalStyles } from '@/constants/GlobalStyles';
 // icons
 import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import PlusIcon from '@/assets/symbols/square-plus.svg';
+import TwoPersonasIcon from '@/assets/symbols/two-personas.svg';
 
 interface ListButtonsProps {
   newItem: () => void;
   newItemTitle?: string;
   checkoutBasket?: () => void;
   cartItems?: number;
+  joinList?: () => void;
 }
 
-export default function ListButtons({ newItem, newItemTitle, checkoutBasket, cartItems }: ListButtonsProps) {
+export default function ListButtons({ newItem, newItemTitle, checkoutBasket, cartItems, joinList }: ListButtonsProps) {
   const secondaryColor = useThemeColor({}, 'secondary');
   const cursorColor = useThemeColor({}, 'cursorColor');
   const inputBackgroundColor = useThemeColor({}, 'inputBackground');
@@ -153,6 +155,31 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
             </View>
           </PressableArea>
         </Animated.View>
+      )}
+
+      {joinList && (
+        <PressableArea
+          style={[
+            styles.cartButton,
+            {
+              backgroundColor: smallButtonBackground,
+              borderColor: secondaryColor + '80',
+            },
+          ]}
+          onPress={joinList}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={'Join a shared list'}
+          accessibilityHint={'Opens the screen to scan a QR code or paste a link of a shared list.'}
+        >
+          <View style={styles.cartButtonIcon}>
+            <TwoPersonasIcon width={24} height={24} color={secondaryColor} />
+          </View>
+          <View style={styles.cartButtonLabel}>
+            <Text style={[styles.cartButtonText, { color: secondaryColor }]}>Join</Text>
+            <Text style={[styles.cartButtonText, { color: secondaryColor }]}>shared list</Text>
+          </View>
+        </PressableArea>
       )}
     </View>
   );

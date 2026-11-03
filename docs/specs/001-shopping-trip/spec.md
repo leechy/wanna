@@ -93,6 +93,19 @@ One tap target per item instead of a checkbox plus a cart icon: two similar stat
 
 Shopping lists only; project lists keep their current behaviour until they're decided on.
 
+### 7. Joining a list
+
+A family member joins the list by its share link. The link works when it's tapped in a messenger, but not always: the app's domain may not be verified yet, the link may come as text, or the other phone is right here. So the app has its own way in.
+
+- A **"Join"** button next to "New shopping list", styled like the "Done" cart button. Always visible, so it's found on an empty first screen too.
+- It opens a **Join a shared list** screen:
+  - a camera viewfinder that scans the QR code from another phone and joins right away;
+  - a field for the link with a "Paste" button; the full link, `wanna://` link or the bare code all work, the code also with spaces or nothing instead of dashes.
+- The sender gets **Show QR code** in the share menu: the QR of the same link, big enough to scan from a phone held next to it, and the code under it in groups of three letters, to read out or type when the camera does not help.
+- Joining by QR or link follows the same path as the shared link: sign in first if needed, then the list opens.
+
+Rejected: pasting the link into the "New shopping list" field. Hidden, and mixes two different actions in one field.
+
 ## Experiment: with and without the cart
 
 Both models are built behind a list-level flag, switched in the list settings:

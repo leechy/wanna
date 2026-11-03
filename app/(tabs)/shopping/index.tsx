@@ -9,6 +9,9 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 import { Columns } from '@/components/Columns';
 import Page from '@/components/Page';
+
+// icons
+import SettingsIcon from '@/assets/symbols/settings.svg';
 import ListButtons from '@/components/ListButtons';
 
 // types
@@ -126,9 +129,14 @@ function ShoppingScreen() {
 
   return (
     <Page>
-      <Columns title="Shopping Lists" blocks={blocks} />
+      <Columns
+        title="Shopping Lists"
+        blocks={blocks}
+        titleIcon={SettingsIcon}
+        titleAction={() => router.push('/settings')}
+      />
       <View style={{ transform: [{ rotate: '-1deg' }] }}>
-        <ListButtons newItem={newList} newItemTitle="New shopping list" />
+        <ListButtons newItem={newList} newItemTitle="New shopping list" joinList={() => router.navigate('/join')} />
       </View>
     </Page>
   );

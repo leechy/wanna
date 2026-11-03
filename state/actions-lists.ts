@@ -80,7 +80,7 @@ export async function updateList(listId: string, update: Partial<List>, fromServ
       ...updatedData,
       users: users ?? [],
       sessions: sessions ?? [],
-      listItems: listItems ?? [],
+      listItems: (listItems ?? []).map((item) => ({ ...item, listId })),
     } as List);
     return listId;
   }

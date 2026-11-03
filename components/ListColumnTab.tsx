@@ -5,6 +5,9 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { PressableArea } from '@/components/PressableArea';
 import { StyleSheet, Text, View } from 'react-native';
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
+import PersonaIcon from '@/assets/symbols/persona.svg';
+import TwoPersonasIcon from '@/assets/symbols/two-personas.svg';
+import ThreePersonasIcon from '@/assets/symbols/three-personas.svg';
 
 import { List } from '@/types/list';
 
@@ -90,18 +93,20 @@ export function ListColumnTab({ list, isActive, selectList }: ListColumnTabProps
 function ListColumnTabUsers({ users }: { users: string[] }) {
   const touchableColor = useThemeColor({}, 'touchable');
 
+  const UsersIcon =
+    users.length > 2
+      ? ThreePersonasIcon
+      : users.length > 1
+        ? TwoPersonasIcon
+        : users.length > 0
+          ? PersonaIcon
+          : PersonPlusIcon;
   const description =
     users.length > 2 ? `${users.length} users` : users.length > 0 ? users.join(' and ') : 'Not shared yet';
 
   return (
     <View style={styles.sharedRow}>
-      {users.length > 2 ? (
-        `${users.length} users`
-      ) : users.length > 0 ? (
-        users.join(' and ')
-      ) : (
-        <PersonPlusIcon width={16} height={16} color={touchableColor} style={{ marginStart: -3 }} />
-      )}
+      <UsersIcon width={16} height={16} color={touchableColor} style={{ marginStart: -3 }} />
       <Text style={[styles.shared, { color: touchableColor }]} numberOfLines={1} ellipsizeMode="middle">
         {description}
       </Text>

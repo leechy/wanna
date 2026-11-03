@@ -134,7 +134,15 @@
           "color": "#3a1fc1"
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Wanna uses the camera to scan the QR code of a shared list.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
