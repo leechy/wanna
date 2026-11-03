@@ -8,12 +8,13 @@ import { queue$ as _queue$, user$ as _user$, connectionStatus$, pendingShare$ } 
 import { queueOperation } from '@/state/actions-queue';
 import { updateUser } from '@/state/actions-user';
 import { updateList } from '@/state/actions-lists';
+import { addInvitation, removeInvitation, setInvitations } from '@/state/actions-invitations';
 
 // types
 import { QueuedOperation } from '@/types/QueuedOperation';
 
 // replies to the commands, not the list updates
-const LIST_COMMANDS = ['list:join', 'list:leave', 'list:view'];
+const LIST_COMMANDS = ['list:join', 'list:leave', 'list:view', 'list:invite'];
 
 class SocketService {
   private socket: Socket | null = null;
@@ -90,6 +91,7 @@ class SocketService {
 
     this.socket.on('auth', this.handleAuthUpdate);
     this.socket.on('list:join', this.handleListJoin);
+    this.socket.on('invitation', this.handleInvitation);
 
     // the server sends the updates of every list the user is in as `list:<listId>`,
     // including the lists created or joined after the connection
@@ -142,7 +144,7 @@ class SocketService {
   handleAuthUpdate = (message: any) => {
     // console.log('Auth update:', JSON.stringify(message, null, 2));
 
-    const { uid, names, notifyOnItemStateUpdate, notifyOnListItemsUpdate, notifyOnListShared, lists } =
+    const { uid, names, notifyOnItemStateUpdate, notifyOnListItemsUpdate, notifyOnListShared, lists, invitations } =
       message?.userData || message?.newUser || {};
     if (!uid || !names) {
       console.error('Invalid user data:', message);
@@ -163,6 +165,9 @@ class SocketService {
       });
     }
 
+    // the server keeps all the pending ones, the joined and deleted lists are gone
+    setInvitations(invitations ?? []);
+
     // the token may be new since the last time, or the server may have lost it
     const expo_push_token = _user$.expo_push_token?.get();
     if (expo_push_token) {
@@ -181,6 +186,14 @@ class SocketService {
     const { joinedList } = message || {};
     if (joinedList?.listId) {
       updateList(joinedList.listId, joinedList, true);
+      removeInvitation(joinedList.listId);
+    }
+  };
+
+  handleInvitation = (message: any) => {
+    const { invitation } = message || {};
+    if (invitation?.listId) {
+      addInvitation(invitation);
     }
   };
 

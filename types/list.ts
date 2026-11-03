@@ -24,9 +24,19 @@ export type List = {
   updatedAt: string;
 
   users?: ListUser[];
+  // invited and not joined yet, set by the server
+  invited?: ListUser[];
   listItems?: Item[];
   // active shopping trips, set by the server
   sessions?: ListSession[];
+};
+
+// a list someone invited the user to, with its data to look at before joining
+export type Invitation = {
+  listId: string;
+  invitedBy: string;
+  createdAt: string;
+  list: List;
 };
 
 export type ListUser = {

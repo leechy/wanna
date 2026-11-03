@@ -17,7 +17,6 @@ export default function ShoppingLayout() {
       <Stack.Screen name="[list]" />
       <Stack.Screen name="list-modal" options={ModalOptions} />
       <Stack.Screen name="item-modal" options={ModalOptions} />
-      <Stack.Screen name="choose-contact" />
     </Stack>
   );
 }

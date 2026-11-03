@@ -1,7 +1,7 @@
 // hooks and state
 import { useMemo } from 'react';
 import { observer } from '@legendapp/state/react';
-import { lists$ as _lists$ } from '@/state/state';
+import { invitations$ as _invitations$, lists$ as _lists$ } from '@/state/state';
 import { updateList } from '@/state/actions-lists';
 import { router } from 'expo-router';
 
@@ -95,6 +95,20 @@ function ShoppingScreen() {
     return [[], []];
   }, [lists]);
 
+  // the lists someone invited the user to, to look at and join
+  const invitations: ListItem[] = Object.values(_invitations$.get() ?? {}).map(({ listId, list }) => ({
+    id: listId,
+    type: 'shopping-list',
+    label: list.name,
+    shared: list.users?.map((user) => user.names),
+    ongoing: 0,
+    quantity: list.listItems?.filter((item) => !item.deleted).length || 0,
+  }));
+
+  function goToInvitation(item: ListItem) {
+    router.navigate({ pathname: '/invitation/[listId]', params: { listId: item.id } });
+  }
+
   const blocks: ColumnData[] = [
     {
       title: 'Next Up',
@@ -102,6 +116,12 @@ function ShoppingScreen() {
       items: shoppingLists,
       emptyText: 'No Lists here! Create a new one to start shopping!',
       showEmpty: true,
+    },
+    {
+      title: 'Invitations',
+      actionHandler: goToInvitation,
+      items: invitations,
+      showEmpty: false,
     },
     // TODO: Recipes
     // {

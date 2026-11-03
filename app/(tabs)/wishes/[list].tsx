@@ -193,7 +193,6 @@ function ShoppingListScreen() {
             listId={listId}
             listName={listData?.name}
             shareId={listData?.shareId}
-            membersCount={listData?.users?.length}
           />
           <ListMenu listId={listId} isHeaderMenu={false} />
         </View>

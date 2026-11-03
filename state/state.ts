@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // types
 import { User } from '@/types/user';
-import { ListState } from '@/types/list';
+import { Invitation, ListState } from '@/types/list';
 import { QueuedOperation } from '@/types/QueuedOperation';
 import { ConnectionState } from '@/types/ConnectionState';
 
@@ -50,6 +50,9 @@ syncObservable(
     },
   })
 );
+
+// the lists the user is invited to by listId, the server sends them on every connection
+export const invitations$ = observable<Record<string, Invitation>>({});
 
 // the shared list link the app was opened with, kept through the sign-in
 export const pendingShare$ = observable<{ shareId: string | null; error: string | null }>({

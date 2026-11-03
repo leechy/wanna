@@ -13,7 +13,7 @@ import { Stack, router } from 'expo-router';
 // state
 import '@/state/state';
 import { useSelector } from '@legendapp/state/react';
-import { lists$, user$ } from '@/state/state';
+import { invitations$, lists$, user$ } from '@/state/state';
 
 // system
 import 'react-native-reanimated';
@@ -73,14 +73,19 @@ export default function RootLayout() {
     }
   }, [user?.uid, hasSharedList]);
 
-  // tapping a notification opens its list
+  // tapping a notification opens its list, or the invitation to it
   const notificationResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
     const data = notificationResponse?.notification.request.content.data;
-    const list = typeof data?.listId === 'string' ? lists$[data.listId].peek() : undefined;
+    const listId = typeof data?.listId === 'string' ? data.listId : undefined;
+    const list = listId ? lists$[listId].peek() : undefined;
     if (list) {
       router.push(listPath(list));
-      trackEvent('push_opened', { listId: list.listId }, { action: data?.action ?? null });
+    } else if (listId && invitations$[listId].peek()) {
+      router.push({ pathname: '/invitation/[listId]', params: { listId } });
+    }
+    if (listId) {
+      trackEvent('push_opened', { listId }, { action: data?.action ?? null });
     }
   }, [notificationResponse]);
 
@@ -99,6 +104,8 @@ export default function RootLayout() {
         <Stack.Screen name="shared/[shareId]" />
         <Stack.Screen name="join" options={{ presentation: 'modal' }} />
         <Stack.Screen name="qr/[shareId]" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="contacts/[listId]" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="invitation/[listId]" />
       </Stack>
       <StatusBar style="auto" />
       </ThemeProvider>

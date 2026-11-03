@@ -1,5 +1,6 @@
 import { generateId, user$ as _user$ } from '@/state/state';
 import { clearLists } from '@/state/actions-lists';
+import { clearInvitations } from '@/state/actions-invitations';
 import { queueOperation } from '@/state/actions-queue';
 
 // types
@@ -70,4 +71,5 @@ export function clearUser() {
 export function logout() {
   clearUser();
   clearLists();
+  clearInvitations();
 }

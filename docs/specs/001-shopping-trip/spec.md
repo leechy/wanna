@@ -106,6 +106,22 @@ A family member joins the list by its share link. The link works when it's tappe
 
 Rejected: pasting the link into the "New shopping list" field. Hidden, and mixes two different actions in one field.
 
+### 8. Sharing with people you already share with
+
+Links are for someone new. The family is already in the app, so they get invited by name.
+
+**The share menu** changes with the list:
+
+- *Only yours:* Share link, Copy link, Show QR code. If you share other lists with someone, "Share with" follows with up to three people you share the most lists with; tapping a name invites them. "More people" opens the contacts screen when there are more.
+- *Shared:* first the people in the list and the invited ones ("Masha · invited"), nobody can be taken out; then the links; at the bottom "Share with" opens the contacts screen.
+- The button on the list says "N people", "N invited" or "Not shared".
+
+**The contacts screen** ("Who to share with?") lists everyone you share lists with, the most shared lists first, with the count; tapping a name invites them. Copy link and Show QR code are there too.
+
+**The invited person** gets a push "Andrey invited you to the list", and the list shows in a new **Invitations** tab on the home screen, between "Next Up" and "Completed", only while there are any. Opening it shows the list as it is, with a yellow **Join** button where the share menu usually is. Joining goes the same way as a link.
+
+Only someone you already share a list with can be invited, so a list can't be pushed on a stranger by their id. There is no "decline" yet: an invitation stays until it's joined or the list is deleted.
+
 ## Experiment: with and without the cart
 
 Both models are built behind a list-level flag, switched in the list settings:
