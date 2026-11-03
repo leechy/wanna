@@ -9,11 +9,17 @@ import HeaderButton from '@/components/HeaderButton';
 import { BackLink } from '@/components/BackLink';
 import { globalStyles } from '@/constants/GlobalStyles';
 
+// types
+import type { SFSymbol } from 'sf-symbols-typescript';
+
 interface ModalHeaderProps {
   // the closing button, "Cancel" when there is something to submit, "Done" otherwise
   closeTitle?: string;
   submitTitle?: string;
   onSubmit?: () => void;
+  // on iOS: the SF Symbol of the right button, a filled checkmark by default
+  submitIcon?: SFSymbol;
+  submitHint?: string;
   // where to close to when the modal is the only screen, e.g. restored on launch
   fallbackPath?: '/' | '/wishes' | '/shopping' | '/projects';
   style?: StyleProp<ViewStyle>;
@@ -38,6 +44,8 @@ export default function ModalHeader({
   closeTitle = 'Cancel',
   submitTitle,
   onSubmit,
+  submitIcon,
+  submitHint = 'Saves and closes',
   fallbackPath = '/',
   style,
 }: ModalHeaderProps) {
@@ -62,7 +70,7 @@ export default function ModalHeader({
             icon="xmark"
             onPress={() => close(fallbackPath)}
             accessibilityLabel={closeTitle}
-            accessibilityHint={onSubmit ? 'Closes without saving' : 'Closes this screen'}
+            accessibilityHint={closeTitle === 'Cancel' ? 'Closes without saving' : 'Closes this screen'}
           >
             {closeTitle}
           </Stack.Toolbar.Button>
@@ -70,12 +78,13 @@ export default function ModalHeader({
         {onSubmit && submitTitle && (
           <Stack.Toolbar placement="right">
             <Stack.Toolbar.Button
-              icon="checkmark"
-              variant="prominent"
+              icon={submitIcon ?? 'checkmark'}
+              // saving is the main action, anything else is a plain button
+              variant={submitIcon ? 'plain' : 'prominent'}
               tintColor={primaryColor}
               onPress={onSubmit}
               accessibilityLabel={submitTitle}
-              accessibilityHint="Saves and closes"
+              accessibilityHint={submitHint}
             >
               {submitTitle}
             </Stack.Toolbar.Button>

@@ -57,7 +57,7 @@ export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false,
       title={noTitle ? '' : title}
       color={backButtonColor}
       icon={noIcon ? undefined : Platform.OS === 'android' ? ArrowLeftIcon : ChevronLeftIcon}
-      style={Platform.OS === 'android' ? { gap: 8, paddingLeft: 8 } : {}}
+      style={Platform.OS === 'android' ? { gap: 4, paddingLeft: 8 } : {}}
       // @ts-ignore
       onPress={() => {
         if (path) {
