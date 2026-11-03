@@ -20,7 +20,7 @@ type QRCodeRef = { toDataURL: (callback: (base64: string) => void) => void };
 const AppLogo = require('@/assets/icon-512.png');
 
 /**
- * The QR code of the list's share link, to scan with "Join shared list" on another phone
+ * The QR code of the list's share link, to scan with "Join list" on another phone
  */
 export default function ListQrScreen() {
   const { shareId, name } = useLocalSearchParams<{ shareId: string; name?: string }>();
@@ -74,14 +74,14 @@ export default function ListQrScreen() {
           />
         </View>
         <ThemedText style={styles.centered}>
-          On a phone open Wanna, tap “Join shared list” and point the camera here, or type the code
+          On a phone open Wanna, tap “Join list” and point the camera here, or type the code
         </ThemedText>
         <ThemedText
           type="defaultSemiBold"
           style={styles.shareId}
           selectable={true}
           accessibilityLabel={`List code ${shareId.split('-').join(', ')}`}
-          accessibilityHint="Type it on another phone in “Join shared list”"
+          accessibilityHint="Type it on another phone in “Join list”"
         >
           {readableShareId(shareId)}
         </ThemedText>
@@ -152,7 +152,7 @@ function printPage(name: string, shareId: string, png: string) {
     <h1>${escapeHtml(name)}</h1>
     <img src="data:image/png;base64,${png}" />
     <p>Point the phone camera at the code to join the list</p>
-    <p>or in Wanna Wanna tap “Join shared list” and type</p>
+    <p>or in Wanna Wanna tap “Join list” and type</p>
     <div class="code">${readableShareId(shareId).replace('\n', ' ')}</div>
   </body>
 </html>`;

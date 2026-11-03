@@ -97,8 +97,8 @@ Shopping lists only; project lists keep their current behaviour until they're de
 
 A family member joins the list by its share link. The link works when it's tapped in a messenger, but not always: the app's domain may not be verified yet, the link may come as text, or the other phone is right here. So the app has its own way in.
 
-- A **"Join"** button next to "New shopping list", styled like the "Done" cart button. Always visible, so it's found on an empty first screen too.
-- It opens a **Join a shared list** screen:
+- A **"Join list"** button next to "New shopping list", styled like the "Done" cart button. Always visible, so it's found on an empty first screen too.
+- It opens a **Join list** screen:
   - a field for the link with a "Paste" button; the full link, `wanna://` link or the bare code all work, the code also with spaces or nothing instead of dashes;
   - a camera viewfinder that scans the QR code from another phone and joins right away. The field comes first: it is always there, while the camera needs a permission.
 - The sender gets **Show QR code** in the share menu: the QR of the same link, big enough to scan from a phone held next to it, and the code under it in groups of three letters, to read out or type when the camera does not help.

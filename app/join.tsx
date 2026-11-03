@@ -10,6 +10,7 @@ import { CameraView, type BarcodeScanningResult } from 'expo-camera';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedInput } from '@/components/ThemedInput';
 import SmallButton from '@/components/SmallButton';
+import { ThemedButton } from '@/components/ThemedButton';
 import ModalHeader from '@/components/ModalHeader';
 
 // utils
@@ -111,7 +112,8 @@ export default function JoinListScreen() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets={true}
       >
-        <ThemedText type="subtitle">Join a shared list</ThemedText>
+        {/* the handwritten title of the lists, the screen is about a list after all */}
+        <ThemedText type="title">{'Join list '}</ThemedText>
 
         <ThemedText type="defaultSemiBold">Paste the link or type the code</ThemedText>
         <ThemedInput
@@ -128,7 +130,7 @@ export default function JoinListScreen() {
         {error && <ThemedText style={{ color: dangerColor }}>{error}</ThemedText>}
         <View style={styles.buttons}>
           <SmallButton title="Paste" onPress={paste} />
-          <SmallButton title="Join" onPress={joinByLink} color={secondaryColor} />
+          <ThemedButton title="Join" size="small" onPress={joinByLink} />
         </View>
 
         <ThemedText type="defaultSemiBold" style={styles.orLabel}>
@@ -143,7 +145,7 @@ export default function JoinListScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    paddingTop: 24,
+    paddingTop: 0,
     gap: 16,
   },
   camera: {
@@ -181,6 +183,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'flex-end',
     gap: 8,
   },

@@ -169,16 +169,15 @@ export default function ListButtons({ newItem, newItemTitle, checkoutBasket, car
           onPress={joinList}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel={'Join a shared list'}
+          accessibilityLabel={'Join list'}
           accessibilityHint={'Opens the screen to scan a QR code or paste a link of a shared list.'}
         >
           <View style={styles.cartButtonIcon}>
             <TwoPersonasIcon width={24} height={24} color={secondaryColor} />
           </View>
-          <View style={styles.cartButtonLabel}>
-            <Text style={[styles.cartButtonText, { color: secondaryColor }]}>Join</Text>
-            <Text style={[styles.cartButtonText, { color: secondaryColor }]}>shared list</Text>
-          </View>
+          <Text style={[styles.joinButtonText, { color: secondaryColor }]} numberOfLines={1}>
+            Join list
+          </Text>
         </PressableArea>
       )}
     </View>
@@ -239,4 +238,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cartButtonText: { fontSize: 12, lineHeight: 14 },
+  joinButtonText: { fontSize: 15, lineHeight: 20, paddingEnd: 4 },
 });
