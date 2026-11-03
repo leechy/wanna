@@ -103,14 +103,12 @@ export default function ShareMenu({ listId, listName, shareId }: ShareMenuProps)
     { label: 'In this list' },
     ...members.map((member) => ({
       label: member.uid === uid ? `${member.names} (you)` : member.names,
-      onPress: () => {},
-      disabled: true,
+      info: true,
       icon: PersonaIcon,
     })),
     ...invited.map((user) => ({
       label: `${user.names} · invited`,
-      onPress: () => {},
-      disabled: true,
+      info: true,
       icon: PersonaIcon,
     })),
   ];

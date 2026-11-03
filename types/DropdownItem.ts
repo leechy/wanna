@@ -7,4 +7,6 @@ export type DropdownItem = {
   icon?: React.FC<SvgProps>;
   color?: string;
   disabled?: boolean;
+  // plain text in the normal color, not a button, e.g. people in a list
+  info?: boolean;
 };

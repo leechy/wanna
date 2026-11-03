@@ -201,6 +201,30 @@ export function DropdownMenu({
             >
               <View style={[globalStyles.menu, { width: width, backgroundColor }]}>
                 {items.map((item, index) => {
+                  if (item.info) {
+                    return (
+                      <View
+                        key={index}
+                        accessible={true}
+                        accessibilityRole="text"
+                        style={[
+                          styles.menuOption,
+                          index < items.length - 1
+                            ? { ...styles.menuOptionBorder, borderColor: barelyVisibleColor }
+                            : {},
+                        ]}
+                      >
+                        <Text
+                          style={[styles.menuLabel, { color: item.color || textColor }]}
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {item.label}
+                        </Text>
+                        {item.icon && <item.icon width={24} height={24} color={item.color || textColor} />}
+                      </View>
+                    );
+                  }
                   if (!item.onPress) {
                     return (
                       <View style={[styles.menuHeader, { backgroundColor: barelyVisibleColor }]} key={index}>
