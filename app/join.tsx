@@ -1,12 +1,12 @@
 // hooks
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCameraPermissions } from 'expo-camera';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { Keyboard, Linking, Platform, ScrollView, StyleSheet, View, type ScrollViewInstance } from 'react-native';
+import { Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { CameraView, type BarcodeScanningResult } from 'expo-camera';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedInput } from '@/components/ThemedInput';
@@ -22,7 +22,7 @@ import { trackEvent } from '@/utils/analytics';
 import { globalStyles } from '@/constants/GlobalStyles';
 
 /**
- * Joins a shared list by the QR code from another phone or by a pasted link,
+ * Joins a shared list by a pasted link or typed code, or by the QR code from another phone,
  * then goes the same way as an opened share link
  */
 export default function JoinListScreen() {
@@ -32,13 +32,6 @@ export default function JoinListScreen() {
   const [scanHint, setScanHint] = useState<string | null>(null);
   // the scanner reports the same code many times a second
   const joining = useRef(false);
-  const scrollRef = useRef<ScrollViewInstance>(null);
-
-  useEffect(() => {
-    // the keyboard covers the buttons and the error under the field
-    const subscription = Keyboard.addListener('keyboardDidShow', () => scrollRef.current?.scrollToEnd());
-    return () => subscription.remove();
-  }, []);
 
   const { top: safeT } = useSafeAreaInsets();
   const secondaryColor = useThemeColor({}, 'secondary');
@@ -119,18 +112,13 @@ export default function JoinListScreen() {
         <BackLink noIcon={true} parentTitle="Cancel" />
       </View>
       <ScrollView
-        ref={scrollRef}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets={true}
       >
         <ThemedText type="subtitle">Join a shared list</ThemedText>
 
-        {renderCamera()}
-
-        <ThemedText type="defaultSemiBold" style={styles.orLabel}>
-          or paste the link, or type the code
-        </ThemedText>
+        <ThemedText type="defaultSemiBold">Paste the link or type the code</ThemedText>
         <ThemedInput
           placeholder="Link or code like abc-def-…"
           value={text}
@@ -147,6 +135,11 @@ export default function JoinListScreen() {
           <SmallButton title="Paste" onPress={paste} />
           <SmallButton title="Join" onPress={joinByLink} color={secondaryColor} />
         </View>
+
+        <ThemedText type="defaultSemiBold" style={styles.orLabel}>
+          or scan the QR code
+        </ThemedText>
+        {renderCamera()}
       </ScrollView>
     </View>
   );

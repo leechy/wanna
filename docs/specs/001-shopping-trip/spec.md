@@ -99,8 +99,8 @@ A family member joins the list by its share link. The link works when it's tappe
 
 - A **"Join"** button next to "New shopping list", styled like the "Done" cart button. Always visible, so it's found on an empty first screen too.
 - It opens a **Join a shared list** screen:
-  - a camera viewfinder that scans the QR code from another phone and joins right away;
-  - a field for the link with a "Paste" button; the full link, `wanna://` link or the bare code all work, the code also with spaces or nothing instead of dashes.
+  - a field for the link with a "Paste" button; the full link, `wanna://` link or the bare code all work, the code also with spaces or nothing instead of dashes;
+  - a camera viewfinder that scans the QR code from another phone and joins right away. The field comes first: it is always there, while the camera needs a permission.
 - The sender gets **Show QR code** in the share menu: the QR of the same link, big enough to scan from a phone held next to it, and the code under it in groups of three letters, to read out or type when the camera does not help.
 - Joining by QR or link follows the same path as the shared link: sign in first if needed, then the list opens.
 
