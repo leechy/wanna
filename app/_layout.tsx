@@ -27,16 +27,19 @@ import { StatusBar } from 'expo-status-bar';
 import { socketService } from '@/services/socketService';
 import { registerForPushNotifications } from '@/utils/notifications';
 import { trackEvent } from '@/utils/analytics';
-import { listPath } from '@/utils/lists';
+import { openList } from '@/utils/navigation';
+import { useIsWide } from '@/hooks/useLayout';
+import { popupOptions } from '@/constants/navigation';
 
 // the screen under the others when the app opens on a deep link
-export const unstable_settings = { anchor: '(tabs)' };
+export const unstable_settings = { anchor: 'shopping' };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const wide = useIsWide();
   const [loaded] = useFonts({
     'GreatVibes-Regular': require('../assets/fonts/GreatVibes-Regular.ttf'),
     Montserrat_500Medium,
@@ -81,7 +84,7 @@ export default function RootLayout() {
     const listId = typeof data?.listId === 'string' ? data.listId : undefined;
     const list = listId ? lists$[listId].peek() : undefined;
     if (list) {
-      router.push(listPath(list));
+      openList(list.listId);
     } else if (listId && invitations$[listId].peek()) {
       router.push({ pathname: '/invitation/[listId]', params: { listId } });
     }
@@ -98,14 +101,15 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="settings" />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="shopping" />
+        <Stack.Screen name="settings" options={wide ? popupOptions(wide) : {}} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="sign-in" />
         <Stack.Screen name="shared/[shareId]" />
-        <Stack.Screen name="join" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
-        <Stack.Screen name="qr/[shareId]" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
-        <Stack.Screen name="contacts/[listId]" options={{ presentation: 'modal', headerShown: Platform.OS === 'ios' }} />
+        <Stack.Screen name="join" options={popupOptions(wide)} />
+        <Stack.Screen name="qr/[shareId]" options={popupOptions(wide)} />
+        <Stack.Screen name="contacts/[listId]" options={popupOptions(wide)} />
         <Stack.Screen name="invitation/[listId]" />
       </Stack>
       <StatusBar style="auto" />

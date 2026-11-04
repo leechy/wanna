@@ -55,7 +55,7 @@ export default function SharedListScreen() {
       <ThemedText type="subtitle" style={styles.text}>
         {error ? "This list can't be opened, maybe it was deleted" : 'Opening the list…'}
       </ThemedText>
-      {error && <ThemedButton title="Go to my lists" onPress={() => router.replace('/(tabs)/wishes')} />}
+      {error && <ThemedButton title="Go to my lists" onPress={() => router.replace('/shopping')} />}
     </ThemedView>
   );
 }

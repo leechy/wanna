@@ -8,6 +8,7 @@ import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import HeaderButton from '@/components/HeaderButton';
 import { BackLink } from '@/components/BackLink';
 import { globalStyles } from '@/constants/GlobalStyles';
+import { useInPopupCard } from '@/components/PopupFrame';
 
 // types
 import type { SFSymbol } from 'sf-symbols-typescript';
@@ -21,7 +22,7 @@ interface ModalHeaderProps {
   submitIcon?: SFSymbol;
   submitHint?: string;
   // where to close to when the modal is the only screen, e.g. restored on launch
-  fallbackPath?: '/' | '/wishes' | '/shopping' | '/projects';
+  fallbackPath?: '/' | '/shopping';
   style?: StyleProp<ViewStyle>;
 }
 
@@ -52,8 +53,10 @@ export default function ModalHeader({
   const { top: safeT } = useSafeAreaInsets();
   const backgroundColor = useThemeColor({}, 'background');
   const primaryColor = useThemeColor({}, 'primary');
+  // a card on a wide screen has no system header, the buttons are drawn here
+  const inCard = useInPopupCard();
 
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === 'ios' && !inCard) {
     return (
       <>
         <Stack.Screen
@@ -95,7 +98,7 @@ export default function ModalHeader({
   }
 
   return (
-    <View style={[globalStyles.customHeader, { paddingTop: safeT + 12 }, style]}>
+    <View style={[globalStyles.customHeader, { paddingTop: inCard ? 12 : safeT + 12 }, style]}>
       <BackLink parentTitle={closeTitle} fallbackPath={fallbackPath} />
       {onSubmit && submitTitle && <HeaderButton title={submitTitle} onPress={onSubmit} />}
     </View>

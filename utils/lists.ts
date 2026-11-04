@@ -123,7 +123,5 @@ export function groupItemsByCompletedAt(items: ListItem[]): ListItem[] {
  * @returns {string}  route path
  */
 export function listPath(list: Pick<List, 'listId' | 'type'>): Href {
-  return list.type === 'project'
-    ? { pathname: '/projects/[list]', params: { list: list.listId } }
-    : { pathname: '/shopping/[list]', params: { list: list.listId } };
+  return { pathname: '/shopping/[list]', params: { list: list.listId } };
 }

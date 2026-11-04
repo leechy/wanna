@@ -15,8 +15,9 @@ import ModalHeader from '@/components/ModalHeader';
 
 // icons
 import PersonPlusIcon from '@/assets/symbols/persona-plus.svg';
+import { withPopupFrame } from '@/components/PopupFrame';
 
-export default function NewListModal() {
+function NewListModal() {
   const [name, setName] = useState('');
   const [deadline, setDeadline] = useState<number | string | undefined>();
   const [sharedNewUser, setSharedNewUser] = useState(true);
@@ -30,7 +31,6 @@ export default function NewListModal() {
 
   useEffect(() => {
     if (listData) {
-      // console.log('listData', listData);
       setName(listData.name);
       setDeadline(listData.deadline ? new Date(listData.deadline).getTime() : undefined);
       setListItemsUpdate(listData.notifyOnListItemsUpdate || true);
@@ -56,13 +56,13 @@ export default function NewListModal() {
       notifyOnListShared: sharedNewUser,
       updatedAt: new Date().toISOString(),
     });
-    router.dismissTo(`/projects/${listId}`);
+    router.dismissTo(`/shopping/${listId}`);
   }
 
   async function createNewList() {
     const newListId = await addList({
       name,
-      type: 'project',
+      type: 'shopping-list',
       deadline: deadline ? new Date(deadline).toISOString() : undefined,
       notifyOnListItemsUpdate: listItemsUpdate,
       notifyOnItemStateUpdate: itemStateUpdate,
@@ -70,13 +70,13 @@ export default function NewListModal() {
     });
 
     if (newListId) {
-      router.dismissTo(`/projects/${newListId}`);
+      router.dismissTo(`/shopping/${newListId}`);
     }
   }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ModalHeader submitTitle={listId ? 'Update' : 'Create'} onSubmit={submitData} fallbackPath="/projects" />
+      <ModalHeader submitTitle={listId ? 'Update' : 'Create'} onSubmit={submitData} fallbackPath="/shopping" />
       <View style={styles.container}>
         <View style={styles.properties}>
           <DateSelector
@@ -88,7 +88,7 @@ export default function NewListModal() {
           />
           <SmallButton title="Not yet shared" icon={PersonPlusIcon} onPress={() => {}} />
         </View>
-        <TitleInput placeholder="Project" value={name} onChange={setName} onSubmit={submitData} />
+        <TitleInput placeholder="Shopping list" value={name} onChange={setName} onSubmit={submitData} />
 
         <View style={{ width: '100%', marginTop: 16, marginBottom: 8 }}>
           <ThemedText type="defaultSemiBold">Send push notifications when:</ThemedText>
@@ -122,3 +122,5 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
+export default withPopupFrame(NewListModal, 420);

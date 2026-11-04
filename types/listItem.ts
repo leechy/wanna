@@ -28,6 +28,8 @@ export type ListItem = {
   assigneeId?: string | null;
   addedById?: string | null;
   unavailable?: boolean;
+  // the list open next to the home screen on a wide screen
+  selected?: boolean;
   unavailableAt?: string | null;
   unavailableNote?: string | null;
   unavailableReply?: string | null;

@@ -24,6 +24,7 @@ import BagFillIcon from '@/assets/symbols/bag-fill.svg';
 import { ListItem } from '@/types/listItem';
 import { Item } from '@/types/Item';
 import SmallButton from '@/components/SmallButton';
+import { withPopupFrame } from '@/components/PopupFrame';
 
 const qtyItems = [...Array(100).keys()]
   .map((index) => ({
@@ -108,7 +109,7 @@ function ItemModal() {
     updateItem(listId, listItemId, updatedItem);
 
     if (router.canDismiss()) {
-      router.dismissTo(`/wishes/${listId}`);
+      router.dismissTo(`/shopping/${listId}`);
     }
   }
 
@@ -130,7 +131,7 @@ function ItemModal() {
     setDeadline(undefined);
 
     if (closeModal && router.canDismiss()) {
-      router.dismissTo(`/wishes/${listId}`);
+      router.dismissTo(`/shopping/${listId}`);
     } else {
       // set focus to the input back in case submitBehavior="submit" is not working
       setTimeout(() => {
@@ -144,7 +145,7 @@ function ItemModal() {
       <ModalHeader
         submitTitle={listItemId ? 'Update' : 'Add'}
         onSubmit={() => submitData(true)}
-        fallbackPath="/wishes"
+        fallbackPath="/shopping"
         style={{ marginBottom: 0 }}
       />
 
@@ -240,4 +241,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(ItemModal);
+export default withPopupFrame(observer(ItemModal), 620);

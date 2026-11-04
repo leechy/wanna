@@ -17,6 +17,7 @@ import ModalHeader from '@/components/ModalHeader';
 import * as Clipboard from 'expo-clipboard';
 import { parseShareId } from '@/utils/share';
 import { trackEvent } from '@/utils/analytics';
+import { withPopupFrame } from '@/components/PopupFrame';
 
 // styles
 
@@ -24,7 +25,7 @@ import { trackEvent } from '@/utils/analytics';
  * Joins a shared list by a pasted link or typed code, or by the QR code from another phone,
  * then goes the same way as an opened share link
  */
-export default function JoinListScreen() {
+function JoinListScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -188,3 +189,5 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 });
+
+export default withPopupFrame(JoinListScreen, 640);

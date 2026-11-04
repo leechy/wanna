@@ -30,7 +30,7 @@ export default function SignInScreen() {
     if (sharedListId) {
       return <Redirect href={{ pathname: '/shared/[shareId]', params: { shareId: sharedListId } }} />;
     }
-    return <Redirect href="/(tabs)/wishes" />;
+    return <Redirect href="/shopping" />;
   }
 
   return (

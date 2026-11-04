@@ -22,12 +22,13 @@ import QrCodeIcon from '@/assets/symbols/qr-code.svg';
 
 // types
 import { ListItem } from '@/types/listItem';
+import { withPopupFrame } from '@/components/PopupFrame';
 
 /**
  * Everyone the user shares lists with, to invite to this list,
  * the ones with the most shared lists first
  */
-export default function ContactsScreen() {
+function ContactsScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
 
   const { bottom: safeB } = useSafeAreaInsets();
@@ -103,3 +104,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default withPopupFrame(ContactsScreen, 560);

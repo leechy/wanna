@@ -1,30 +1,41 @@
 // hooks and state
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { observer } from '@legendapp/state/react';
-import { lists$ as _lists$ } from '@/state/state';
+import { lists$ as _lists$, openListId$, ui$, user$ as _user$ } from '@/state/state';
+import { useIsWide } from '@/hooks/useLayout';
 import {
+  checkoutCart,
   duplicateCompletedItem,
   markItemAsCompleted,
   markItemAsDeleted,
+  replyToUnavailable,
+  restoreDeletedItem,
+  setItemUnavailable,
+  setUnavailableNote,
   updateItemOngoingStatus,
   updateList,
 } from '@/state/actions-lists';
 
 // utils
 import { convertItemsToListItems, groupItemsByCompletedAt } from '@/utils/lists';
+import { useShoppingTrip } from '@/hooks/useShoppingTrip';
 
 // components
-import { Columns } from '@/components/Columns';
 import Page from '@/components/Page';
+import { Columns } from '@/components/Columns';
 import { Pressable, View } from 'react-native';
 import DateSelector from '@/components/DateSelector';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import ListMenu from '@/components/ListMenu';
 import { BackLink } from '@/components/BackLink';
+import ShareMenu from '@/components/ShareMenu';
+import { ShoppingNow } from '@/components/ShoppingNow';
+import { UndoBar } from '@/components/UndoBar';
+import { TextPrompt } from '@/components/TextPrompt';
+import type { ShoppingItemActions } from '@/components/ShoppingItemRow';
 
-// styles
 import { globalStyles } from '@/constants/GlobalStyles';
 
 // types
@@ -32,18 +43,32 @@ import { ListItem } from '@/types/listItem';
 import { ColumnData } from '@/types/ColumnData';
 import ListButtons from '@/components/ListButtons';
 
-function ProjectScreen() {
+function ShoppingListScreen() {
   const params = useLocalSearchParams();
   const listId: string = params?.list ? (Array.isArray(params?.list) ? params.list[0] : params.list) : '';
   const listData = listId ? _lists$[listId]?.get() : null;
 
+  const trip = useShoppingTrip(listId);
+  const wide = useIsWide();
+
+  // highlighted on the home screen next to it, and opened again on the next launch
+  useEffect(() => {
+    if (!listId) {
+      return;
+    }
+    openListId$.set(listId);
+    ui$.lastListId.set(listId);
+    return () => {
+      if (openListId$.peek() === listId) {
+        openListId$.set(null);
+      }
+    };
+  }, [listId]);
+
   const items = convertItemsToListItems(_lists$[listId]?.listItems.get() || []);
 
   const openitems = useMemo(() => items.filter((item) => !item.completed), [items]);
-  const cartItems = useMemo(
-    () => items.filter((item) => item.type === 'item' && !item.completed && item.ongoing),
-    [items]
-  );
+  const cartItems = useMemo(() => items.filter((item) => !item.completed && item.ongoing), [items]);
   const completedItems = useMemo(() => groupItemsByCompletedAt(items.filter((item) => item.completed)), [items]);
 
   function updateDeadline(date: string | number | undefined) {
@@ -58,7 +83,7 @@ function ProjectScreen() {
   function newItem() {
     if (listData) {
       router.navigate({
-        pathname: '/projects/item-modal',
+        pathname: '/shopping/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -70,7 +95,7 @@ function ProjectScreen() {
   function editItem(item: ListItem) {
     if (listData) {
       router.navigate({
-        pathname: '/projects/item-modal',
+        pathname: '/shopping/item-modal',
         params: {
           listId: listData.listId,
           listName: listData.name,
@@ -80,7 +105,7 @@ function ProjectScreen() {
     }
   }
 
-  function toggleOngoing(item: ListItem) {
+  function toggleCart(item: ListItem) {
     updateItemOngoingStatus(listId, item.id, item.ongoing ? false : true);
   }
 
@@ -89,7 +114,7 @@ function ProjectScreen() {
   }
 
   function checkoutBasket() {
-    cartItems?.forEach((item) => markItemAsCompleted(listId, item.id, true));
+    checkoutCart(listId);
   }
 
   function restoreItem(item: ListItem) {
@@ -104,13 +129,41 @@ function ProjectScreen() {
     duplicateCompletedItem(listId, item.id);
   }
 
+  // the last deleted item, until the undo bar is gone
+  const [deleted, setDeleted] = useState<ListItem | null>(null);
+  const hideUndo = useCallback(() => setDeleted(null), []);
+  // asking the author for a custom reply, the note is typed right in the item
+  const [replyTo, setReplyTo] = useState<ListItem | null>(null);
+
+  function submitReply(text: string) {
+    if (replyTo && text) {
+      replyToUnavailable(listId, replyTo.id, text);
+    }
+    setReplyTo(null);
+  }
+
+  const shoppingActions: ShoppingItemActions = {
+    uid: _user$.uid?.get(),
+    onToggle: toggleCart,
+    onEdit: editItem,
+    onDelete: (item) => {
+      markItemAsDeleted(listId, item.id);
+      setDeleted(item);
+    },
+    onUnavailable: (item, unavailable) => setItemUnavailable(listId, item.id, unavailable),
+    onNote: (item, note) => setUnavailableNote(listId, item.id, note),
+    onReply: (item, reply) => (reply ? replyToUnavailable(listId, item.id, reply) : setReplyTo(item)),
+    onRestore: restoreItem,
+    onBuyAgain: duplicateItem,
+  };
+
   function editList() {
     if (listData) {
       router.navigate({
-        pathname: '/projects/list-modal',
+        pathname: '/shopping/list-modal',
         params: {
           listId: listData.listId,
-          back: `/projects/${listData.listId}`,
+          back: `/shopping/${listData.listId}`,
         },
       });
     }
@@ -118,43 +171,47 @@ function ProjectScreen() {
 
   const blocks: ColumnData[] = [
     {
-      title: "What's up?",
-      actionHandler: toggleOngoing,
+      title: 'Still wanna',
+      actionHandler: toggleCart,
       checkboxHandler: checkoutItem,
       longPressHandler: editItem,
       editHandler: editItem,
       deleteHandler: deleteItem,
-      resetHandler: restoreItem,
-      emptyText: 'List is empty. Add some tasks to do!',
+      shoppingActions,
+      emptyText: 'List is empty. Add some items!',
       items: openitems,
       showEmpty: listData?.completed ? false : true,
     },
     {
-      title: 'Done',
+      // title: 'Completed', but in the style of the 'Still wanna' phrase
+      title: 'Already got',
       actionHandler: duplicateItem,
       checkboxHandler: restoreItem,
       deleteHandler: deleteItem,
-      resetHandler: restoreItem,
+      shoppingActions,
       items: completedItems,
-      emptyText: 'Nothing was done for this project.',
+      emptyText: 'No purchases were made.',
       showEmpty: listData?.completed ? true : false,
     },
   ];
 
   return (
-    <Page hasHeader={false}>
+    <Page hasHeader={false} dismissKeyboardOnTap={true}>
       <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
-        {router.canGoBack() && <BackLink path="/projects" noTitle={true} />}
+        {/* on a wide screen the home screen is right there on the left */}
+        {!wide && router.canGoBack() && <BackLink path="/shopping" noTitle={true} />}
+
         <View style={globalStyles.listProperties}>
           <DateSelector placeholder="No deadline" value={listData?.deadline || undefined} onChange={updateDeadline} />
-          {/* <ShareMenu
+          <ShareMenu
             listId={listId}
             listName={listData?.name}
             shareId={listData?.shareId}
-          /> */}
+          />
           <ListMenu listId={listId} isHeaderMenu={false} />
         </View>
       </View>
+
       <ThemedView style={globalStyles.titleContainer}>
         <View style={globalStyles.listTitleContainer}>
           <Pressable
@@ -167,23 +224,43 @@ function ProjectScreen() {
             hitSlop={8}
           >
             <ThemedText type={listData?.completed ? 'completed-title' : 'title'}>
-              {listData?.name + ' ' || 'Project '}
+              {listData?.name + ' ' || 'Shopping list '}
             </ThemedText>
           </Pressable>
         </View>
       </ThemedView>
+      <ShoppingNow names={trip.others} />
 
-      <Columns blocks={listData?.completed ? blocks.reverse() : blocks} paddingBottom={64} openBlock={0} />
+      <Columns
+        blocks={listData?.completed ? blocks.reverse() : blocks}
+        paddingBottom={64}
+        openBlock={0}
+        swipeTabs={false}
+      />
       {!listData?.completed && (
         <ListButtons
           newItem={newItem}
           checkoutBasket={checkoutBasket}
-          newItemTitle={openitems?.length > 0 ? 'I also wanna do...' : 'I wanna do...'}
+          newItemTitle={openitems?.length > 0 ? 'I also wanna...' : 'I wanna...'}
           cartItems={cartItems?.length || 0}
         />
       )}
+      <UndoBar
+        message={deleted ? `Deleted ${deleted.label}` : null}
+        onUndo={() => deleted && restoreDeletedItem(listId, deleted.id)}
+        onHide={hideUndo}
+      />
+      <TextPrompt
+        key={replyTo ? replyTo.id : 'none'}
+        visible={replyTo !== null}
+        title={`Reply about ${replyTo?.label}`}
+        placeholder="e.g. take the bigger one"
+        submitTitle="Send"
+        onSubmit={submitReply}
+        onCancel={() => setReplyTo(null)}
+      />
     </Page>
   );
 }
 
-export default observer(ProjectScreen);
+export default observer(ShoppingListScreen);

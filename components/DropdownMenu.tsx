@@ -24,7 +24,6 @@ import { PressableArea } from './PressableArea';
 import CheckIcon from '@/assets/symbols/check.svg';
 
 // types and constants
-import { TAB_BAR_HEIGHT } from '@/app/(tabs)/_layout';
 import { DropdownItem } from '@/types/DropdownItem';
 import { globalStyles } from '@/constants/GlobalStyles';
 import { extractText } from '@/utils/text';
@@ -95,7 +94,7 @@ export function DropdownMenu({
         const topFix = Platform.OS === 'android' ? safeT : isModal ? -(safeT + 12) : 0;
 
         if (side === 'bottom' || side === 'top') {
-          if (side === 'bottom' && py + buttonH + height < winH - safeB - TAB_BAR_HEIGHT) {
+          if (side === 'bottom' && py + buttonH + height < winH - safeB) {
             // is there space below the button?
             y = py - topFix + buttonH + 5;
           } else if (py - height > topFix) {

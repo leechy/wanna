@@ -51,6 +51,23 @@ syncObservable(
   })
 );
 
+// the device's own memory of the interface, not synced to the server
+export const ui$ = observable<{ lastListId: string | null }>({
+  lastListId: null,
+});
+
+syncObservable(
+  ui$,
+  persistOptions({
+    persist: {
+      name: 'ui',
+    },
+  })
+);
+
+// the list on the screen now, to highlight it on the home screen next to it
+export const openListId$ = observable<string | null>(null);
+
 // the lists the user is invited to by listId, the server sends them on every connection
 export const invitations$ = observable<Record<string, Invitation>>({});
 

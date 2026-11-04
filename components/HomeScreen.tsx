@@ -1,9 +1,10 @@
 // hooks and state
 import { useMemo } from 'react';
 import { observer } from '@legendapp/state/react';
-import { invitations$ as _invitations$, lists$ as _lists$ } from '@/state/state';
+import { invitations$ as _invitations$, lists$ as _lists$, openListId$ } from '@/state/state';
 import { updateList } from '@/state/actions-lists';
 import { router } from 'expo-router';
+import { openList } from '@/utils/navigation';
 
 // components
 import { View } from 'react-native';
@@ -18,13 +19,26 @@ import ListButtons from '@/components/ListButtons';
 import { ListItem } from '@/types/listItem';
 import { ColumnData } from '@/types/ColumnData';
 
-function ShoppingScreen() {
+interface HomeScreenProps {
+  // on a wide screen: the navigation next to the open list
+  asNavigation?: boolean;
+}
+
+/**
+ * The lists of the user: the only screen of the app on a narrow screen,
+ * the navigation on the left on a wide one
+ */
+function HomeScreenComponent({ asNavigation = false }: HomeScreenProps) {
+  const openListId = asNavigation ? openListId$.get() : null;
+
   function newList() {
     router.navigate('/shopping/list-modal');
   }
 
   function goToList(item: ListItem) {
-    router.navigate(`/shopping/${item.id}`);
+    if (item.id !== openListId) {
+      openList(item.id);
+    }
   }
 
   function restoreList(item: ListItem) {
@@ -73,6 +87,7 @@ function ShoppingScreen() {
             completed: list.completed,
             updatedAt: list.updatedAt,
             sortOrder: list.sortOrder,
+            selected: listId === openListId,
             // count of items in the list that are in the cart or complated
             ongoing: (list.listItems || []).reduce(
               (acc, item) => acc + (!item.deleted && (item.completed || item.ongoing) ? 1 : 0),
@@ -93,7 +108,7 @@ function ShoppingScreen() {
     }
 
     return [[], []];
-  }, [lists]);
+  }, [lists, openListId]);
 
   // the lists someone invited the user to, to look at and join
   const invitations: ListItem[] = Object.values(_invitations$.get() ?? {}).map(({ listId, list }) => ({
@@ -150,7 +165,7 @@ function ShoppingScreen() {
   return (
     <Page>
       <Columns
-        title="Shopping Lists"
+        title="Wanna Wanna"
         blocks={blocks}
         titleIcon={SettingsIcon}
         titleAction={() => router.push('/settings')}
@@ -162,4 +177,4 @@ function ShoppingScreen() {
   );
 }
 
-export default observer(ShoppingScreen);
+export const HomeScreen = observer(HomeScreenComponent);

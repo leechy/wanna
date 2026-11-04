@@ -3,7 +3,7 @@
     "name": "Wanna²",
     "slug": "wanna-wanna",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "scheme": "wanna",
     "githubUrl": "https://github.com/leechy/wanna",
     "platforms": [

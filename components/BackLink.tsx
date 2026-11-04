@@ -13,9 +13,8 @@ import ArrowLeftIcon from '@/assets/symbols/arrow-left.svg';
 import { Platform } from 'react-native';
 
 const routeTitles: { [segment: string]: string } = {
-  home: 'Current Wishes',
-  shopping: 'All shopping lists',
-  projects: 'All projects',
+  home: 'All lists',
+  shopping: 'All lists',
 };
 
 interface BackLinkProps {
@@ -23,9 +22,9 @@ interface BackLinkProps {
   listId?: string;
   noTitle?: boolean;
   noIcon?: boolean;
-  path?: '/' | '/wishes' | '/shopping' | '/projects';
+  path?: '/' | '/shopping';
   // where to go when there is no screen to go back to, e.g. a modal opened by a link
-  fallbackPath?: '/' | '/wishes' | '/shopping' | '/projects';
+  fallbackPath?: '/' | '/shopping';
 }
 
 export function BackLink({ parentTitle, listId, noTitle = false, noIcon = false, path, fallbackPath }: BackLinkProps) {

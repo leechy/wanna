@@ -16,6 +16,7 @@ import { BackLink } from '@/components/BackLink';
 
 // styles
 import { globalStyles } from '@/constants/GlobalStyles';
+import { withPopupFrame } from '@/components/PopupFrame';
 
 function SettingsScreen() {
   const lists = useSelector(_lists$);
@@ -86,4 +87,4 @@ function SettingsScreen() {
   );
 }
 
-export default SettingsScreen;
+export default withPopupFrame(SettingsScreen, 640);

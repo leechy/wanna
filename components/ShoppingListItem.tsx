@@ -44,7 +44,13 @@ export default function ShoppingListItem({
   }
 
   return (
-    <View style={[globalStyles.listItem, { backgroundColor }, itemBorderRadius]}>
+    <View
+      style={[
+        globalStyles.listItem,
+        { backgroundColor: item.selected ? barelyVisibleColor : backgroundColor },
+        itemBorderRadius,
+      ]}
+    >
       <LinearGradient
         // Item In Progress Linear Gradient
         colors={[
@@ -68,7 +74,12 @@ export default function ShoppingListItem({
             >
               <CircleRestoreIcon width={28} height={28} color={touchableColor} />
             </TouchableOpacity>
-            <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
+            <ItemAction
+              onItemAction={onItemAction}
+              itemLabel={item.label}
+              chevronColor={barelyVisibleColor}
+              selected={item.selected}
+            >
               <ListItemLabel item={item} />
               {item.quantity && (
                 <Text style={[globalStyles.itemListProgress, { color: inactiveColor }]}>{`${item.ongoing || 0}/${
@@ -78,7 +89,12 @@ export default function ShoppingListItem({
             </ItemAction>
           </>
         ) : (
-          <ItemAction onItemAction={onItemAction} itemLabel={item.label} chevronColor={barelyVisibleColor}>
+          <ItemAction
+            onItemAction={onItemAction}
+            itemLabel={item.label}
+            chevronColor={barelyVisibleColor}
+            selected={item.selected}
+          >
             <View style={globalStyles.listItemLeadButton}>
               {item.ongoing || 0 > 0 ? (
                 <CartNotEmptyIcon width={28} height={28} color={primaryColor} />
@@ -103,9 +119,10 @@ interface ItemActionProps {
   itemLabel: string;
   children: React.ReactNode;
   chevronColor?: string;
+  selected?: boolean;
 }
 
-function ItemAction({ onItemAction, itemLabel, children, chevronColor }: ItemActionProps): React.ReactNode {
+function ItemAction({ onItemAction, itemLabel, children, chevronColor, selected }: ItemActionProps): React.ReactNode {
   return (
     <TouchableOpacity
       style={globalStyles.listItemAction}
@@ -116,9 +133,11 @@ function ItemAction({ onItemAction, itemLabel, children, chevronColor }: ItemAct
       accessibilityRole="button"
       accessibilityLabel={`Open list ${itemLabel}`}
       accessibilityHint={`Press to open ${itemLabel}`}
+      accessibilityState={{ selected }}
     >
       {children}
-      <ChevronRightIcon width={28} height={28} color={chevronColor} />
+      {/* the selected list is already open on the right, nowhere to go */}
+      <ChevronRightIcon width={28} height={28} color={selected ? 'transparent' : chevronColor} />
     </TouchableOpacity>
   );
 }

@@ -1,5 +1,5 @@
-import { generateId, user$ as _user$ } from '@/state/state';
-import { clearLists } from '@/state/actions-lists';
+import { generateId, pendingShare$, ui$, user$ as _user$ } from '@/state/state';
+import { addList, clearLists } from '@/state/actions-lists';
 import { clearInvitations } from '@/state/actions-invitations';
 import { queueOperation } from '@/state/actions-queue';
 
@@ -27,18 +27,11 @@ export async function createUser(names: string) {
   // add the new user to the server
   queueOperation('auth', { uid, auth, names });
 
-  // Create a new default list for the user
-  // const listId = await addList({ name: 'Tutorial', type: 'project' });
-
-  // console.log('New tutorial list is created', listId);
-  // Add a few default items to the default list
-  // addListItem(listId, 'Mark this item as ongoing, and then as completed');
-  // addListItem(listId, 'Swipe left to delete this item');
-  // addListItem(
-  //   listId,
-  //   'Create a new item by tapping on the “New Item” placeholder at the top'
-  // );
-  // addListItem(listId, 'Create a new list from the Lists screen');
+  // the first list to start with, unless the user came by a link to a list:
+  // that list is theirs in a moment, a second empty one would only confuse
+  if (!pendingShare$.shareId.peek()) {
+    addList({ name: 'Shopping', type: 'shopping-list' });
+  }
 }
 
 /**
@@ -71,5 +64,6 @@ export function clearUser() {
 export function logout() {
   clearUser();
   clearLists();
+  ui$.lastListId.set(null);
   clearInvitations();
 }

@@ -12,6 +12,7 @@ import ModalHeader from '@/components/ModalHeader';
 // utils
 import * as Print from 'expo-print';
 import { shareLink } from '@/utils/share';
+import { withPopupFrame } from '@/components/PopupFrame';
 
 // what getRef gives: the svg of the code
 type QRCodeRef = { toDataURL: (callback: (base64: string) => void) => void };
@@ -22,7 +23,7 @@ const AppLogo = require('@/assets/icon-512.png');
 /**
  * The QR code of the list's share link, to scan with "Join list" on another phone
  */
-export default function ListQrScreen() {
+function ListQrScreen() {
   const { shareId, name } = useLocalSearchParams<{ shareId: string; name?: string }>();
   const { width } = useWindowDimensions();
   const size = Math.min(width - 96, 320);
@@ -157,3 +158,5 @@ function printPage(name: string, shareId: string, png: string) {
   </body>
 </html>`;
 }
+
+export default withPopupFrame(ListQrScreen, 640);
