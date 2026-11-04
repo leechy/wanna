@@ -21,7 +21,7 @@ import PlayFillIcon from '@/assets/symbols/square-play-fill.svg';
 import PauseIcon from '@/assets/symbols/square-pause.svg';
 import CartIcon from '@/assets/symbols/cart-arr-down.svg';
 import CartWithItemIcon from '@/assets/symbols/cart-item-fill.svg';
-import SquareMinusIcon from '@/assets/symbols/square-minus.svg';
+import TrashIcon from '@/assets/symbols/trash.svg';
 import EditIcon from '@/assets/symbols/edit.svg';
 // import RearrangeIcon from '@/assets/symbols/rearrange.svg';
 import SubmenuIcon from '@/components/SubmenuIcon';
@@ -301,7 +301,7 @@ export function ItemsList({
                     label: 'Delete',
                     onPress: () => onDeleteItem(item),
                     color: dangerColor,
-                    icon: SquareMinusIcon,
+                    icon: TrashIcon,
                   },
                 ].filter((item) => item) as DropdownItem[]
               }

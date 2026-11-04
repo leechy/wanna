@@ -23,11 +23,11 @@ import ListItemLabel from '@/components/ListItemLabel';
 // icons
 import SquareIcon from '@/assets/symbols/square.svg';
 import SquareCheckIcon from '@/assets/symbols/square-check.svg';
-import SquareMinusIcon from '@/assets/symbols/square-minus.svg';
+import TrashIcon from '@/assets/symbols/trash.svg';
 import EditIcon from '@/assets/symbols/edit.svg';
 import DuplicateIcon from '@/assets/symbols/duplicate.svg';
 import CircleRestoreIcon from '@/assets/symbols/circle-restore.svg';
-import XIcon from '@/assets/symbols/x.svg';
+import SquareQuestionIcon from '@/assets/symbols/square-question.svg';
 
 // types
 import { SvgProps } from 'react-native-svg';
@@ -121,8 +121,8 @@ export function ShoppingItemRow({
     ? { label: 'Buy again', icon: DuplicateIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onBuyAgain?.(item) }
     : unavailable
     ? { label: 'Found it', icon: SquareCheckIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onUnavailable?.(item, false) }
-    : { label: 'Out of stock', icon: XIcon, color: warningColor, textColor: onWarningColor, run: () => onUnavailable?.(item, true) };
-  const leftSwipe: SwipeActionProps = { label: 'Delete', icon: SquareMinusIcon, color: dangerColor, textColor: onDangerColor };
+    : { label: 'Out of stock', icon: SquareQuestionIcon, color: warningColor, textColor: onWarningColor, run: () => onUnavailable?.(item, true) };
+  const leftSwipe: SwipeActionProps = { label: 'Delete', icon: TrashIcon, color: dangerColor, textColor: onDangerColor };
 
   function runSwipeAction(direction: SwipeDirection) {
     swipeableRef.current?.close();
@@ -194,17 +194,17 @@ export function ShoppingItemRow({
           onEdit && { label: 'Edit', onPress: () => onEdit(item), icon: EditIcon },
           onRestore && { label: 'Back to the list', onPress: () => onRestore(item), icon: CircleRestoreIcon },
           onBuyAgain && { label: 'Buy again', onPress: () => onBuyAgain(item), icon: DuplicateIcon },
-          onDelete && { label: 'Delete', onPress: () => onDelete(item), color: dangerColor, icon: SquareMinusIcon },
+          onDelete && { label: 'Delete', onPress: () => onDelete(item), color: dangerColor, icon: TrashIcon },
         ]
       : [
           onEdit && { label: 'Edit', onPress: () => onEdit(item), icon: EditIcon },
           onUnavailable && {
             label: unavailable ? 'Found it' : 'Out of stock',
             onPress: () => onUnavailable(item, !unavailable),
-            icon: XIcon,
+            icon: unavailable ? SquareCheckIcon : SquareQuestionIcon,
           },
           unavailable && onNote && { label: item.unavailableNote ? 'Edit the note' : 'Add a note', onPress: () => onNote(item), icon: EditIcon },
-          onDelete && { label: 'Delete', onPress: () => onDelete(item), color: dangerColor, icon: SquareMinusIcon },
+          onDelete && { label: 'Delete', onPress: () => onDelete(item), color: dangerColor, icon: TrashIcon },
         ]
   ).filter(Boolean) as DropdownItem[];
 
@@ -264,7 +264,13 @@ export function ShoppingItemRow({
           triggerStyle={styles.trigger}
           items={menuItems}
           accessibilityLabel={
-            bought ? `${item.label}, bought` : picked ? `${item.label}, in the cart` : item.label
+            bought
+              ? `${item.label}, bought`
+              : picked
+                ? `${item.label}, in the cart`
+                : unavailable
+                  ? `${item.label}, out of stock`
+                  : item.label
           }
           accessibilityHint={bought ? 'Hold for more actions' : picked ? 'Tap to take out of the cart' : 'Tap to put in the cart'}
           accessibilityActions={accessibilityActions}
@@ -274,8 +280,11 @@ export function ShoppingItemRow({
             <View style={styles.check}>
               {bought || picked ? (
                 <SquareCheckIcon width={28} height={28} color={bought ? inactiveColor : primaryColor} />
+              ) : unavailable ? (
+                // out of stock is a question about the item, not a dead end
+                <SquareQuestionIcon width={28} height={28} color={warningColor} />
               ) : (
-                <SquareIcon width={28} height={28} color={unavailable ? inactiveColor : touchableColor} />
+                <SquareIcon width={28} height={28} color={touchableColor} />
               )}
             </View>
             <View style={[styles.label, (picked || unavailable) && styles.dimmed]}>
