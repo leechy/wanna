@@ -73,13 +73,15 @@ One tap target per item instead of a checkbox plus a cart icon: two similar stat
 
 | Gesture | Action |
 |---|---|
-| Tap | Toggles "picked" (in the cart): a check mark, the item stays in place, dimmed — rows must not jump under the finger in the store |
+| Tap | Toggles "picked" (in the cart): a check mark, the item stays in place, dimmed — rows must not jump under the finger in the store. On an out-of-stock item a tap writes the note instead: putting in the cart what isn't there is too easy a mistake |
 | Swipe left | Delete, with "Undo" for a few seconds — the list is shared |
 | Swipe right | Toggles "out of stock"; swiping again means "found it after all" |
-| Long press | Menu: Edit, Out of stock, Delete |
+| Long press | Menu: Edit, Out of stock (or Found it and Add a note), Delete |
 
 - When something is picked, a "Done (N)" button appears: the trip ends and the cart is bought. Without it the trip ends by the timeout.
-- An out-of-stock item shows "Out of stock · 14:32" under the name (a date for older days). A tap on that line adds a note ("only 3.2%"); the author's reply shows below.
+- Out of stock is a question about the item, not a dead end, and reads like a chat. The item's checkbox is gone, the name is dimmed, and right under it, in the checkbox column, an orange box with a question mark. Next to it the question in orange: the shopper's note ("only 3.2%"), or just "Out of stock" without one. Its time is on the right of the line (a date for older days). The author's reply is the next line, in black, with its own time.
+- Marking an item out of stock opens a field for the note right in that line, with "Out of stock" as the placeholder — no popup. A tap anywhere on the out-of-stock item opens it again. Send on the keyboard or a tap anywhere else saves what's typed; with nothing typed the field just hides. Marking it out of stock again starts a new question: the old note and reply are gone.
+- "Found it" (or bought): the checkbox is back by the name, the question mark is gone, the note and the reply stay below in grey as the history.
 - Every swipe action is also an accessibility action, so it works with VoiceOver/TalkBack.
 
 **Already got**
@@ -192,7 +194,7 @@ No store database is needed: when the session starts we remember the current loc
 
 1. **Timeout is 30 minutes** since the list was last on the shopper's screen. While the screen is open, the app sends a heartbeat to the server and the timeout is extended.
 2. **Several shoppers.** Two people in different stores with one list — two sessions. Two people in the same store — one session with two shoppers. Telling "same store or different" apart is only possible with location, so in v1 every shopper gets their own session, but the data model already allows several shoppers per session.
-3. **"Out of stock"** is a swipe right on the item, plus a menu entry for discoverability (see "Working with the list"). The note is optional and added by tapping the label, so the swipe stays instant.
+3. **"Out of stock"** is a swipe right on the item, plus a menu entry for discoverability (see "Working with the list"). The note is optional and typed right in the item after a tap on it, so the swipe stays instant.
 4. **Live Activity** — after regular pushes, but within v1.
 
 ## Open questions

@@ -483,7 +483,15 @@ export function setItemUnavailable(listId: string, listItemId: string, unavailab
     listId,
     listItemId,
     unavailable
-      ? { unavailable, unavailableAt: new Date().toISOString(), unavailableReply: null, ongoing: false }
+      ? {
+          unavailable,
+          unavailableAt: new Date().toISOString(),
+          // a new question: the server clears the note and the reply of the last time too
+          unavailableNote: null,
+          unavailableReply: null,
+          unavailableReplyAt: null,
+          ongoing: false,
+        }
       : { unavailable },
     { unavailable }
   );
@@ -500,7 +508,13 @@ export function setUnavailableNote(listId: string, listItemId: string, note: str
  * The author tells the shopper what to buy instead
  */
 export function replyToUnavailable(listId: string, listItemId: string, reply: string) {
-  patchItem(listId, listItemId, { unavailableReply: reply });
+  // the server sets its own time of the reply
+  patchItem(
+    listId,
+    listItemId,
+    { unavailableReply: reply, unavailableReplyAt: new Date().toISOString() },
+    { unavailableReply: reply }
+  );
 }
 
 /**

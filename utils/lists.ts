@@ -49,6 +49,7 @@ export function convertItemToListItem(
     unavailableAt: item.unavailableAt,
     unavailableNote: item.unavailableNote,
     unavailableReply: item.unavailableReply,
+    unavailableReplyAt: item.unavailableReplyAt,
     completed: item.completed,
     completedAt: item.completedAt,
     createdAt: item.createdAt,

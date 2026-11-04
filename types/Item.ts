@@ -29,6 +29,7 @@ export type Item = {
   unavailableAt?: string | null;
   unavailableNote?: string | null;
   unavailableReply?: string | null;
+  unavailableReplyAt?: string | null;
   // the shopping trip the item was picked in
   sessionId?: string | null;
 

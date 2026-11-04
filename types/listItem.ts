@@ -31,4 +31,5 @@ export type ListItem = {
   unavailableAt?: string | null;
   unavailableNote?: string | null;
   unavailableReply?: string | null;
+  unavailableReplyAt?: string | null;
 };

@@ -116,16 +116,14 @@ function ShoppingListScreen() {
   // the last deleted item, until the undo bar is gone
   const [deleted, setDeleted] = useState<ListItem | null>(null);
   const hideUndo = useCallback(() => setDeleted(null), []);
-  // asking for the out of stock note or a custom reply
-  const [prompt, setPrompt] = useState<{ kind: 'note' | 'reply'; item: ListItem } | null>(null);
+  // asking the author for a custom reply, the note is typed right in the item
+  const [replyTo, setReplyTo] = useState<ListItem | null>(null);
 
-  function submitPrompt(text: string) {
-    if (prompt?.kind === 'note') {
-      setUnavailableNote(listId, prompt.item.id, text);
-    } else if (prompt?.kind === 'reply' && text) {
-      replyToUnavailable(listId, prompt.item.id, text);
+  function submitReply(text: string) {
+    if (replyTo && text) {
+      replyToUnavailable(listId, replyTo.id, text);
     }
-    setPrompt(null);
+    setReplyTo(null);
   }
 
   const shoppingActions: ShoppingItemActions = {
@@ -137,9 +135,8 @@ function ShoppingListScreen() {
       setDeleted(item);
     },
     onUnavailable: (item, unavailable) => setItemUnavailable(listId, item.id, unavailable),
-    onNote: (item) => setPrompt({ kind: 'note', item }),
-    onReply: (item, reply) =>
-      reply ? replyToUnavailable(listId, item.id, reply) : setPrompt({ kind: 'reply', item }),
+    onNote: (item, note) => setUnavailableNote(listId, item.id, note),
+    onReply: (item, reply) => (reply ? replyToUnavailable(listId, item.id, reply) : setReplyTo(item)),
     onRestore: restoreItem,
     onBuyAgain: duplicateItem,
   };
@@ -183,7 +180,7 @@ function ShoppingListScreen() {
   ];
 
   return (
-    <Page hasHeader={false}>
+    <Page hasHeader={false} dismissKeyboardOnTap={true}>
       <View style={[globalStyles.customHeader, globalStyles.customPageHeader]}>
         {router.canGoBack() && <BackLink path="/shopping" noTitle={true} />}
 
@@ -237,14 +234,13 @@ function ShoppingListScreen() {
         onHide={hideUndo}
       />
       <TextPrompt
-        key={prompt ? `${prompt.kind}-${prompt.item.id}` : 'none'}
-        visible={prompt !== null}
-        title={prompt?.kind === 'note' ? `What was on the shelf instead of ${prompt.item.label}?` : `Reply about ${prompt?.item.label}`}
-        placeholder={prompt?.kind === 'note' ? 'e.g. only 3.2%' : 'e.g. take the bigger one'}
-        initialValue={prompt?.kind === 'note' ? prompt.item.unavailableNote ?? '' : ''}
-        submitTitle={prompt?.kind === 'note' ? 'Save' : 'Send'}
-        onSubmit={submitPrompt}
-        onCancel={() => setPrompt(null)}
+        key={replyTo ? replyTo.id : 'none'}
+        visible={replyTo !== null}
+        title={`Reply about ${replyTo?.label}`}
+        placeholder="e.g. take the bigger one"
+        submitTitle="Send"
+        onSubmit={submitReply}
+        onCancel={() => setReplyTo(null)}
       />
     </Page>
   );

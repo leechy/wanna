@@ -323,6 +323,8 @@ export function ItemsList({
         style={[styles.list]}
         inverted={inverted}
         onScrollBeginDrag={shoppingActions ? closeOpenShoppingRow : undefined}
+        // the note is typed right in the item, the list makes room for the keyboard
+        automaticallyAdjustKeyboardInsets={true}
         ListFooterComponent={() => <View style={{ height: (paddingBottom || 0) + 16 }} />}
       />
     </View>

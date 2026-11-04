@@ -1,9 +1,20 @@
 // hooks
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 // components
-import { AccessibilityActionEvent, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  AccessibilityActionEvent,
+  Keyboard,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+  type TextInputInstance,
+} from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedReaction,
@@ -40,7 +51,8 @@ export type ShoppingItemActions = {
   onEdit?: (item: ListItem) => void;
   onDelete?: (item: ListItem) => void;
   onUnavailable?: (item: ListItem, unavailable: boolean) => void;
-  onNote?: (item: ListItem) => void;
+  // the shopper's note about what was on the shelf, an empty one removes it
+  onNote?: (item: ListItem, note: string) => void;
   // reply: null asks for a custom text
   onReply?: (item: ListItem, reply: string | null) => void;
   // already got: picked by mistake
@@ -78,7 +90,8 @@ export function closeOpenShoppingRow() {
 /**
  * A shopping list item: tap to pick, swipe left to delete,
  * swipe right for out of stock (or buy again when already got),
- * long press for all the actions
+ * long press for all the actions.
+ * Out of stock is a question about the item: a tap writes a note right in the row
  */
 export function ShoppingItemRow({
   item,
@@ -103,6 +116,12 @@ export function ShoppingItemRow({
   const onPrimaryColor = useThemeColor({}, 'onPrimary');
   const onDangerColor = useThemeColor({}, 'onDanger');
   const onWarningColor = useThemeColor({}, 'onWarning');
+  const textColor = useThemeColor({}, 'text');
+  // the note field looks like the other fields in the app
+  const inputTextColor = useThemeColor({}, 'inputText');
+  const inputBackground = useThemeColor({}, 'inputBackground');
+  const inputPlaceholder = useThemeColor({}, 'inputPlaceholder');
+  const cursorColor = useThemeColor({}, 'cursorColor');
   const swipeableRef = useRef<SwipeableMethods>(null);
   const isOpen = useRef(false);
   const isFullSwipe = useRef(false);
@@ -116,13 +135,61 @@ export function ShoppingItemRow({
   const wasUnavailable = !unavailable && Boolean(item.unavailableAt || item.unavailableNote || item.unavailableReply);
   const isAuthor = Boolean(uid) && item.addedById === uid;
 
+  // the note and the reply, read out with the item
+  const unavailableStory =
+    unavailable || wasUnavailable
+      ? `${wasUnavailable ? ', was out of stock' : ''}${item.unavailableNote ? `: ${item.unavailableNote}` : ''}` +
+        ` at ${formatTime(item.unavailableAt)}` +
+        (item.unavailableReply ? `. Reply: ${item.unavailableReply}` : '')
+      : '';
+
+  // the note is typed right under the item
+  const [editing, setEditing] = useState(false);
+  const [noteText, setNoteText] = useState('');
+  const noteInput = useRef<TextInputInstance>(null);
+  // found it or bought on another phone: nothing to write about
+  const editingNote = editing && unavailable;
+
+  function startNote() {
+    setNoteText(item.unavailableNote ?? '');
+    setEditing(true);
+  }
+
+  // Send, a tap anywhere else or the hidden keyboard: saves what's typed, nothing typed - nothing changes
+  function endNote() {
+    const note = noteText.trim();
+    if (note !== (item.unavailableNote ?? '')) {
+      onNote?.(item, note);
+    }
+    setEditing(false);
+  }
+
+  // on Android the back button hides the keyboard, but keeps the focus
+  useEffect(() => {
+    if (!editingNote) {
+      return;
+    }
+    const subscription = Keyboard.addListener('keyboardDidHide', () => noteInput.current?.blur());
+    return () => subscription.remove();
+  }, [editingNote]);
+
   // the same icons as in the menu
   const rightSwipe: SwipeActionProps & { run: () => void } = bought
     ? { label: 'Buy again', icon: DuplicateIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onBuyAgain?.(item) }
     : unavailable
     ? { label: 'Found it', icon: SquareCheckIcon, color: primaryColor, textColor: onPrimaryColor, run: () => onUnavailable?.(item, false) }
-    : { label: 'Out of stock', icon: SquareQuestionIcon, color: warningColor, textColor: onWarningColor, run: () => onUnavailable?.(item, true) };
+    : { label: 'Out of stock', icon: SquareQuestionIcon, color: warningColor, textColor: onWarningColor, run: markUnavailable };
   const leftSwipe: SwipeActionProps = { label: 'Delete', icon: TrashIcon, color: dangerColor, textColor: onDangerColor };
+
+  // out of stock opens the field for the question right away
+  function markUnavailable() {
+    onUnavailable?.(item, true);
+    if (onNote) {
+      // a new question, the note of the last time is gone
+      setNoteText('');
+      setEditing(true);
+    }
+  }
 
   function runSwipeAction(direction: SwipeDirection) {
     swipeableRef.current?.close();
@@ -183,6 +250,13 @@ export function ShoppingItemRow({
       swipeableRef.current?.close();
       return;
     }
+    // too easy to put in the cart what isn't there, a tap writes the note instead
+    if (unavailable) {
+      if (onNote) {
+        startNote();
+      }
+      return;
+    }
     if (!bought) {
       onToggle?.(item);
     }
@@ -200,10 +274,10 @@ export function ShoppingItemRow({
           onEdit && { label: 'Edit', onPress: () => onEdit(item), icon: EditIcon },
           onUnavailable && {
             label: unavailable ? 'Found it' : 'Out of stock',
-            onPress: () => onUnavailable(item, !unavailable),
+            onPress: () => (unavailable ? onUnavailable(item, false) : markUnavailable()),
             icon: unavailable ? SquareCheckIcon : SquareQuestionIcon,
           },
-          unavailable && onNote && { label: item.unavailableNote ? 'Edit the note' : 'Add a note', onPress: () => onNote(item), icon: EditIcon },
+          unavailable && onNote && { label: item.unavailableNote ? 'Edit the note' : 'Add a note', onPress: startNote, icon: EditIcon },
           onDelete && { label: 'Delete', onPress: () => onDelete(item), color: dangerColor, icon: TrashIcon },
         ]
   ).filter(Boolean) as DropdownItem[];
@@ -264,25 +338,33 @@ export function ShoppingItemRow({
           triggerStyle={styles.trigger}
           items={menuItems}
           accessibilityLabel={
-            bought
+            (bought
               ? `${item.label}, bought`
               : picked
                 ? `${item.label}, in the cart`
                 : unavailable
                   ? `${item.label}, out of stock`
-                  : item.label
+                  : item.label) + unavailableStory
           }
-          accessibilityHint={bought ? 'Hold for more actions' : picked ? 'Tap to take out of the cart' : 'Tap to put in the cart'}
+          accessibilityHint={
+            bought
+              ? 'Hold for more actions'
+              : picked
+                ? 'Tap to take out of the cart'
+                : unavailable
+                  ? 'Tap to write what was on the shelf'
+                  : 'Tap to put in the cart'
+          }
           accessibilityActions={accessibilityActions}
           onAccessibilityAction={onAccessibilityAction}
         >
-          <View style={styles.content}>
+          <View style={[styles.content, (unavailable || wasUnavailable) && styles.contentWithStatus]}>
             <View style={styles.check}>
               {bought || picked ? (
                 <SquareCheckIcon width={28} height={28} color={bought ? inactiveColor : primaryColor} />
               ) : unavailable ? (
-                // out of stock is a question about the item, not a dead end
-                <SquareQuestionIcon width={28} height={28} color={warningColor} />
+                // the question icon is by the status line below
+                <View style={styles.checkPlaceholder} />
               ) : (
                 <SquareIcon width={28} height={28} color={touchableColor} />
               )}
@@ -291,39 +373,78 @@ export function ShoppingItemRow({
               <ListItemLabel item={item} showQuantity={true} />
             </View>
           </View>
-        </DropdownMenu>
 
-        {(unavailable || wasUnavailable) && (
-          <View style={styles.status}>
-            <Pressable
-              onPress={() => unavailable && onNote?.(item)}
-              disabled={!unavailable}
-              accessibilityRole={unavailable ? 'button' : 'text'}
-              accessibilityLabel={`${unavailable ? 'Out of stock' : 'Was out of stock'} since ${formatTime(item.unavailableAt)}`}
-              accessibilityHint={unavailable ? 'Add a note about what was on the shelf' : undefined}
-              hitSlop={8}
-            >
-              <Text style={[styles.statusText, { color: unavailable ? secondaryColor : inactiveColor }]}>
-                {unavailable ? 'Out of stock' : 'Was out of stock'} · {formatTime(item.unavailableAt)}
-                {item.unavailableNote ? `: ${item.unavailableNote}` : unavailable && onNote ? ' · add a note' : ''}
-              </Text>
-            </Pressable>
-            {item.unavailableReply ? (
-              <Text style={[styles.statusText, { color: primaryColor }]}>↳ {item.unavailableReply}</Text>
-            ) : (
-              unavailable &&
-              isAuthor &&
-              onReply && (
-                <View style={styles.replies}>
-                  {QUICK_REPLIES.map((reply) => (
-                    <ReplyChip key={reply} label={reply} color={primaryColor} onPress={() => onReply(item, reply)} />
-                  ))}
-                  <ReplyChip label="Reply…" color={primaryColor} onPress={() => onReply(item, null)} />
+          {(unavailable || wasUnavailable) && (
+            // the question and the answer, like in a chat: each line with its time on the right
+            <View style={styles.unavailable}>
+              <View style={styles.statusLine}>
+                <View style={styles.statusIcon}>
+                  {unavailable && <SquareQuestionIcon width={24} height={24} color={secondaryColor} />}
                 </View>
-              )
-            )}
-          </View>
-        )}
+                {editingNote ? (
+                  <TextInput
+                    ref={noteInput}
+                    style={[styles.note, styles.noteInput, { color: inputTextColor, backgroundColor: inputBackground }]}
+                    value={noteText}
+                    onChangeText={setNoteText}
+                    placeholder="Out of stock"
+                    placeholderTextColor={inputPlaceholder}
+                    cursorColor={cursorColor}
+                    selectionColor={cursorColor + '66'}
+                    selectionHandleColor={cursorColor}
+                    autoFocus={true}
+                    multiline={true}
+                    submitBehavior="blurAndSubmit"
+                    returnKeyType="send"
+                    enterKeyHint="send"
+                    onBlur={endNote}
+                    accessibilityLabel={`Out of stock, what was on the shelf instead of ${item.label}`}
+                    accessibilityHint="Send saves the note"
+                  />
+                ) : (
+                  <Text
+                    style={[styles.note, { color: unavailable ? secondaryColor : inactiveColor }]}
+                    // Android measures a long line as two with the default strategy
+                    textBreakStrategy="simple"
+                  >
+                    {item.unavailableNote || 'Out of stock'}
+                  </Text>
+                )}
+                <Text style={[styles.time, { color: unavailable ? secondaryColor : inactiveColor }]}>
+                  {formatTime(item.unavailableAt)}
+                </Text>
+              </View>
+
+              {item.unavailableReply ? (
+                <View style={styles.statusLine}>
+                  <View style={styles.statusIcon} />
+                  <Text
+                    style={[styles.note, { color: unavailable ? textColor : inactiveColor }]}
+                    textBreakStrategy="simple"
+                  >
+                    {item.unavailableReply}
+                  </Text>
+                  {item.unavailableReplyAt && (
+                    <Text style={[styles.time, { color: unavailable ? textColor : inactiveColor }]}>
+                      {formatTime(item.unavailableReplyAt)}
+                    </Text>
+                  )}
+                </View>
+              ) : (
+                unavailable &&
+                isAuthor &&
+                onReply && (
+                  <View style={styles.replies}>
+                    {QUICK_REPLIES.map((reply) => (
+                      <ReplyChip key={reply} label={reply} color={primaryColor} onPress={() => onReply(item, reply)} />
+                    ))}
+                    <ReplyChip label="Reply…" color={primaryColor} onPress={() => onReply(item, null)} />
+                  </View>
+                )
+              )}
+            </View>
+          )}
+        </DropdownMenu>
       </View>
     </ReanimatedSwipeable>
   );
@@ -445,6 +566,54 @@ const styles = StyleSheet.create({
   check: {
     padding: 5,
   },
+  checkPlaceholder: {
+    width: 28,
+    height: 28,
+  },
+  // the name and the status read as one item
+  contentWithStatus: {
+    minHeight: 40,
+    paddingTop: 6,
+  },
+  unavailable: {
+    paddingBottom: 12,
+    gap: 6,
+  },
+  // the icon column, the text, the time on the right of the first line
+  statusLine: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingRight: 12,
+    gap: 8,
+  },
+  statusIcon: {
+    width: 38,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: -8,
+  },
+  note: {
+    flex: 1,
+    fontFamily: 'Montserrat_500Medium',
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  noteInput: {
+    // a smaller version of the other fields, the text stays where the note is
+    marginLeft: -8,
+    marginVertical: -6,
+    paddingTop: 6,
+    paddingBottom: 6,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    textAlignVertical: 'top',
+  },
+  time: {
+    fontFamily: 'Montserrat_500Medium',
+    fontSize: 13,
+    lineHeight: 20,
+  },
   label: {
     flex: 1,
     flexDirection: 'row',
@@ -453,17 +622,8 @@ const styles = StyleSheet.create({
   dimmed: {
     opacity: 0.55,
   },
-  status: {
-    paddingLeft: 38,
-    paddingRight: 12,
-    paddingBottom: 10,
-    gap: 6,
-  },
-  statusText: {
-    fontFamily: 'Montserrat_500Medium',
-    fontSize: 13,
-  },
   replies: {
+    marginLeft: 38,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
